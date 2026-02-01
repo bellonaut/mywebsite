@@ -2,33 +2,22 @@ export function trimText(input: string, maxLength: number = 100): string {
   if (input.length <= maxLength) return input;
   return input.substring(0, maxLength - 3) + "...";
 }
-export function getCurrentTimeInItaly(): Date {
-  // Create a date object with the current UTC time
+export function getCurrentTimeInRochester(): Date {
+  // Rochester, NY is America/New_York
   const now = new Date();
-
-  // Convert the UTC time to Italy's time
-  const offsetItaly = 2; // Italy is in Central European Summer Time (UTC+2), but you might need to adjust this based on Daylight Saving Time
-  now.setHours(now.getUTCHours() + offsetItaly);
-
-  return now;
+  return new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
 }
 
-export function formatTimeForItaly(date: Date): string {
+export function formatTimeForRochester(date: Date): string {
   const options: Intl.DateTimeFormatOptions = {
     hour: "numeric",
     minute: "2-digit",
     second: "2-digit",
-    hour12: true, // This will format the time in 12-hour format with AM/PM
-    timeZone: "Europe/Rome",
+    hour12: true,
+    timeZone: "America/New_York",
   };
 
-  let formattedTime = new Intl.DateTimeFormat("en-US", options).format(date);
-
-  // Append the time zone abbreviation. You can automate this with libraries like `moment-timezone`.
-  // For simplicity, here I'm just appending "CET", but do remember that Italy switches between CET and CEST.
-  formattedTime += " CET";
-
-  return formattedTime;
+  return new Intl.DateTimeFormat("en-US", options).format(date) + " ET";
 }
 
 export function formatDate(date: Date): string {

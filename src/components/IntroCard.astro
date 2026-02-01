@@ -12,10 +12,8 @@ import { Image } from "astro:assets";
     <div class="flex flex-col justify-between md:max-h-[300px] gap-4">
       <div class="flex flex-col h-full">
         <h6 class="text-sm font-light m-0 text-gray-500">welcome</h6>
-        <p class="m-0 font-light text-xl">
-          Hi, I'm <b class="font-bold">Gianmarco Cavallo</b>, a software
-          developer with strong focus on the user experience, animations and
-          micro interactions
+        <p class="m-0 font-light text-xl leading-tight">
+          Hi, I'm <b class="font-bold">Bashir&nbsp;Aminu&nbsp;Bello</b> — health data scientist, AI researcher, and policy advocate working at the intersection of technology, equity, and community.
         </p>
       </div>
       <div class="flex gap-4 flex-wrap">
@@ -31,26 +29,12 @@ import { Image } from "astro:assets";
             <span class="sr-only">Linkedin Profile</span>
           </Button>
         </a>
-        <a aria-label="dribble profile" href={LINKS.dribble} target="_blank">
-          <Button aria-label="dribble profile">
-            <Icon class="h-6" name="ri:dribbble-fill" />
-            <span class="sr-only">Dribble Profile</span>
+        <a aria-label="substack profile" href={LINKS.substack} target="_blank">
+          <Button aria-label="substack profile">
+            <Icon class="h-6" name="ri:newspaper-fill" />
+            <span class="sr-only">Substack</span>
           </Button>
         </a>
-        <Tooltip client:visible>
-          <Button aria-label="easter egg btn">
-            <Icon class="h-6" name="ri:emotion-laugh-line" />
-            <span class="sr-only">Easter egg button</span>
-          </Button>
-        </Tooltip>
-        <a href="https://ko-fi.com/M4M71O34X" target="_blank"
-          ><img
-            height="36"
-            style="border:0px;height:36px;"
-            src="https://storage.ko-fi.com/cdn/kofi6.png?v=6"
-            alt="Buy Me a Coffee at ko-fi.com"
-          /></a
-        >
       </div>
     </div>
     <Image
