@@ -8,11 +8,13 @@ import { Image } from "astro:assets";
 ---
 
 <Card colSpan="md:col-span-3" rowSpan="md:row-span-4">
-  <div class="flex w-full h-full">
-    <div class="flex flex-col justify-between md:max-h-[300px] gap-4">
+  <div class="flex w-full h-full relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none bg-gradient-to-br from-[rgba(201,107,61,0.12)] via-transparent to-[rgba(91,127,246,0.08)]" />
+    <div class="absolute inset-0 pointer-events-none hero-beam" />
+    <div class="flex flex-col justify-between md:max-h-[320px] gap-4 relative z-10">
       <div class="flex flex-col h-full">
         <h6 class="text-sm font-light m-0 text-gray-500">welcome</h6>
-        <p class="m-0 font-light text-xl leading-tight">
+        <p class="m-0 font-light text-2xl leading-snug font-[EB_Garamond]">
           Hi, I'm <b class="font-bold">Bashir&nbsp;Aminu&nbsp;Bello</b> — health data scientist, AI researcher, and policy advocate working at the intersection of technology, equity, and community.
         </p>
       </div>
@@ -37,12 +39,36 @@ import { Image } from "astro:assets";
         </a>
       </div>
     </div>
-    <Image
-      alt="memoji of gianmarco"
-      class="w-auto max-h-[300px] select-none absolute right-[-110px] bottom-[-20px] z-[-1] opacity-50 md:opacity-100 md:relative md:right-auto md:bottom-auto md:z-auto pointer-events-none"
-      height="300"
-      src="/me.webp"
-      width="300"
-    />
+    <div class="relative flex-1 flex items-end justify-end">
+      <Image
+        alt="Portrait of Bashir Aminu Bello"
+        class="w-auto max-h-[320px] select-none drop-shadow-[0_20px_40px_rgba(0,0,0,0.45)]"
+        height="320"
+        src="/me.webp"
+        width="320"
+      />
+    </div>
   </div>
 </Card>
+
+<style>
+  .hero-beam {
+    background: linear-gradient(120deg, rgba(255, 238, 200, 0.06) 0%, rgba(255, 210, 150, 0.16) 30%, rgba(255, 238, 200, 0.06) 60%);
+    mix-blend-mode: screen;
+    animation: beam 24s ease-in-out infinite;
+  }
+  @keyframes beam {
+    0% {
+      transform: translateX(-40%) rotate(-8deg);
+      opacity: 0.25;
+    }
+    50% {
+      transform: translateX(20%) rotate(-2deg);
+      opacity: 0.4;
+    }
+    100% {
+      transform: translateX(60%) rotate(4deg);
+      opacity: 0.25;
+    }
+  }
+</style>

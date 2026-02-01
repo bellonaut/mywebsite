@@ -97,6 +97,12 @@ const schema =
     />
 
     <link href="https://cdn.fontshare.com" rel="preconnect" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <link href={Astro.url.href} rel="canonical" />
     <script
       is:inline
@@ -104,9 +110,13 @@ const schema =
       type="application/ld+json"
     />
   </head>
-  <body
-    class="bg-darkslate-700 md:h-screen flex flex-col justify-center items-center"
-  >
+  <body class="bg-canvas md:h-screen flex flex-col justify-center items-center">
+    <div class="ambient">
+      <div class="grain" />
+      <div class="caustics caustics-1" />
+      <div class="caustics caustics-2" />
+      <div class="dust" />
+    </div>
     <slot name="loader" />
     <slot />
   </body>
@@ -130,10 +140,33 @@ const schema =
     font-weight: 100 1000;
   }
 
+  :root {
+    --bg: #0b1c24;
+    --bg-deep: #08151e;
+    --card: #122b37;
+    --card-border: #2c4a56;
+    --text: #f4f7f5;
+    --muted: #c9d7e0;
+    --accent: #c96b3d; /* burnt sienna */
+    --accent2: #5b7ff6; /* indigo */
+    --accent3: #d1a24a; /* gold */
+    --accent4: #c76b4a; /* terracotta */
+  }
+
   body {
     margin: 0;
-    font-family: "Satoshi", sans-serif;
+    font-family: "Inter", "Satoshi", sans-serif;
     -webkit-font-smoothing: antialiased;
+    color: var(--text);
+    background: radial-gradient(circle at 20% 15%, rgba(105, 179, 210, 0.18), transparent 36%),
+      radial-gradient(circle at 80% 12%, rgba(34, 110, 140, 0.14), transparent 40%),
+      linear-gradient(180deg, #0b1c24 0%, #0b2632 45%, #0a1b25 100%);
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  .bg-canvas {
+    background: transparent;
   }
 
   h1,
@@ -142,13 +175,72 @@ const schema =
   h4,
   h5,
   h6 {
-    font-family: "Cabinet Grotesk", sans-serif;
+    font-family: "EB Garamond", "Cabinet Grotesk", serif;
+    letter-spacing: 0.01em;
   }
   p {
-    font-family: "Satoshi";
+    font-family: "Inter", "Satoshi", sans-serif;
   }
 
   b {
     font-weight: 700 !important;
+  }
+
+  .ambient {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+  }
+  .grain,
+  .dust,
+  .caustics {
+    position: absolute;
+    inset: 0;
+    mix-blend-mode: soft-light;
+  }
+  .grain {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+    opacity: 0.6;
+  }
+  .dust {
+    background: radial-gradient(circle at 30% 20%, rgba(255, 237, 210, 0.06), transparent 40%),
+      radial-gradient(circle at 70% 30%, rgba(255, 210, 180, 0.05), transparent 42%);
+    animation: drift 36s ease-in-out infinite;
+  }
+  .caustics {
+    filter: blur(48px);
+    opacity: 0.12;
+    background: radial-gradient(ellipse 60% 40% at 40% 40%, rgba(255, 255, 255, 0.15), transparent),
+      radial-gradient(ellipse 50% 30% at 70% 60%, rgba(100, 180, 220, 0.12), transparent);
+  }
+  .caustics-1 {
+    animation: slowWave 28s ease-in-out infinite;
+  }
+  .caustics-2 {
+    animation: slowWave 32s ease-in-out infinite reverse;
+  }
+  @keyframes slowWave {
+    0% {
+      transform: translate3d(-2%, -1%, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(2%, 2%, 0) scale(1.04);
+    }
+    100% {
+      transform: translate3d(-2%, -1%, 0) scale(1);
+    }
+  }
+  @keyframes drift {
+    0% {
+      transform: translate3d(-2%, 0, 0);
+    }
+    50% {
+      transform: translate3d(2%, 1%, 0);
+    }
+    100% {
+      transform: translate3d(-2%, 0, 0);
+    }
   }
 </style>

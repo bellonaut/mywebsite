@@ -5,18 +5,7 @@ import worldData from "../lib/world.json";
 const GlobeComponent = () => {
   let mapContainer: HTMLDivElement | undefined;
 
-  const visitedCountries = [
-    "France",
-    "China",
-    "Italy",
-    "Sri Lanka",
-    "Turkey",
-    "Greece",
-    "Malta",
-    "Hungary",
-    "Portugal",
-    "Marocco",
-  ];
+  const visitedCountries = ["Nigeria", "United Kingdom", "Canada", "United States"];
 
   onMount(() => {
     if (!mapContainer) return;
