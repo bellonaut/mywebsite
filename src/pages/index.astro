@@ -6,7 +6,6 @@ import ContactsCard from "../components/ContactsCard.astro";
 import TimeZone from "../components/TimeZoneCard.astro";
 import AboutMe from "../components/AboutMe.astro";
 import Now from "../components/Now.astro";
-import MyStack from "../components/MyStack.astro";
 import Globe from "../components/Globe";
 import { getCollection } from "astro:content";
 import { formatDate } from "../lib/helpers";
@@ -47,48 +46,42 @@ const gallery = [
 </script>
 
 <Layout
-  description="Bashir Aminu Bello — health data scientist, AI researcher, and policy advocate using data and law to close equity gaps in health and technology."
-  title="Bashir Aminu Bello — Health Data Science & AI"
+  description="Bashir Aminu Bello � health data scientist, AI researcher, and policy advocate using data and law to close equity gaps in health and technology."
+  title="Bashir Aminu Bello � Health Data Science & AI"
 >
   <main
-    class="text-white m-auto p-3 grid gap-2 max-w-6xl overflow-hidden relative w-full sm:p-4 sm:gap-2 md:grid-cols-2 md:gap-3 md:p-6 lg:grid-cols-4 lg:auto-rows-[minmax(140px,1fr)] lg:gap-4"
+    class="text-white m-auto p-2 grid gap-2 max-w-6xl overflow-hidden relative w-full sm:p-4 sm:gap-2 md:grid-cols-2 md:gap-3 md:p-6 lg:h-screen lg:grid-rows-8 lg:grid-cols-4 lg:gap-4 lg:max-h-[800px]"
   >
     <IntroCard />
     <AboutMe />
     <ContactsCard />
     <TimeZone />
     <Now />
-    <MyStack />
     <Card
       colorText="text-neutral-900"
-      colSpan="md:col-span-2"
+      colSpan="md:col-span-1"
       href="travel"
-      rowSpan="md:row-span-2"
-      title="Journey — Sokoto · Sheffield · Edmonton · Rochester"
+      rowSpan="md:row-span-1"
+      title="Countries I visited"
     >
       <div class="h-full w-full absolute inset-0 -z-10">
         <Globe client:load />
-      </div>
-      <div class="relative z-10 text-xs text-[var(--muted)] space-y-1">
-        <p class="text-[var(--text)] font-semibold">Pinned path</p>
-        <ul class="list-disc list-inside space-y-1">
-          <li>Sokoto, Nigeria — birthplace and first view of health/education gaps</li>
-          <li>Sheffield, UK — 2014–2016 adaptability years</li>
-          <li>Edmonton, Canada — 2016–present research and community leadership</li>
-          <li>Rochester, NY — 2024–present MSc Healthcare Data Science & AI</li>
-        </ul>
       </div>
     </Card>
     <Card
       colSpan="md:col-span-1"
       href="/blog"
       rowSpan="md:row-span-2 flex gap-1"
-      title="Writing / Blog"
+      title="Blog"
     >
       <div class="flex flex-col gap-1">
         {
           posts?.slice(0, 3).map((post) => (
-            <div class="list-none w-full text-[var(--text)] hover:text-[var(--muted)] ease-in-out transition-colors border-b-[color:var(--card-border)] border-dashed border-b-1 my-0">
+            // <a
+            //   class="text-sm md:text-base decoration-none flex justify-between"
+            //   href={`/blog/${post.id}`}
+            // >
+            <div class="list-none w-full text-neutral-100 hover:text-neutral-400 ease-in-out transition-colors border-b-neutral-400 border-dashed border-b-1 my-0">
               <p class="inline-block whitespace-nowrap text-xs">
                 {post.data.title}
               </p>
@@ -102,15 +95,16 @@ const gallery = [
                 </time>
               )}
             </div>
+            // </a>
           ))
         }
       </div>
     </Card>
-    <Card colSpan="md:col-span-2" rowSpan="md:row-span-2" title="Gallery reliquary">
-      <div class="grid grid-cols-3 gap-2">
+    <Card colSpan="md:col-span-1" rowSpan="md:row-span-1" title="Gallery">
+      <div class="grid grid-cols-3 gap-1">
         {gallery.map((src) => (
           <div
-            class="h-16 w-full rounded-lg overflow-hidden border border-[var(--card-border)]/60 shadow-[0_8px_20px_rgba(0,0,0,0.18)]"
+            class="h-14 w-full rounded-md overflow-hidden border border-[var(--card-border)]/60"
             style={`background-image:url('${src}');background-size:cover;background-position:center;`}
           ></div>
         ))}
