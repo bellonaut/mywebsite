@@ -3,22 +3,21 @@ import Card from "./Card/index.astro";
 import Button from "./Button.astro";
 import { LINKS } from "../lib/constants";
 import { Icon } from "astro-icon/components";
-import Tooltip from "./Tooltip/index";
 import { Image } from "astro:assets";
 ---
 
 <Card colSpan="md:col-span-3" rowSpan="md:row-span-4">
   <div class="flex w-full h-full relative overflow-hidden">
-    <div class="absolute inset-0 pointer-events-none bg-gradient-to-br from-[rgba(201,107,61,0.12)] via-transparent to-[rgba(91,127,246,0.08)]" />
+    <div class="absolute inset-0 pointer-events-none bg-gradient-to-br from-[rgba(156,78,59,0.16)] via-transparent to-[rgba(37,55,91,0.16)]" />
     <div class="absolute inset-0 pointer-events-none hero-beam" />
     <div class="flex flex-col justify-between md:max-h-[320px] gap-4 relative z-10">
       <div class="flex flex-col h-full">
-        <h6 class="text-sm font-light m-0 text-gray-500">welcome</h6>
+        <h6 class="text-sm font-light m-0 text-[var(--muted)]">welcome</h6>
         <p class="m-0 font-light text-2xl leading-snug font-[EB_Garamond]">
           Hi, I'm <b class="font-bold">Bashir&nbsp;Aminu&nbsp;Bello</b> — health data scientist, AI researcher, and policy advocate working at the intersection of technology, equity, and community.
         </p>
       </div>
-      <div class="flex gap-4 flex-wrap">
+      <div class="flex gap-3 flex-wrap">
         <a aria-label="github profile" href={LINKS.github} target="_blank">
           <Button aria-label="github profile">
             <Icon class="h-6" name="ri:github-fill" />
@@ -53,22 +52,22 @@ import { Image } from "astro:assets";
 
 <style>
   .hero-beam {
-    background: linear-gradient(120deg, rgba(255, 238, 200, 0.06) 0%, rgba(255, 210, 150, 0.16) 30%, rgba(255, 238, 200, 0.06) 60%);
+    background: linear-gradient(120deg, rgba(255, 238, 200, 0.08) 0%, rgba(190, 140, 60, 0.18) 34%, rgba(175, 200, 214, 0.08) 68%);
     mix-blend-mode: screen;
-    animation: beam 24s ease-in-out infinite;
+    animation: beam 20s ease-in-out infinite;
   }
   @keyframes beam {
     0% {
       transform: translateX(-40%) rotate(-8deg);
-      opacity: 0.25;
+      opacity: 0.2;
     }
     50% {
-      transform: translateX(20%) rotate(-2deg);
-      opacity: 0.4;
+      transform: translateX(22%) rotate(-2deg);
+      opacity: 0.38;
     }
     100% {
-      transform: translateX(60%) rotate(4deg);
-      opacity: 0.25;
+      transform: translateX(64%) rotate(3deg);
+      opacity: 0.2;
     }
   }
 </style>

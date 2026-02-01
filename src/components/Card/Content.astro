@@ -8,7 +8,7 @@ const { title, body } = Astro.props;
 ---
 
 <>
-  {title && <h2 class="text-xl font-bold m-0 z-20">{title}</h2>}
-  {body && <p class="m-0 font-light text-base flex flex-col">{body}</p>}
+  {title && <h2 class="text-xl font-semibold m-0 z-20 text-[var(--text)] leading-snug tracking-tight">{title}</h2>}
+  {body && <p class="m-0 font-light text-base flex flex-col text-[var(--muted)] leading-relaxed">{body}</p>}
   <slot />
 </>

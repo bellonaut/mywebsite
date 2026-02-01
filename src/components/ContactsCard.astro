@@ -1,33 +1,44 @@
 ---
 import Card from "./Card/index.astro";
 import { LINKS } from "../lib/constants";
+import { Icon } from "astro-icon/components";
 ---
 
-<Card colSpan="md:col-span-1" rowSpan="md:row-span-4">
-  <div class="h-full">
-    <header class="flex items-center">
-      <h1 class="text-white text-xl font-bold">
-        Let's start working together!
-      </h1>
+<Card colSpan="md:col-span-1" rowSpan="md:row-span-4" title="Contact">
+  <div class="h-full space-y-3">
+    <header class="flex items-center gap-2">
+      <Icon class="h-5 w-5 text-[var(--accent3)]" name="ri:mail-line" />
+      <h1 class="text-lg font-semibold text-[var(--text)] m-0">Let's start working together</h1>
     </header>
-    <address class="flex flex-col mt-4">
-      <h2 class="text-gray-500">Contact Details</h2>
-      <p>bashir@bellonaut.com</p>
-      <p>Edmonton, Canada · Rochester, NY</p>
+    <address class="not-italic flex flex-col gap-1 text-[var(--muted)] text-sm">
+      <div class="flex items-center gap-2">
+        <Icon class="h-4 w-4 text-[var(--accent4)]" name="ri:map-pin-line" />
+        <span>Edmonton, Canada · Rochester, NY</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <Icon class="h-4 w-4 text-[var(--accent3)]" name="ri:mail-send-line" />
+        <a class="text-[var(--text)] underline decoration-[var(--accent3)]/60" href={`mailto:${LINKS.email}`}>{LINKS.email}</a>
+      </div>
     </address>
-    <div class="flex flex-col mt-4 w-fit">
-      <h2 class="text-gray-500">Socials</h2>
-      <ul>
-        <li>
-          <a href={LINKS.linkedin} target="_blank">Linkedin</a>
+    <div class="flex flex-col gap-1 w-fit">
+      <h2 class="text-[var(--muted)] text-sm font-semibold">Socials</h2>
+      <ul class="space-y-1">
+        <li class="flex items-center gap-2">
+          <Icon class="h-4 w-4 text-[var(--accent)]" name="ri:linkedin-line" />
+          <a href={LINKS.linkedin} target="_blank">LinkedIn</a>
         </li>
-        <li>
-          <a href={LINKS.github} target="_blank">Github</a>
+        <li class="flex items-center gap-2">
+          <Icon class="h-4 w-4 text-[var(--accent2)]" name="ri:github-line" />
+          <a href={LINKS.github} target="_blank">GitHub</a>
         </li>
-        <li>
+        <li class="flex items-center gap-2">
+          <Icon class="h-4 w-4 text-[var(--accent4)]" name="ri:newspaper-line" />
           <a href={LINKS.substack} target="_blank">Substack</a>
         </li>
       </ul>
     </div>
+    <p class="text-xs text-[var(--muted)] mt-3">
+      Ambient ocean hum is muted by default. Toggle in the footer controls (coming soon).
+    </p>
   </div>
 </Card>

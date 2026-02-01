@@ -1,32 +1,57 @@
 ---
 import Card from "./Card/index.astro";
+import { Icon } from "astro-icon/components";
 ---
 
 <Card colSpan="md:col-span-2" rowSpan="md:row-span-2" title="Projects">
-  <ul class="text-sm font-light pl-5 list-disc space-y-1">
+  <ul class="text-sm font-light pl-5 list-disc space-y-2">
     <li>
-      <strong>NaijaCare — Low‑Bandwidth Telehealth (2024‑25)</strong><br />
-      WhatsApp triage/routing for rural Nigerian clinics; privacy‑first. <a href="https://github.com/bellonaut/naijacare_v05" target="_blank">GitHub</a>
+      <span class="inline-flex items-center gap-2">
+        <Icon class="h-4 w-4 text-[var(--accent3)]" name="ri:stethoscope-line" />
+        <strong>NaijaCare — Low‑Bandwidth Telehealth (2024–25)</strong>
+      </span>
+      <br />
+      WhatsApp triage and routing for rural Nigerian clinics; privacy‑first. <a href="https://github.com/bellonaut/naijacare_v05" target="_blank">GitHub</a>
     </li>
     <li>
-      <strong>PedsQL CAMHS Measurement Invariance (2025)</strong><br />
-      CFA & DIF on 434 youth records to ensure fair scoring. <a href="https://github.com/bellonaut/pedsql-camhs" target="_blank">GitHub</a>
+      <span class="inline-flex items-center gap-2">
+        <Icon class="h-4 w-4 text-[var(--accent2)]" name="ri:scales-3-line" />
+        <strong>Measurement Invariance of the PedsQL in CAMHS (2025)</strong>
+      </span>
+      <br />
+      CFA and DIF on 434 youth clinical records to ensure fair quality‑of‑life scoring. <a href="https://github.com/bellonaut/pedsql-camhs" target="_blank">GitHub</a>
     </li>
     <li>
-      <strong>Genetic Risk Prediction (2022)</strong><br />
-      Position‑weighted features + ML pipeline on synthetic population data. <a href="https://github.com/bellonaut/genetic-arms-race-malaria" target="_blank">GitHub</a>
+      <span class="inline-flex items-center gap-2">
+        <Icon class="h-4 w-4 text-[var(--accent)]" name="ri:dna-line" />
+        <strong>Genetic Risk Prediction with Machine Learning (2022)</strong>
+      </span>
+      <br />
+      Position‑weighted genetic‑risk features and predictive pipeline on synthetic population data. <a href="https://github.com/bellonaut/genetic-arms-race-malaria" target="_blank">GitHub</a>
     </li>
     <li>
-      <strong>Digital Leapfrog for Health — Nigeria (2025)</strong><br />
-      Telehealth feasibility modeling; USSD triage concept. <a href="https://github.com/bellonaut/naijacare_dscc482_visuals_repo_r" target="_blank">GitHub</a>
+      <span class="inline-flex items-center gap-2">
+        <Icon class="h-4 w-4 text-[var(--accent4)]" name="ri:map-pin-2-line" />
+        <strong>Digital Leapfrog for Health in Nigeria (2025)</strong>
+      </span>
+      <br />
+      Data‑visualization modelling telehealth feasibility; proposed USSD‑based triage system. <a href="https://github.com/bellonaut/naijacare_dscc482_visuals_repo_r" target="_blank">GitHub</a>
     </li>
     <li>
-      <strong>Parasite‑Dependent Protection of Sickle‑Cell Trait (2025–)</strong><br />
-      Ongoing analysis of parasite genotype effects on malaria protection.
+      <span class="inline-flex items-center gap-2">
+        <Icon class="h-4 w-4 text-[var(--accent3)]" name="ri:seedling-line" />
+        <strong>Parasite‑Dependent Protection of Sickle‑Cell Trait (2025–)</strong>
+      </span>
+      <br />
+      Independent analysis of parasite genotype influence on malaria protection.
     </li>
     <li>
-      <strong>EYE Initiative Curriculum (2025)</strong><br />
-      12‑week employability program for Central African newcomers.
+      <span class="inline-flex items-center gap-2">
+        <Icon class="h-4 w-4 text-[var(--accent2)]" name="ri:book-3-line" />
+        <strong>EYE Initiative Curriculum (2025)</strong>
+      </span>
+      <br />
+      Designed a 12‑week employability program for Central African newcomers.
     </li>
   </ul>
 </Card>
