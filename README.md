@@ -1,51 +1,75 @@
-# Bashir Aminu Bello — Premium Portfolio
+# ⚡️astro-bento-portfolio
 
-Next.js (App Router) + Tailwind v4 + Framer Motion + react-three-fiber. Editorial minimalism with GPU-accelerated flow-field background, MDX case studies, and a live Substack RSS feed.
+## A personal portfolio website made using `Astro`.
 
-## Quick start
+![astro-bento-portfolio | Bento-like Personal Porfolio Template](public/preview.png)
+
+To view a demo example, **[click here](https://sparkly-speculoos-0c9197.netlify.app/)**
+
+or my portfolio **[click here](https://gianmarcocavallo.com)**
+
+## Features
+
+- Modern and Minimal bento-like, sleek UI Design
+- All in one page (almost)
+- Fully Responsive
+- Performances and SEO optimizations
+- Ready to be deployed on [Netlify](https://www.netlify.com/)
+- Blog
+- RSS support (your-domain/rss.xml)
+- Cool 3d globe
+
+## Tech Stack
+
+- [Astro](https://astro.build)
+- [unocss](https://unocss.dev/)
+- [motion](https://motion.dev/)
+- [d3](https://d3js.org/)
+
+# Steps ▶️
 
 ```bash
-npm install
-npm run dev
-# lint / typecheck / production build
-npm run lint
-npm run build
+# Clone this repository
+$ git clone https://github.com/Ladvace/astro-bento-portfolio
 ```
 
-Open http://localhost:3000.
+```bash
+# Go into the repository
+$ cd astro-bento-portfolio
+```
 
-## Project layout
+```bash
+# Install dependencies
+$ pnpm install
+or
+$ npm install
+```
 
-- `app/` — pages, layouts, metadata, sitemap/robots.
-- `components/` — UI kit, layout, background, projects drawer, writing feed, lab demos.
-- `data/projects.ts` — primary project catalog (used on Home, /projects, drawers).
-- `content/projects/*.mdx` — long-form case studies.
-- `lib/rss.ts` — Substack RSS fetch with caching; tweak feed URL in `lib/constants.ts`.
-- `public/projects/*.svg` — placeholder visuals.
-- `public/resume.pdf` — placeholder resume (replace with the real PDF).
+```bash
+# Start the project in development
+$ pnpm run dev
+or
+$ npm run dev
+```
 
-## Updating content
+# Be sure to replace the momoji and all the relative information, such as email, website and other info, if you don't your website is gonna point to my domain and to my info
 
-- **Projects**: edit `data/projects.ts` (categories/tags/links). Add MDX for deep dives in `content/projects/` and map slug in `app/projects/[slug]/page.tsx`.
-- **Writing**: edit `data/writing.ts`. Substack pulls automatically from `SITE.substackFeed` in `lib/constants.ts`.
-- **Site metadata**: adjust `SITE` in `lib/constants.ts` (name, description, canonical `url`).
-- **Resume**: replace `public/resume.pdf` with your file (keep the same name). Header/Footer buttons link here.
+## REMOVE THE umami analytics script tag (or replace it with your id) in `src/layouts/Layout.astro`
 
-## Environment variables
+# Configuration
 
-None required by default. If you later connect APIs (e.g., analytics, email), add them to `.env.local` and reference via `process.env`.
+remember to replace the `site` and other properties with your data in `astro.config.mjs`
 
-## Deployment (Vercel)
+# Deploy on Netlify 🚀
 
-1) Push to a Git repo.  
-2) In Vercel, “New Project” → import the repo.  
-3) Framework preset: **Next.js**. No env vars needed.  
-4) Deploy.  
-5) Update `SITE.url` in `lib/constants.ts` to the live domain for correct OpenGraph/robots/sitemap URLs.
+Deploying your website on Netlify it's optional but I reccomand it in order to deploy it faster and easly.
 
-## Accessibility & performance
+You just need to fork this repo and linking it to your Netlify account.
 
-- Global `prefers-reduced-motion` support; background falls back to a static gradient.
-- Flow-field uses capped DPR and throttle-friendly uniforms.
-- Drawer has ESC + focus trapping; cards are keyboard activatable.
-- Images are local & optimized via `next/image`.
+or
+
+[![Netlify Deploy button](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Ladvace/astro-bento-portfolio)
+
+## Authors ❤️
+
+- Gianmarco - https://github.com/Ladvace
