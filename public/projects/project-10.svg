@@ -1,0 +1,13 @@
+<svg width='900' height='600' viewBox='0 0 900 600' xmlns='http://www.w3.org/2000/svg'>
+  <defs>
+    <linearGradient id='g10' x1='0' y1='0' x2='1' y2='1'>
+      <stop offset='0%' stop-color='#0a6a99' stop-opacity='0.8' />
+      <stop offset='100%' stop-color='#0f8ec7' stop-opacity='0.5' />
+    </linearGradient>
+  </defs>
+  <rect width='900' height='600' fill='#0f8ec7' opacity='0.08' />
+  <path d='M0 320 C200 260 360 360 540 300 C720 240 820 280 900 240 L900 600 L0 600 Z' fill='url(#g10)' opacity='0.6'/>
+  <path d='M0 200 C220 260 380 200 560 250 C740 300 820 260 900 320 L900 0 L0 0 Z' fill='#0a6a99' opacity='0.08'/>
+  <text x='60' y='520' fill='#0a6a99' font-family='Newsreader, serif' font-size='32' font-weight='600'>Project 10</text>
+  <text x='60' y='560' fill='#0f8ec7' font-family='Manrope, sans-serif' font-size='16' opacity='0.8'>Placeholder visual</text>
+</svg>

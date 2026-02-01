@@ -1,0 +1,13 @@
+# Flowfield GPU Playground
+
+An experiment in keeping motion elegant and legible without melting batteries.
+
+## Technical notes
+
+- Noise-driven fragment shader with a capped DPR and throttled pointer updates.  
+- Uses **react-three-fiber** with a single full-screen plane; uniforms handle density and wobble without re-meshing.  
+- Respects `prefers-reduced-motion`, swapping in a static gradient for low-power scenarios.  
+
+## Why it matters
+
+Complexity lives in the shader, not in React state. This keeps the experience crisp while letting non-3D teammates tweak parameters from a simple control panel.  

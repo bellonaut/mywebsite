@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bashir Aminu Bello — Premium Portfolio
 
-## Getting Started
+Next.js (App Router) + Tailwind v4 + Framer Motion + react-three-fiber. Editorial minimalism with GPU-accelerated flow-field background, MDX case studies, and a live Substack RSS feed.
 
-First, run the development server:
+## Quick start
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# lint / typecheck / production build
+npm run lint
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project layout
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `app/` — pages, layouts, metadata, sitemap/robots.
+- `components/` — UI kit, layout, background, projects drawer, writing feed, lab demos.
+- `data/projects.ts` — primary project catalog (used on Home, /projects, drawers).
+- `content/projects/*.mdx` — long-form case studies.
+- `lib/rss.ts` — Substack RSS fetch with caching; tweak feed URL in `lib/constants.ts`.
+- `public/projects/*.svg` — placeholder visuals.
+- `public/resume.pdf` — placeholder resume (replace with the real PDF).
 
-## Learn More
+## Updating content
 
-To learn more about Next.js, take a look at the following resources:
+- **Projects**: edit `data/projects.ts` (categories/tags/links). Add MDX for deep dives in `content/projects/` and map slug in `app/projects/[slug]/page.tsx`.
+- **Writing**: edit `data/writing.ts`. Substack pulls automatically from `SITE.substackFeed` in `lib/constants.ts`.
+- **Site metadata**: adjust `SITE` in `lib/constants.ts` (name, description, canonical `url`).
+- **Resume**: replace `public/resume.pdf` with your file (keep the same name). Header/Footer buttons link here.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Environment variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+None required by default. If you later connect APIs (e.g., analytics, email), add them to `.env.local` and reference via `process.env`.
 
-## Deploy on Vercel
+## Deployment (Vercel)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1) Push to a Git repo.  
+2) In Vercel, “New Project” → import the repo.  
+3) Framework preset: **Next.js**. No env vars needed.  
+4) Deploy.  
+5) Update `SITE.url` in `lib/constants.ts` to the live domain for correct OpenGraph/robots/sitemap URLs.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Accessibility & performance
+
+- Global `prefers-reduced-motion` support; background falls back to a static gradient.
+- Flow-field uses capped DPR and throttle-friendly uniforms.
+- Drawer has ESC + focus trapping; cards are keyboard activatable.
+- Images are local & optimized via `next/image`.
