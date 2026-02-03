@@ -1,305 +1,546 @@
 ﻿---
 import Card from "./Card/index.astro";
 import Button from "./Button.astro";
+import SonicEasterEgg from "../components/SonicEasterEgg.astro";
 ---
 
 <Card colSpan="md:col-span-3" rowSpan="md:row-span-4">
   <div class="flex w-full h-full relative overflow-hidden">
     <div class="hero-electrons" aria-hidden="true">
-  <div class="spark"></div>
-  <div class="spark"></div>
-  <div class="spark"></div>
-  <div class="spark"></div>
-  <div class="spark"></div>
-  <div class="spark"></div>
-  <div class="spark"></div>
-  <div class="spark"></div>
-  <div class="spark"></div>
-  <div class="spark"></div>
+      <div class="spark"></div>
+      <div class="spark"></div>
+      <div class="spark"></div>
+      <div class="spark"></div>
+      <div class="spark"></div>
+      <div class="spark"></div>
+      <div class="spark"></div>
+      <div class="spark"></div>
+      <div class="spark"></div>
+      <div class="spark"></div>
 
-  <div class="tendril"></div>
-  <div class="tendril"></div>
-  <div class="tendril"></div>
-  <div class="tendril"></div>
-  <div class="tendril"></div>
-  <div class="tendril"></div>
-  <div class="tendril"></div>
-  <div class="tendril"></div>
-  <div class="tendril"></div>
-  <div class="tendril"></div>
-  <div class="tendril"></div>
-  <div class="tendril"></div>
-</div>
-    <div class="absolute inset-0 bg-darkslate-500 opacity-80 z-0">
-</div>
+      <div class="tendril"></div>
+      <div class="tendril"></div>
+      <div class="tendril"></div>
+      <div class="tendril"></div>
+      <div class="tendril"></div>
+      <div class="tendril"></div>
+      <div class="tendril"></div>
+      <div class="tendril"></div>
+      <div class="tendril"></div>
+      <div class="tendril"></div>
+      <div class="tendril"></div>
+      <div class="tendril"></div>
+    </div>
+    <div class="absolute inset-0 bg-darkslate-500 opacity-80 z-0"></div>
 
     <!-- electron micro-motion layer -->
     <div class="absolute inset-0 pointer-events-none hero-electrons"></div>
 
-    <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-10 w-full h-full">
+    <div
+      class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-10 w-full h-full"
+    >
       <div class="flex-1 space-y-4 order-1">
-        <h1 class="m-0 font-bold text-3xl md:text-4xl leading-tight">Hi, I’m Bashir Aminu Bello.</h1>
+        <h1 class="m-0 font-bold text-3xl md:text-4xl leading-tight">
+          Hi, I’m Bashir Aminu Bello.
+        </h1>
         <p class="m-0 text-base md:text-lg text-white/85 max-w-2xl">
-          Nigerian-born health data scientist & community agent working on equitable, privacy-preserving ML  for African health systems.
+          Nigerian-born health data scientist & community agent working on
+          equitable, privacy-preserving ML for African health systems.
         </p>
-        <div>
-  
-          </a>
-        </div>
+        <div></div>
       </div>
+    </div>
 
-      <div class="flex-shrink-0 order-2 md:order-none w-full md:w-auto flex justify-center md:justify-end">
-        <img
-          src="/portrait.svg"
-          alt="Pixel portrait of Bashir Bello"
-          class="max-w-[220px] md:max-w-[260px] h-auto select-none drop-shadow-[0_12px_28px_rgba(0,0,0,0.35)]"
-          loading="eager"
-          decoding="async"
-        />
-      </div>
+    <div
+      class="flex-shrink-0 order-2 md:order-none w-full md:w-auto flex justify-center md:justify-end"
+    >
+      <img
+        src="/portrait.svg"
+        alt="Pixel portrait of Bashir Bello"
+        class="max-w-[220px] md:max-w-[260px] h-auto select-none drop-shadow-[0_12px_28px_rgba(0,0,0,0.35)]"
+        loading="eager"
+        decoding="async"
+      />
     </div>
   </div>
 </Card>
 
+<div class="hero-card">
+  <!-- your existing hero contents exactly as-is -->
+
+  <SonicEasterEgg clicksToActivate={5} enableBg={true} />
+</div>
+
 <style>
-.hero-electrons {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Dots layers (brighter nuclei) */
-.hero-electrons::before,
-.hero-electrons::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-
-  background-image:
-    radial-gradient(circle at var(--pos1, 20% 30%), rgba(190,235,255,0.55) 1.2px, transparent 3px),
-    radial-gradient(circle at var(--pos2, 72% 58%), rgba(255,230,195,0.45) 1.2px, transparent 3px),
-    radial-gradient(circle at var(--pos3, 44% 82%), rgba(210,255,230,0.40) 1.2px, transparent 3px),
-    radial-gradient(circle at var(--pos4, 60% 20%), rgba(200,220,255,0.42) 1.2px, transparent 3px);
-
-  background-size: 150px 150px;
-
-  opacity: var(--op, 0.62);
-  filter: blur(0.55px);
-  mix-blend-mode: screen;
-
-  will-change: transform, opacity;
-}
-
-/* Layer A */
-.hero-electrons::before {
-  animation: electron-drift-a 47s linear infinite;
-}
-
-/* Layer B */
-.hero-electrons::after {
-  --pos1: 10% 80%;
-  --pos2: 85% 15%;
-  --pos3: 30% 40%;
-  --pos4: 65% 70%;
-  opacity: 0.30;
-
-  animation: electron-drift-b 71s linear infinite;
-  animation-delay: -19s;
-}
-
-/* Sparks */
-.spark {
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  border-radius: 999px;
-
-  top: var(--spark-y, 50%);
-  left: var(--spark-x, 50%);
-
-  transform: translate(-50%, -50%) scale(0);
-
-  background: radial-gradient(circle, rgba(190,235,255,0.95) 0%, transparent 68%);
-  filter: blur(1.4px);
-  mix-blend-mode: screen;
-
-  opacity: 0;
-  will-change: transform, opacity;
-
-  animation: spark-flash var(--spark-dur, 5.2s) steps(1, end) infinite;
-  animation-delay: var(--spark-delay, 0s);
-}
-
-/* 10 sparks, scattered + desynced */
-.spark:nth-child(1)  { --spark-x: 18%; --spark-y: 28%; --spark-delay: -0.2s; --spark-dur: 6.4s; }
-.spark:nth-child(2)  { --spark-x: 72%; --spark-y: 58%; --spark-delay: -1.1s; --spark-dur: 7.1s; }
-.spark:nth-child(3)  { --spark-x: 44%; --spark-y: 82%; --spark-delay: -2.0s; --spark-dur: 6.7s; }
-.spark:nth-child(4)  { --spark-x: 60%; --spark-y: 20%; --spark-delay: -0.7s; --spark-dur: 8.6s; }
-.spark:nth-child(5)  { --spark-x: 85%; --spark-y: 15%; --spark-delay: -1.8s; --spark-dur: 7.9s; }
-.spark:nth-child(6)  { --spark-x: 30%; --spark-y: 40%; --spark-delay: -2.6s; --spark-dur: 9.2s; }
-.spark:nth-child(7)  { --spark-x: 52%; --spark-y: 34%; --spark-delay: -3.3s; --spark-dur: 8.4s; }
-.spark:nth-child(8)  { --spark-x: 12%; --spark-y: 74%; --spark-delay: -2.9s; --spark-dur: 10.1s; }
-.spark:nth-child(9)  { --spark-x: 66%; --spark-y: 78%; --spark-delay: -4.1s; --spark-dur: 9.6s; }
-.spark:nth-child(10) { --spark-x: 90%; --spark-y: 62%; --spark-delay: -3.8s; --spark-dur: 8.9s; }
-
-/* Tendrils: electric flashes */
-.tendril {
-  position: absolute;
-  top: var(--ty1, 20%);
-  left: var(--tx1, 30%);
-  width: var(--tw, 160px);
-  height: 1px;
-
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(220, 250, 255, 0.35) 25%,
-    rgba(180, 235, 255, 0.95) 45%,
-    rgba(255, 245, 215, 0.85) 55%,
-    rgba(200, 255, 230, 0.55) 70%,
-    transparent 100%
-  );
-
-  transform: rotate(var(--tr, 45deg));
-  transform-origin: left center;
-
-  opacity: 0;
-  filter: blur(0.25px);
-  mix-blend-mode: screen;
-
-  will-change: opacity, transform;
-  animation: tendril-zap var(--t-dur, 6.2s) steps(1, end) infinite;
-  animation-delay: var(--t-delay, 0s);
-}
-
-/* hot core at origin */
-.tendril::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  width: 10px;
-  height: 10px;
-  transform: translate(-40%, -50%) scale(0);
-  border-radius: 999px;
-
-  background: radial-gradient(circle, rgba(190,235,255,0.95) 0%, rgba(190,235,255,0.0) 70%);
-  filter: blur(0.7px);
-  opacity: 0;
-
-  will-change: transform, opacity;
-  animation: tendril-core var(--t-dur, 6.2s) steps(1, end) infinite;
-  animation-delay: var(--t-delay, 0s);
-}
-
-/* 12 tendrils, many angles + intersections */
-.tendril:nth-child(11) { --tx1: 16%; --ty1: 26%; --tr: 18deg;  --tw: 220px; --t-delay: -0.9s; --t-dur: 8.7s; }
-.tendril:nth-child(12) { --tx1: 28%; --ty1: 44%; --tr: 74deg;  --tw: 160px; --t-delay: -3.9s; --t-dur: 9.8s; }
-.tendril:nth-child(13) { --tx1: 40%; --ty1: 78%; --tr: 132deg; --tw: 260px; --t-delay: -5.2s; --t-dur: 10.6s; }
-.tendril:nth-child(14) { --tx1: 58%; --ty1: 18%; --tr: 206deg; --tw: 210px; --t-delay: -2.6s; --t-dur: 11.4s; }
-.tendril:nth-child(15) { --tx1: 70%; --ty1: 52%; --tr: 310deg; --tw: 290px; --t-delay: -6.4s; --t-dur: 12.1s; }
-.tendril:nth-child(16) { --tx1: 82%; --ty1: 62%; --tr: 98deg;  --tw: 190px; --t-delay: -1.8s; --t-dur: 9.9s; }
-.tendril:nth-child(17) { --tx1: 10%; --ty1: 72%; --tr: 254deg; --tw: 240px; --t-delay: -4.7s; --t-dur: 13.0s; }
-.tendril:nth-child(18) { --tx1: 46%; --ty1: 34%; --tr: 15deg;  --tw: 230px; --t-delay: -8.2s; --t-dur: 14.2s; }
-.tendril:nth-child(19) { --tx1: 62%; --ty1: 82%; --tr: 168deg; --tw: 250px; --t-delay: -7.1s; --t-dur: 12.8s; }
-.tendril:nth-child(20) { --tx1: 74%; --ty1: 26%; --tr: 280deg; --tw: 280px; --t-delay: -3.4s; --t-dur: 15.1s; }
-.tendril:nth-child(21) { --tx1: 34%; --ty1: 60%; --tr: 222deg; --tw: 210px; --t-delay: -5.9s; --t-dur: 11.9s; }
-.tendril:nth-child(22) { --tx1: 88%; --ty1: 14%; --tr: 36deg;  --tw: 200px; --t-delay: -1.2s; --t-dur: 10.9s; }
-
-/* Dot drift keyframes (long, non-loop feel) */
-@keyframes electron-drift-a {
-  0%   { --pos1: 20% 30%; --pos2: 72% 58%; --pos3: 44% 82%; --pos4: 60% 20%; --op: 0.38; transform: translate3d(-2%, -1%, 0); }
-  22%  { --pos1: 27% 36%; --pos2: 66% 54%; --pos3: 49% 78%; --pos4: 56% 24%; --op: 0.72; transform: translate3d(1%, -0.2%, 0); }
-  51%  { --pos1: 15% 24%; --pos2: 79% 64%; --pos3: 40% 86%; --pos4: 64% 15%; --op: 0.54; transform: translate3d(2%, 0.8%, 0); }
-  77%  { --pos1: 23% 32%; --pos2: 74% 55%; --pos3: 46% 80%; --pos4: 58% 22%; --op: 0.80; transform: translate3d(-1%, 0.3%, 0); }
-  100% { --pos1: 20% 30%; --pos2: 72% 58%; --pos3: 44% 82%; --pos4: 60% 20%; --op: 0.38; transform: translate3d(-2%, -1%, 0); }
-}
-
-@keyframes electron-drift-b {
-  0%   { --pos1: 12% 78%; --pos2: 84% 18%; --pos3: 34% 38%; --pos4: 62% 72%; transform: translate3d(1%, 0.4%, 0); }
-  33%  { --pos1: 18% 70%; --pos2: 78% 22%; --pos3: 28% 46%; --pos4: 70% 66%; transform: translate3d(-1%, 0.9%, 0); }
-  58%  { --pos1: 8% 86%;  --pos2: 89% 12%; --pos3: 36% 42%; --pos4: 60% 75%; transform: translate3d(0.6%, -0.4%, 0); }
-  100% { --pos1: 12% 78%; --pos2: 84% 18%; --pos3: 34% 38%; --pos4: 62% 72%; transform: translate3d(1%, 0.4%, 0); }
-}
-
-/* Spark flash: quick pop */
-@keyframes spark-flash {
-  0%, 94%, 100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0);
+  .hero-card {
+    position: relative;
   }
-  95% {
-    opacity: 0.55;
-    transform: translate(-50%, -50%) scale(0.9);
+</style>
+<style>
+  .hero-electrons {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
   }
-  97% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.35);
-  }
-  99% {
-    opacity: 0.15;
-    transform: translate(-50%, -50%) scale(1.1);
-  }
-}
 
-/* Tendril zap: instant strike + jitter + vanish */
-@keyframes tendril-zap {
-  0%, 92%, 100% {
-    opacity: 0;
-    transform: rotate(var(--tr, 45deg)) translate3d(0,0,0);
-  }
-  93% {
-    opacity: 0.35;
-    transform: rotate(calc(var(--tr, 45deg) + 0.6deg)) translate3d(0.5px, -0.5px, 0);
-  }
-  95% {
-    opacity: 1;
-    transform: rotate(calc(var(--tr, 45deg) - 0.9deg)) translate3d(-0.5px, 0.6px, 0);
-  }
-  96% {
-    opacity: 0.65;
-    transform: rotate(calc(var(--tr, 45deg) + 0.4deg)) translate3d(0.5px, 0, 0);
-  }
-  98% {
-    opacity: 0.12;
-    transform: rotate(var(--tr, 45deg)) translate3d(0,0,0);
-  }
-}
-
-@keyframes tendril-core {
-  0%, 92%, 100% {
-    opacity: 0;
-    transform: translate(-40%, -50%) scale(0);
-  }
-  94% {
-    opacity: 0.6;
-    transform: translate(-40%, -50%) scale(0.9);
-  }
-  95% {
-    opacity: 1;
-    transform: translate(-40%, -50%) scale(1.25);
-  }
-  97% {
-    opacity: 0.25;
-    transform: translate(-40%, -50%) scale(1.05);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-electrons::before,
-  .hero-electrons::after,
-  .spark,
-  .tendril,
-  .tendril::after {
-    animation: none;
-  }
+  /* Dots layers (brighter nuclei) */
   .hero-electrons::before,
   .hero-electrons::after {
-    opacity: 0.25;
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background-image:
+      radial-gradient(
+        circle at var(--pos1, 20% 30%),
+        rgba(190, 235, 255, 0.55) 1.2px,
+        transparent 3px
+      ),
+      radial-gradient(
+        circle at var(--pos2, 72% 58%),
+        rgba(255, 230, 195, 0.45) 1.2px,
+        transparent 3px
+      ),
+      radial-gradient(
+        circle at var(--pos3, 44% 82%),
+        rgba(210, 255, 230, 0.4) 1.2px,
+        transparent 3px
+      ),
+      radial-gradient(
+        circle at var(--pos4, 60% 20%),
+        rgba(200, 220, 255, 0.42) 1.2px,
+        transparent 3px
+      );
+
+    background-size: 150px 150px;
+
+    opacity: var(--op, 0.62);
+    filter: blur(0.55px);
+    mix-blend-mode: screen;
+
+    will-change: transform, opacity;
   }
-}
+
+  /* Layer A */
+  .hero-electrons::before {
+    animation: electron-drift-a 47s linear infinite;
+  }
+
+  /* Layer B */
+  .hero-electrons::after {
+    --pos1: 10% 80%;
+    --pos2: 85% 15%;
+    --pos3: 30% 40%;
+    --pos4: 65% 70%;
+    opacity: 0.3;
+
+    animation: electron-drift-b 71s linear infinite;
+    animation-delay: -19s;
+  }
+
+  /* Sparks */
+  .spark {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+
+    top: var(--spark-y, 50%);
+    left: var(--spark-x, 50%);
+
+    transform: translate(-50%, -50%) scale(0);
+
+    background: radial-gradient(
+      circle,
+      rgba(190, 235, 255, 0.95) 0%,
+      transparent 68%
+    );
+    filter: blur(1.4px);
+    mix-blend-mode: screen;
+
+    opacity: 0;
+    will-change: transform, opacity;
+
+    animation: spark-flash var(--spark-dur, 5.2s) steps(1, end) infinite;
+    animation-delay: var(--spark-delay, 0s);
+  }
+
+  /* 10 sparks, scattered + desynced */
+  .spark:nth-child(1) {
+    --spark-x: 18%;
+    --spark-y: 28%;
+    --spark-delay: -0.2s;
+    --spark-dur: 6.4s;
+  }
+  .spark:nth-child(2) {
+    --spark-x: 72%;
+    --spark-y: 58%;
+    --spark-delay: -1.1s;
+    --spark-dur: 7.1s;
+  }
+  .spark:nth-child(3) {
+    --spark-x: 44%;
+    --spark-y: 82%;
+    --spark-delay: -2s;
+    --spark-dur: 6.7s;
+  }
+  .spark:nth-child(4) {
+    --spark-x: 60%;
+    --spark-y: 20%;
+    --spark-delay: -0.7s;
+    --spark-dur: 8.6s;
+  }
+  .spark:nth-child(5) {
+    --spark-x: 85%;
+    --spark-y: 15%;
+    --spark-delay: -1.8s;
+    --spark-dur: 7.9s;
+  }
+  .spark:nth-child(6) {
+    --spark-x: 30%;
+    --spark-y: 40%;
+    --spark-delay: -2.6s;
+    --spark-dur: 9.2s;
+  }
+  .spark:nth-child(7) {
+    --spark-x: 52%;
+    --spark-y: 34%;
+    --spark-delay: -3.3s;
+    --spark-dur: 8.4s;
+  }
+  .spark:nth-child(8) {
+    --spark-x: 12%;
+    --spark-y: 74%;
+    --spark-delay: -2.9s;
+    --spark-dur: 10.1s;
+  }
+  .spark:nth-child(9) {
+    --spark-x: 66%;
+    --spark-y: 78%;
+    --spark-delay: -4.1s;
+    --spark-dur: 9.6s;
+  }
+  .spark:nth-child(10) {
+    --spark-x: 90%;
+    --spark-y: 62%;
+    --spark-delay: -3.8s;
+    --spark-dur: 8.9s;
+  }
+
+  /* Tendrils: electric flashes */
+  .tendril {
+    position: absolute;
+    top: var(--ty1, 20%);
+    left: var(--tx1, 30%);
+    width: var(--tw, 160px);
+    height: 1px;
+
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(220, 250, 255, 0.35) 25%,
+      rgba(180, 235, 255, 0.95) 45%,
+      rgba(255, 245, 215, 0.85) 55%,
+      rgba(200, 255, 230, 0.55) 70%,
+      transparent 100%
+    );
+
+    transform: rotate(var(--tr, 45deg));
+    transform-origin: left center;
+
+    opacity: 0;
+    filter: blur(0.25px);
+    mix-blend-mode: screen;
+
+    will-change: opacity, transform;
+    animation: tendril-zap var(--t-dur, 6.2s) steps(1, end) infinite;
+    animation-delay: var(--t-delay, 0s);
+  }
+
+  /* hot core at origin */
+  .tendril::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    transform: translate(-40%, -50%) scale(0);
+    border-radius: 999px;
+
+    background: radial-gradient(
+      circle,
+      rgba(190, 235, 255, 0.95) 0%,
+      rgba(190, 235, 255, 0) 70%
+    );
+    filter: blur(0.7px);
+    opacity: 0;
+
+    will-change: transform, opacity;
+    animation: tendril-core var(--t-dur, 6.2s) steps(1, end) infinite;
+    animation-delay: var(--t-delay, 0s);
+  }
+
+  /* 12 tendrils, many angles + intersections */
+  .tendril:nth-child(11) {
+    --tx1: 16%;
+    --ty1: 26%;
+    --tr: 18deg;
+    --tw: 220px;
+    --t-delay: -0.9s;
+    --t-dur: 8.7s;
+  }
+  .tendril:nth-child(12) {
+    --tx1: 28%;
+    --ty1: 44%;
+    --tr: 74deg;
+    --tw: 160px;
+    --t-delay: -3.9s;
+    --t-dur: 9.8s;
+  }
+  .tendril:nth-child(13) {
+    --tx1: 40%;
+    --ty1: 78%;
+    --tr: 132deg;
+    --tw: 260px;
+    --t-delay: -5.2s;
+    --t-dur: 10.6s;
+  }
+  .tendril:nth-child(14) {
+    --tx1: 58%;
+    --ty1: 18%;
+    --tr: 206deg;
+    --tw: 210px;
+    --t-delay: -2.6s;
+    --t-dur: 11.4s;
+  }
+  .tendril:nth-child(15) {
+    --tx1: 70%;
+    --ty1: 52%;
+    --tr: 310deg;
+    --tw: 290px;
+    --t-delay: -6.4s;
+    --t-dur: 12.1s;
+  }
+  .tendril:nth-child(16) {
+    --tx1: 82%;
+    --ty1: 62%;
+    --tr: 98deg;
+    --tw: 190px;
+    --t-delay: -1.8s;
+    --t-dur: 9.9s;
+  }
+  .tendril:nth-child(17) {
+    --tx1: 10%;
+    --ty1: 72%;
+    --tr: 254deg;
+    --tw: 240px;
+    --t-delay: -4.7s;
+    --t-dur: 13s;
+  }
+  .tendril:nth-child(18) {
+    --tx1: 46%;
+    --ty1: 34%;
+    --tr: 15deg;
+    --tw: 230px;
+    --t-delay: -8.2s;
+    --t-dur: 14.2s;
+  }
+  .tendril:nth-child(19) {
+    --tx1: 62%;
+    --ty1: 82%;
+    --tr: 168deg;
+    --tw: 250px;
+    --t-delay: -7.1s;
+    --t-dur: 12.8s;
+  }
+  .tendril:nth-child(20) {
+    --tx1: 74%;
+    --ty1: 26%;
+    --tr: 280deg;
+    --tw: 280px;
+    --t-delay: -3.4s;
+    --t-dur: 15.1s;
+  }
+  .tendril:nth-child(21) {
+    --tx1: 34%;
+    --ty1: 60%;
+    --tr: 222deg;
+    --tw: 210px;
+    --t-delay: -5.9s;
+    --t-dur: 11.9s;
+  }
+  .tendril:nth-child(22) {
+    --tx1: 88%;
+    --ty1: 14%;
+    --tr: 36deg;
+    --tw: 200px;
+    --t-delay: -1.2s;
+    --t-dur: 10.9s;
+  }
+
+  /* Dot drift keyframes (long, non-loop feel) */
+  @keyframes electron-drift-a {
+    0% {
+      --pos1: 20% 30%;
+      --pos2: 72% 58%;
+      --pos3: 44% 82%;
+      --pos4: 60% 20%;
+      --op: 0.38;
+      transform: translate3d(-2%, -1%, 0);
+    }
+    22% {
+      --pos1: 27% 36%;
+      --pos2: 66% 54%;
+      --pos3: 49% 78%;
+      --pos4: 56% 24%;
+      --op: 0.72;
+      transform: translate3d(1%, -0.2%, 0);
+    }
+    51% {
+      --pos1: 15% 24%;
+      --pos2: 79% 64%;
+      --pos3: 40% 86%;
+      --pos4: 64% 15%;
+      --op: 0.54;
+      transform: translate3d(2%, 0.8%, 0);
+    }
+    77% {
+      --pos1: 23% 32%;
+      --pos2: 74% 55%;
+      --pos3: 46% 80%;
+      --pos4: 58% 22%;
+      --op: 0.8;
+      transform: translate3d(-1%, 0.3%, 0);
+    }
+    100% {
+      --pos1: 20% 30%;
+      --pos2: 72% 58%;
+      --pos3: 44% 82%;
+      --pos4: 60% 20%;
+      --op: 0.38;
+      transform: translate3d(-2%, -1%, 0);
+    }
+  }
+
+  @keyframes electron-drift-b {
+    0% {
+      --pos1: 12% 78%;
+      --pos2: 84% 18%;
+      --pos3: 34% 38%;
+      --pos4: 62% 72%;
+      transform: translate3d(1%, 0.4%, 0);
+    }
+    33% {
+      --pos1: 18% 70%;
+      --pos2: 78% 22%;
+      --pos3: 28% 46%;
+      --pos4: 70% 66%;
+      transform: translate3d(-1%, 0.9%, 0);
+    }
+    58% {
+      --pos1: 8% 86%;
+      --pos2: 89% 12%;
+      --pos3: 36% 42%;
+      --pos4: 60% 75%;
+      transform: translate3d(0.6%, -0.4%, 0);
+    }
+    100% {
+      --pos1: 12% 78%;
+      --pos2: 84% 18%;
+      --pos3: 34% 38%;
+      --pos4: 62% 72%;
+      transform: translate3d(1%, 0.4%, 0);
+    }
+  }
+
+  /* Spark flash: quick pop */
+  @keyframes spark-flash {
+    0%,
+    94%,
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0);
+    }
+    95% {
+      opacity: 0.55;
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+    97% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.35);
+    }
+    99% {
+      opacity: 0.15;
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+  }
+
+  /* Tendril zap: instant strike + jitter + vanish */
+  @keyframes tendril-zap {
+    0%,
+    92%,
+    100% {
+      opacity: 0;
+      transform: rotate(var(--tr, 45deg)) translate3d(0, 0, 0);
+    }
+    93% {
+      opacity: 0.35;
+      transform: rotate(calc(var(--tr, 45deg) + 0.6deg))
+        translate3d(0.5px, -0.5px, 0);
+    }
+    95% {
+      opacity: 1;
+      transform: rotate(calc(var(--tr, 45deg) - 0.9deg))
+        translate3d(-0.5px, 0.6px, 0);
+    }
+    96% {
+      opacity: 0.65;
+      transform: rotate(calc(var(--tr, 45deg) + 0.4deg))
+        translate3d(0.5px, 0, 0);
+    }
+    98% {
+      opacity: 0.12;
+      transform: rotate(var(--tr, 45deg)) translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes tendril-core {
+    0%,
+    92%,
+    100% {
+      opacity: 0;
+      transform: translate(-40%, -50%) scale(0);
+    }
+    94% {
+      opacity: 0.6;
+      transform: translate(-40%, -50%) scale(0.9);
+    }
+    95% {
+      opacity: 1;
+      transform: translate(-40%, -50%) scale(1.25);
+    }
+    97% {
+      opacity: 0.25;
+      transform: translate(-40%, -50%) scale(1.05);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-electrons::before,
+    .hero-electrons::after,
+    .spark,
+    .tendril,
+    .tendril::after {
+      animation: none;
+    }
+    .hero-electrons::before,
+    .hero-electrons::after {
+      opacity: 0.25;
+    }
+  }
 </style>
