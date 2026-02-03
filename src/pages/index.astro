@@ -12,6 +12,7 @@ import MyStack from "../components/MyStack.astro";
 
 import { LINKS } from "../lib/constants";
 import { fetchSubstackPosts } from "../lib/substack";
+import CraftedSonic from "../components/CraftedSonic.astro";
 
 const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => []);
 ---
@@ -119,7 +120,7 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
     <div class="footer-pill">
       <button class="footer-pill-button" type="button" data-sonic-trigger>
         <img
-          src="/sonic/sonic.gif"
+          src={sonic.src}
           alt="Play Green Hill theme"
           width="20"
           height="20"

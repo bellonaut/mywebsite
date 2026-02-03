@@ -1,0 +1,134 @@
+---
+const {
+  clicksToActivate = 5,
+  gif = "/sonic/sonic.gif",
+  audio = "/sonic/theme.mp3",
+  enableBg = true,
+  bg = "/sonic/green-hill-bg.jpg",
+} = Astro.props;
+---
+
+<div class="sonic-egg" title="(don’t mind me)" aria-label="Sonic easter egg">
+  <button id="sonicEggBtn" type="button" aria-pressed="false">
+    <img
+      src={gif}
+      alt="Sonic"
+      width="28"
+      height="28"
+      loading="eager"
+      decoding="async"
+    />
+  </button>
+
+  <audio id="sonicEggAudio" src={audio} preload="auto" loop></audio>
+</div>
+
+<style define:vars={{ bg }}>
+  .sonic-egg {
+    position: absolute;
+    /* place it subtly on the hero card */
+    right: 14px;
+    bottom: 14px;
+    z-index: 5;
+    user-select: none;
+  }
+
+  #sonicEggBtn {
+    all: unset;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+
+    opacity: 0.78;
+    transition: opacity 140ms ease, transform 140ms ease;
+  }
+
+  #sonicEggBtn:hover {
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+
+  #sonicEggBtn:active {
+    transform: translateY(0);
+  }
+
+  img {
+    image-rendering: pixelated;
+    filter: drop-shadow(0 6px 14px rgba(0,0,0,0.45));
+  }
+
+  /* Optional: background swap when active */
+  :global(body.sonic-mode) {
+    background-image: url(var(--bg));
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+</style>
+
+<script is:inline define:vars={{ clicksToActivate, enableBg }}>
+  const btn = document.getElementById("sonicEggBtn");
+  const audio = document.getElementById("sonicEggAudio");
+
+  let clicks = 0;
+  let armed = false;
+  let playing = false;
+  let resetTimer = null;
+
+  function setPlaying(on) {
+    playing = on;
+    btn?.setAttribute("aria-pressed", String(on));
+
+    if (enableBg) document.body.classList.toggle("sonic-mode", on);
+
+    if (!audio) return;
+
+    if (on) {
+      const p = audio.play();
+      if (p && typeof p.catch === "function") p.catch(() => {});
+    } else {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+  }
+
+  function bump() {
+    // tiny visual feedback without changing layout
+    btn.style.transform = "translateY(-1px)";
+    setTimeout(() => (btn.style.transform = ""), 90);
+  }
+
+  btn?.addEventListener("click", () => {
+    bump();
+
+    // If already playing, ANY click stops it (your request)
+    if (playing) {
+      clicks = 0;
+      armed = false;
+      setPlaying(false);
+      return;
+    }
+
+    // Click-count to start
+    clicks += 1;
+    armed = clicks >= clicksToActivate;
+
+    // Reset click streak if you pause too long between clicks
+    if (resetTimer) clearTimeout(resetTimer);
+    resetTimer = setTimeout(() => {
+      clicks = 0;
+      armed = false;
+    }, 1300);
+
+    if (armed) {
+      clicks = 0;
+      armed = false;
+      setPlaying(true);
+    }
+  });
+</script>

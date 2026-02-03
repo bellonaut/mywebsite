@@ -95,6 +95,11 @@ const schema =
       content={image || `${Astro.url.origin}/og-image.png`}
       name="twitter:image"
     />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <link href="https://cdn.fontshare.com" rel="preconnect" />
     <link href={Astro.url.href} rel="canonical" />
@@ -107,11 +112,25 @@ const schema =
 
   <!-- ✅ Key fixes: remove md:h-screen and justify-center; use min-h and normal flow -->
   <body class="bg-darkslate-700 text-neutral-50 min-h-[100dvh]">
-    <div class="site-ambient" aria-hidden="true"></div>
-    <slot name="loader" />
-    <div class="w-full flex flex-col items-center">
-      <slot />
-    </div>
+    <body>
+  <div class="site-bg" aria-hidden="true"></div>
+
+  <slot />
+</body>
+
+<style is:global>
+  .site-bg{
+    position: fixed;
+    inset: 0;
+    z-index: -50;
+    pointer-events: none;
+
+    background-image: url("/green-hill-zone.jpg");
+    background-size: cover;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+  }
+</style>
   </body>
 </html>
 
@@ -138,29 +157,12 @@ const schema =
     overflow-x: hidden; /* ✅ prevent accidental horizontal scroll */
   }
 
-  .site-ambient {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.6;
-    background-image:
-      radial-gradient(1px 1px at 12% 22%, rgba(255, 255, 255, 0.45), transparent 60%),
-      radial-gradient(1.5px 1.5px at 28% 62%, rgba(180, 235, 255, 0.55), transparent 60%),
-      radial-gradient(1px 1px at 42% 18%, rgba(255, 230, 195, 0.5), transparent 60%),
-      radial-gradient(1.5px 1.5px at 58% 76%, rgba(200, 255, 230, 0.45), transparent 60%),
-      radial-gradient(1px 1px at 74% 30%, rgba(210, 220, 255, 0.5), transparent 60%),
-      radial-gradient(1.5px 1.5px at 86% 68%, rgba(255, 255, 255, 0.4), transparent 60%);
-    animation: ambient-drift 120s linear infinite;
-    filter: blur(0.2px);
-  }
-
-  body > *:not(.site-ambient) {
-    position: relative;
-    z-index: 1;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: "Cabinet Grotesk", sans-serif;
   }
   p {
@@ -172,7 +174,9 @@ const schema =
   }
 
   /* ✅ Make layout sizing predictable everywhere */
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     box-sizing: border-box;
   }
 
