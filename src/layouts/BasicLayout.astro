@@ -112,10 +112,25 @@ const schema =
 
   <!-- ✅ Key fixes: remove md:h-screen and justify-center; use min-h and normal flow -->
   <body class="bg-darkslate-700 text-neutral-50 min-h-[100dvh]">
-    <slot name="loader" />
-    <div class="w-full flex flex-col items-center">
-      <slot />
-    </div>
+    <body>
+  <div class="site-bg" aria-hidden="true"></div>
+
+  <slot />
+</body>
+
+<style is:global>
+  .site-bg{
+    position: fixed;
+    inset: 0;
+    z-index: -50;
+    pointer-events: none;
+
+    background-image: url("/green-hill-zone.jpg");
+    background-size: cover;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+  }
+</style>
   </body>
 </html>
 
