@@ -20,23 +20,23 @@ const schema =
     ? {
         "@context": "http://schema.org",
         "@type": "Person",
-        name: "Gianmarco",
+        name: "Bashir Aminu Bello",
         url: Astro.url.origin,
-        sameAs: [LINKS.linkedin, LINKS.github],
+        sameAs: [LINKS.linkedin, LINKS.github, LINKS.substack],
         image: `${Astro.url.origin}/og-image.png`,
-        jobTitle: "Freelance Frontend Developer",
+        jobTitle: "Health Data Scientist",
         worksFor: {
           "@type": "Organization",
-          name: "Self-Employed",
+          name: "Independent Researcher",
           address: {
             "@type": "PostalAddress",
-            addressLocality: "Italy",
-            addressCountry: "IT",
+            addressLocality: "Sokoto",
+            addressCountry: "NG",
           },
         },
         nationality: {
           "@type": "Country",
-          name: "Italy",
+          name: "Nigeria",
         },
       }
     : {
@@ -51,13 +51,13 @@ const schema =
         image: `${Astro.url.origin}/og-image.png`, //TODO: dynamic
         author: {
           "@type": "Person",
-          name: "Gianmarco",
+          name: "Bashir Aminu Bello",
           url: Astro.url.origin,
-          sameAs: [LINKS.linkedin, LINKS.github],
+          sameAs: [LINKS.linkedin, LINKS.github, LINKS.substack],
         },
         publisher: {
           "@type": "Organization",
-          name: "Gianmarco",
+          name: "Bashir Aminu Bello",
           logo: {
             "@type": "ImageObject",
             url: `${Astro.url.origin}/og-image.png`,
@@ -107,6 +107,7 @@ const schema =
 
   <!-- ✅ Key fixes: remove md:h-screen and justify-center; use min-h and normal flow -->
   <body class="bg-darkslate-700 text-neutral-50 min-h-[100dvh]">
+    <div class="site-ambient" aria-hidden="true"></div>
     <slot name="loader" />
     <div class="w-full flex flex-col items-center">
       <slot />
@@ -137,6 +138,28 @@ const schema =
     overflow-x: hidden; /* ✅ prevent accidental horizontal scroll */
   }
 
+  .site-ambient {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.6;
+    background-image:
+      radial-gradient(1px 1px at 12% 22%, rgba(255, 255, 255, 0.45), transparent 60%),
+      radial-gradient(1.5px 1.5px at 28% 62%, rgba(180, 235, 255, 0.55), transparent 60%),
+      radial-gradient(1px 1px at 42% 18%, rgba(255, 230, 195, 0.5), transparent 60%),
+      radial-gradient(1.5px 1.5px at 58% 76%, rgba(200, 255, 230, 0.45), transparent 60%),
+      radial-gradient(1px 1px at 74% 30%, rgba(210, 220, 255, 0.5), transparent 60%),
+      radial-gradient(1.5px 1.5px at 86% 68%, rgba(255, 255, 255, 0.4), transparent 60%);
+    animation: ambient-drift 120s linear infinite;
+    filter: blur(0.2px);
+  }
+
+  body > *:not(.site-ambient) {
+    position: relative;
+    z-index: 1;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     font-family: "Cabinet Grotesk", sans-serif;
   }
@@ -151,5 +174,23 @@ const schema =
   /* ✅ Make layout sizing predictable everywhere */
   *, *::before, *::after {
     box-sizing: border-box;
+  }
+
+  @keyframes ambient-drift {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(-1.5%, 1%, 0);
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-ambient {
+      animation: none;
+    }
   }
 </style>
