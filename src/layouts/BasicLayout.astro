@@ -95,6 +95,11 @@ const schema =
       content={image || `${Astro.url.origin}/og-image.png`}
       name="twitter:image"
     />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <link href="https://cdn.fontshare.com" rel="preconnect" />
     <link href={Astro.url.href} rel="canonical" />
@@ -137,7 +142,12 @@ const schema =
     overflow-x: hidden; /* ✅ prevent accidental horizontal scroll */
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: "Cabinet Grotesk", sans-serif;
   }
   p {
@@ -149,7 +159,9 @@ const schema =
   }
 
   /* ✅ Make layout sizing predictable everywhere */
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     box-sizing: border-box;
   }
 </style>
