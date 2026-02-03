@@ -3,7 +3,7 @@ export const LINKS = {
   linkedin: "https://www.linkedin.com/in/bellobashir/",
   substack: "https://0thello.substack.com",
   email: "bashiraminubellok@gmail.com",
-  calendar: "mailto:bashiraminubellok@gmail.com?subject=Book%20a%20call",
+  calendar: "https://cal.com/bashiraminubello",
 };
 
 export const loaderAnimation = [

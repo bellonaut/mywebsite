@@ -43,10 +43,10 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
   title="Bashir Aminu Bello — Health Data Science & AI"
 >
   <main
-    class="home-grid text-white mx-auto w-full relative grid gap-2 p-2
-      sm:p-4 sm:gap-2
-      md:grid-cols-2 md:gap-3 md:p-6
-      lg:h-[calc(100dvh-2.5rem)] lg:grid-cols-4 lg:grid-rows-8 lg:gap-4
+    class="home-grid text-white mx-auto w-full relative grid gap-3 p-3
+      sm:p-5 sm:gap-3
+      md:grid-cols-2 md:gap-4 md:p-6
+      lg:h-[calc(100dvh-2.5rem)] lg:grid-cols-4 lg:grid-rows-8 lg:gap-5
       max-w-7xl 2xl:max-w-[1400px]
       overflow-hidden lg:max-h-[1000px]"
   >
@@ -114,6 +114,25 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
       </Card>
     </div>
   </main>
+
+  <div class="footer-pill-wrap">
+    <div class="footer-pill">
+      <button class="footer-pill-button" type="button" data-sonic-trigger>
+        <img
+          src="/sonic/sonic.gif"
+          alt="Play Green Hill theme"
+          width="20"
+          height="20"
+          loading="lazy"
+          decoding="async"
+        />
+      </button>
+      <span>Made by Bashir Aminu Bello · 2026</span>
+      <audio data-sonic-audio preload="none">
+        <source src="/sonic/theme.mp3" type="audio/mpeg" />
+      </audio>
+    </div>
+  </div>
 
   <style is:global>
     /* =============================
@@ -233,5 +252,61 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
     .open-substack:hover {
       border-color: rgba(56, 189, 248, 0.45);
     }
+
+    .footer-pill-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 0 1.5rem 1.5rem;
+    }
+
+    .footer-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid rgba(175, 200, 214, 0.18);
+      background: rgba(15, 25, 35, 0.55);
+      color: rgba(235, 245, 255, 0.78);
+      font-size: 0.75rem;
+      letter-spacing: 0.01em;
+    }
+
+    .footer-pill img {
+      display: block;
+    }
+
+    .footer-pill-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .footer-pill-button:focus-visible {
+      outline: 2px solid rgba(56, 189, 248, 0.65);
+      outline-offset: 2px;
+      border-radius: 999px;
+    }
   </style>
+
+  <script is:inline>
+    (() => {
+      const trigger = document.querySelector("[data-sonic-trigger]");
+      const audio = document.querySelector("[data-sonic-audio]");
+      if (!trigger || !audio) return;
+
+      trigger.addEventListener("click", async () => {
+        try {
+          audio.currentTime = 0;
+          await audio.play();
+        } catch (err) {
+          console.warn("Sonic audio could not play:", err);
+        }
+      });
+    })();
+  </script>
 </Layout>
