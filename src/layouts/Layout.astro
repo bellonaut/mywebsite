@@ -12,9 +12,33 @@ const { title, description } = Astro.props;
 ---
 
 <BasicLayout description={description} title={title}>
+  <!-- Loader goes in BasicLayout's loader slot -->
   <div
-    class="loader bg-darkslate-700 text-neutral-50 text-3xl font-black uppercase flex justify-center items-center w-screen h-screen z-50 fixed top-0 bottom-0 right-0 left-0"     slot="loader"
+    slot="loader"
+    class="loader bg-darkslate-700 text-neutral-50 text-3xl font-black uppercase flex justify-center items-center w-screen h-screen z-50 fixed top-0 bottom-0 right-0 left-0"
   >
+    Loading…
   </div>
+
+  <!-- ✅ Global page background (behind everything) -->
+  <div class="sonic-bg" aria-hidden="true"></div>
+
+  <!-- Page content -->
   <slot />
 </BasicLayout>
+
+<style is:global>
+  .sonic-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -50;
+
+    background-image: url("/green-hill-zone.webp");
+    background-size: cover;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+
+    /* vibe control */
+    filter: saturate(0.85) brightness(0.65);
+  }
+</style>

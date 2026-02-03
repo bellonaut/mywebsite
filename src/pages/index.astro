@@ -12,8 +12,11 @@ import MyStack from "../components/MyStack.astro";
 
 import { LINKS } from "../lib/constants";
 import { fetchSubstackPosts } from "../lib/substack";
+import CraftedSonic from "../components/CraftedSonic.astro";
 
-const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => []);
+const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(
+  () => [],
+);
 ---
 
 <script>
@@ -76,7 +79,7 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
         <div class="globe-bg" aria-hidden="true">
           <Globe client:only="solid-js" variant="widget" />
         </div>
-        <div class="h-full w-full" />
+        <div class="h-full w-full"></div>
       </Card>
     </div>
 
@@ -105,6 +108,13 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
 
     <!-- ✅ PROJECTS (scroll inside panel so expanded content never truncates) -->
     <div class="g-projects">
+      <!-- CRAFTED (tiny footer-ish panel) -->
+      <div class="g-crafted">
+        <Card height="h-full">
+          <CraftedSonic />
+        </Card>
+      </div>
+
       <Card title="Projects" height="h-full">
         <div class="card-body">
           <div class="card-scroll">
@@ -129,7 +139,8 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
     .g-time,
     .g-travel,
     .g-writing,
-    .g-projects {
+    .g-projects,
+    .g-crafted {
       height: 100%;
       min-height: 0;
     }
@@ -167,6 +178,17 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
         grid-column: 3 / span 2;
         grid-row: 4 / span 5;
       }
+      .g-crafted {
+        grid-column: 2 / span 2; /* centered under writing+projects */
+        grid-row: 8 / span 1; /* bottom row */
+        align-self: end;
+      }
+      .g-crafted .card {
+        height: 52px; /* small, like your example */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
     }
 
     /* =============================
@@ -202,7 +224,6 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
       min-height: 0;
       margin-top: 0.25rem;
     }
-
 
     .card-scroll::-webkit-scrollbar {
       width: 10px;
