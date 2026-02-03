@@ -1,0 +1,160 @@
+---
+const year = 2026;
+const clicksToToggle = 5; // change if you want
+const enableBg = true;    // set false if you only want audio
+---
+
+<div class="crafted-sticky">
+  <div class="crafted-card" role="note" aria-label="Crafted with love">
+    <span class="crafted-text">
+      © {year} · Crafted with <span class="heart">♥</span> by me.
+    </span>
+
+    <button class="sonic-btn" type="button" aria-label="Sonic easter egg">
+      <img class="sonic-gif" src="/sonic/sonic-dance.gif" alt="" loading="lazy" decoding="async" />
+      <span class="sonic-indicator" aria-hidden="true"></span>
+    </button>
+  </div>
+</div>
+
+<script is:inline>
+  (() => {
+    const clicksToToggle = Number({clicksToToggle});
+    const enableBg = Boolean({enableBg});
+
+    const root = document.querySelector(".crafted-sticky");
+    if (!root) return;
+
+    const btn = root.querySelector(".sonic-btn");
+    const badge = root.querySelector(".sonic-indicator");
+    if (!btn || !badge) return;
+
+    let clicks = 0;
+    let playing = false;
+
+    const audio = new Audio("/sonic/green-hill.mp3");
+    audio.loop = true;
+    audio.volume = 0.45;
+
+    function setBadge(text) {
+      badge.textContent = text || "";
+      badge.style.display = text ? "grid" : "none";
+    }
+    setBadge("");
+
+    function stop() {
+      playing = false;
+      clicks = 0;
+      audio.pause();
+      audio.currentTime = 0;
+      if (enableBg) document.body.classList.remove("sonic-mode");
+      setBadge("");
+      btn.setAttribute("title", `Click ${clicksToToggle} times`);
+    }
+
+    function start() {
+      playing = true;
+      clicks = 0;
+      if (enableBg) document.body.classList.add("sonic-mode");
+      audio.play().catch(() => {});
+      setBadge("♪");
+      btn.setAttribute("title", "Click to stop");
+    }
+
+    btn.addEventListener("click", () => {
+      if (playing) return stop();
+
+      clicks += 1;
+      const remaining = Math.max(0, clicksToToggle - clicks);
+
+      if (remaining === 0) {
+        start();
+      } else {
+        setBadge(String(remaining));
+        btn.setAttribute("title", `Click ${remaining} more`);
+      }
+    });
+
+    // Safety cleanup on navigation (Astro can swap pages)
+    window.addEventListener("beforeunload", stop);
+  })();
+</script>
+
+<style>
+  .crafted-sticky{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+
+  .crafted-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    backdrop-filter: blur(10px);
+  }
+
+  .crafted-text {
+    font-size: 13px;
+    line-height: 1;
+    color: rgba(255,255,255,0.78);
+    white-space: nowrap;
+  }
+
+  .crafted-text .heart {
+    color: rgba(255, 90, 120, 0.95);
+  }
+
+  .sonic-btn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 26px;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    border-radius: 10px;
+  }
+
+  .sonic-btn:hover {
+    background: rgba(255,255,255,0.06);
+  }
+
+  .sonic-gif {
+    width: 28px;
+    height: 20px;
+    image-rendering: pixelated;
+  }
+
+  .sonic-indicator {
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.9);
+    font-size: 11px;
+    display: none;
+    place-items: center;
+  }
+
+  /* Optional Sonic background toggle */
+  :global(body.sonic-mode) {
+    background-image: url(/sonic/green-hill-bg.jpg);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+</style

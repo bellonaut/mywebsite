@@ -1,0 +1,112 @@
+---
+const {
+  bg = "/sonic/green-hill-bg.jpg",
+  gif = "/sonic/sonic.gif",
+  audio = "/sonic/theme.mp3",
+  withAudio = true,
+} = Astro.props;
+---
+
+<div class="sonic-toggle">
+  <button id="sonicBtn" type="button" aria-pressed="false" title="Toggle Sonic Mode">
+    Sonic
+  </button>
+
+  <img
+    id="sonicRunner"
+    src={gif}
+    alt="Sonic running"
+    loading="eager"
+    decoding="async"
+  />
+
+  {withAudio && (
+    <audio id="sonicAudio" src={audio} preload="auto" loop></audio>
+  )}
+</div>
+
+<style define:vars={{ bg }}>
+  :global(body.sonic-mode) {
+    background-image: url(var(--bg));
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+
+  .sonic-toggle {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 9999;
+    display: grid;
+    gap: 10px;
+    justify-items: end;
+    pointer-events: none;
+  }
+
+  #sonicBtn {
+    pointer-events: auto;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(10,10,12,0.72);
+    color: rgba(255,255,255,0.92);
+    padding: 10px 12px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1;
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+  }
+
+  #sonicRunner {
+    width: 84px;
+    height: auto;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 180ms ease, transform 180ms ease;
+    pointer-events: none;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 6px 16px rgba(0,0,0,0.55));
+  }
+
+  :global(body.sonic-mode) #sonicRunner {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+<script is:inline define:vars={{ withAudio }}>
+  const KEY = "sonicModeEnabled";
+
+  const btn = document.getElementById("sonicBtn");
+  const runner = document.getElementById("sonicRunner");
+  const audio = document.getElementById("sonicAudio");
+
+  function setMode(on) {
+    document.body.classList.toggle("sonic-mode", on);
+    btn?.setAttribute("aria-pressed", String(on));
+    try { localStorage.setItem(KEY, on ? "1" : "0"); } catch {}
+
+    if (withAudio && audio) {
+      if (on) {
+        const play = audio.play();
+        if (play && typeof play.catch === "function") play.catch(() => {});
+      } else {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    }
+  }
+
+  function getSaved() {
+    try { return localStorage.getItem(KEY) === "1"; } catch { return false; }
+  }
+
+  // init
+  setMode(getSaved());
+
+  btn?.addEventListener("click", () => {
+    const on = !document.body.classList.contains("sonic-mode");
+    setMode(on);
+  });
+</script>

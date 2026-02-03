@@ -12,7 +12,7 @@ import MyStack from "../components/MyStack.astro";
 
 import { LINKS } from "../lib/constants";
 import { fetchSubstackPosts } from "../lib/substack";
-import sonic from "../bbello_profesh_sonic.png";
+import CraftedSonic from "../components/CraftedSonic.astro";
 
 const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => []);
 ---
