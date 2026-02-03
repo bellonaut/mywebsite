@@ -6,7 +6,7 @@ And cool Overwatch gamer, Last Cloudia Enjoyer, avid walker through nature, and 
 
 **Live:** https://bashir.bio
 
-## What’s inside
+## What’s inside 
 - Portfolio projects (NaijaCare, health metrics work, applied ML)
 - Writing feed (Substack)
 - Contact + booking links
