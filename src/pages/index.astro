@@ -1,43 +1,36 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Card from "../components/Card/index.astro";
+
 import IntroCard from "../components/IntroCard.astro";
 import ContactsCard from "../components/ContactsCard.astro";
 import TimeZone from "../components/TimeZoneCard.astro";
-import AboutMe from "../components/AboutMe.astro";
-import Now from "../components/Now.astro";
 import Globe from "../components/Globe";
-import { getCollection } from "astro:content";
-import { formatDate } from "../lib/helpers";
 
-const posts = (await getCollection("blog"))?.sort(
-  (blogEntryA, blogEntryB) =>
-    (blogEntryB.data.pubDate || new Date()).getTime() -
-    (blogEntryA.data.pubDate || new Date()).getTime()
-);
-const gallery = [
-  "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=60",
-  "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=900&q=60",
-  "https://images.unsplash.com/photo-1529234322887-07e6f563d97f?auto=format&fit=crop&w=900&q=60",
-  "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=900&q=60",
-  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=60",
-];
+import PostRow from "../components/Blog/PostRow.astro";
+import MyStack from "../components/MyStack.astro";
+
+import { LINKS } from "../lib/constants";
+import { fetchSubstackPosts } from "../lib/substack";
+
+const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => []);
 ---
 
 <script>
   import { stagger, animate, type AnimationSequence } from "motion";
   import { loaderAnimation } from "../lib/constants";
+
   const cards = document.querySelectorAll(".card");
 
   const sequence = [
     loaderAnimation,
     [
       cards,
-      { y: ["40%", "0%"], opacity: [0, 1] },
+      { y: ["80%", "0%"], opacity: [0, 1] },
       {
         type: "spring",
         at: "-0.1",
-        delay: stagger(0.3),
+        delay: stagger(0.12),
       },
     ],
   ];
@@ -46,69 +39,199 @@ const gallery = [
 </script>
 
 <Layout
-  description="Bashir Aminu Bello � health data scientist, AI researcher, and policy advocate using data and law to close equity gaps in health and technology."
-  title="Bashir Aminu Bello � Health Data Science & AI"
+  description="Bashir Aminu Bello — health data scientist, AI researcher, and policy advocate using data and law to close equity gaps in health and technology."
+  title="Bashir Aminu Bello — Health Data Science & AI"
 >
   <main
-    class="text-white m-auto p-2 grid gap-2 max-w-6xl overflow-hidden relative w-full sm:p-4 sm:gap-2 md:grid-cols-2 md:gap-3 md:p-6 lg:h-screen lg:grid-rows-8 lg:grid-cols-4 lg:gap-4 lg:max-h-[800px]"
+    class="home-grid text-white mx-auto w-full relative grid gap-2 p-2
+      sm:p-4 sm:gap-2
+      md:grid-cols-2 md:gap-3 md:p-6
+      lg:h-[calc(100dvh-2.5rem)] lg:grid-cols-4 lg:grid-rows-8 lg:gap-4
+      max-w-7xl 2xl:max-w-[1400px]
+      overflow-hidden lg:max-h-[1000px]"
   >
-    <IntroCard />
-    <AboutMe />
-    <ContactsCard />
-    <TimeZone />
-    <Now />
-    <Card
-      colorText="text-neutral-900"
-      colSpan="md:col-span-1"
-      href="travel"
-      rowSpan="md:row-span-1"
-      title="Countries I visited"
-    >
-      <div class="h-full w-full absolute inset-0 -z-10">
-        <Globe client:load />
-      </div>
-    </Card>
-    <Card
-      colSpan="md:col-span-1"
-      href="/blog"
-      rowSpan="md:row-span-2 flex gap-1"
-      title="Blog"
-    >
-      <div class="flex flex-col gap-1">
-        {
-          posts?.slice(0, 3).map((post) => (
-            // <a
-            //   class="text-sm md:text-base decoration-none flex justify-between"
-            //   href={`/blog/${post.id}`}
-            // >
-            <div class="list-none w-full text-neutral-100 hover:text-neutral-400 ease-in-out transition-colors border-b-neutral-400 border-dashed border-b-1 my-0">
-              <p class="inline-block whitespace-nowrap text-xs">
-                {post.data.title}
-              </p>
-              {post.data.pubDate && (
-                <time
-                  class="text-right tabular-nums text-xs"
-                  data-date={post.data.pubDate.toISOString()}
-                  datetime={post.data.pubDate.toISOString()}
-                >
-                  {formatDate(post.data.pubDate)}
-                </time>
-              )}
-            </div>
-            // </a>
-          ))
-        }
-      </div>
-    </Card>
-    <Card colSpan="md:col-span-1" rowSpan="md:row-span-1" title="Gallery">
-      <div class="grid grid-cols-3 gap-1">
-        {gallery.map((src) => (
-          <div
-            class="h-14 w-full rounded-md overflow-hidden border border-[var(--card-border)]/60"
-            style={`background-image:url('${src}');background-size:cover;background-position:center;`}
-          ></div>
-        ))}
-      </div>
-    </Card>
+    <!-- HERO -->
+    <div class="g-hero">
+      <IntroCard />
+    </div>
+
+    <!-- CONTACT -->
+    <div class="g-contact">
+      <ContactsCard />
+    </div>
+
+    <!-- TIMEZONES -->
+    <div class="g-time">
+      <TimeZone />
+    </div>
+
+    <!-- COUNTRIES -->
+    <div class="g-travel">
+      <Card
+        colorText="text-white-900"
+        href="travel"
+        title="Where I've been"
+        height="h-full"
+      >
+        <div class="globe-bg" aria-hidden="true">
+          <Globe client:only="solid-js" variant="widget" />
+        </div>
+        <div class="h-full w-full" />
+      </Card>
+    </div>
+
+    <!-- ✅ LATEST ARTICLES (panel restored, scroll works, content visible) -->
+    <!-- IMPORTANT: no href on Card (avoid anchor wrapper layout bug) -->
+    <div class="g-writing">
+      <Card title="Latest Articles" height="h-full">
+        <a
+          class="open-substack"
+          href={LINKS.substack}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open Substack"
+          title="Open Substack"
+        >
+          ↗
+        </a>
+
+        <div class="card-body">
+          <div class="card-scroll">
+            <PostRow posts={substackPosts} limit={12} />
+          </div>
+        </div>
+      </Card>
+    </div>
+
+    <!-- ✅ PROJECTS (scroll inside panel so expanded content never truncates) -->
+    <div class="g-projects">
+      <Card title="Projects" height="h-full">
+        <div class="card-body">
+          <div class="card-scroll">
+            <MyStack />
+          </div>
+        </div>
+      </Card>
+    </div>
   </main>
+
+  <style is:global>
+    /* =============================
+       GRID: keep symmetry + allow scroll
+       ============================= */
+    .home-grid > * {
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .g-hero,
+    .g-contact,
+    .g-time,
+    .g-travel,
+    .g-writing,
+    .g-projects {
+      height: 100%;
+      min-height: 0;
+    }
+
+    /* =============================
+       LG placement
+       ============================= */
+    @media (min-width: 1024px) {
+      .g-hero {
+        grid-column: 1 / span 3;
+        grid-row: 1 / span 3;
+      }
+
+      .g-contact {
+        grid-column: 4 / span 1;
+        grid-row: 1 / span 3;
+      }
+
+      .g-time {
+        grid-column: 1 / span 1;
+        grid-row: 4 / span 2;
+      }
+
+      .g-travel {
+        grid-column: 1 / span 1;
+        grid-row: 6 / span 3;
+      }
+
+      .g-writing {
+        grid-column: 2 / span 1;
+        grid-row: 4 / span 5;
+      }
+
+      .g-projects {
+        grid-column: 3 / span 2;
+        grid-row: 4 / span 5;
+      }
+    }
+
+    /* =============================
+       Countries globe background
+       ============================= */
+    .g-travel .card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .globe-bg {
+      position: absolute;
+      inset: 0;
+      z-index: -10;
+      pointer-events: none;
+      opacity: 0.95;
+    }
+
+    .globe-bg canvas,
+    .globe-bg svg,
+    .globe-bg > * {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* =============================
+       Card inner scroll (works even if Card/Content is opinionated)
+       ============================= */
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+      margin-top: 0.25rem;
+    }
+
+
+    .card-scroll::-webkit-scrollbar {
+      width: 10px;
+    }
+    .card-scroll::-webkit-scrollbar-thumb {
+      background: rgba(175, 200, 214, 0.22);
+      border-radius: 999px;
+    }
+
+    /* Top-right open icon for Substack */
+    .open-substack {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 20;
+      display: inline-flex;
+      width: 30px;
+      height: 30px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(175, 200, 214, 0.18);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .open-substack:hover {
+      border-color: rgba(56, 189, 248, 0.45);
+    }
+  </style>
 </Layout>

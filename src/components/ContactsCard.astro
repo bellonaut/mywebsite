@@ -1,44 +1,192 @@
----
+﻿---
 import Card from "./Card/index.astro";
-import { LINKS } from "../lib/constants";
 import { Icon } from "astro-icon/components";
+import { LINKS } from "../lib/constants";
+
+const email = LINKS.email;
+const calLink = LINKS.calendar;
+const emailSubject = encodeURIComponent("Hello Bashir");
 ---
 
 <Card colSpan="md:col-span-1" rowSpan="md:row-span-4" title="Contact">
-  <div class="h-full space-y-3">
-    <header class="flex items-center gap-2">
-      <Icon class="h-5 w-5 text-[var(--accent3)]" name="ri:mail-line" />
-      <h1 class="text-lg font-semibold text-[var(--text)] m-0">Let's start working together</h1>
-    </header>
-    <address class="not-italic flex flex-col gap-1 text-[var(--muted)] text-sm">
-      <div class="flex items-center gap-2">
-        <Icon class="h-4 w-4 text-[var(--accent4)]" name="ri:map-pin-line" />
-        <span>Edmonton, Canada · Rochester, NY</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <Icon class="h-4 w-4 text-[var(--accent3)]" name="ri:mail-send-line" />
-        <a class="text-[var(--text)] underline decoration-[var(--accent3)]/60" href={`mailto:${LINKS.email}`}>{LINKS.email}</a>
-      </div>
-    </address>
-    <div class="flex flex-col gap-1 w-fit">
-      <h2 class="text-[var(--muted)] text-sm font-semibold">Socials</h2>
-      <ul class="space-y-1">
-        <li class="flex items-center gap-2">
-          <Icon class="h-4 w-4 text-[var(--accent)]" name="ri:linkedin-line" />
-          <a href={LINKS.linkedin} target="_blank">LinkedIn</a>
-        </li>
-        <li class="flex items-center gap-2">
-          <Icon class="h-4 w-4 text-[var(--accent2)]" name="ri:github-line" />
-          <a href={LINKS.github} target="_blank">GitHub</a>
-        </li>
-        <li class="flex items-center gap-2">
-          <Icon class="h-4 w-4 text-[var(--accent4)]" name="ri:newspaper-line" />
-          <a href={LINKS.substack} target="_blank">Substack</a>
-        </li>
-      </ul>
-    </div>
-    <p class="text-xs text-[var(--muted)] mt-3">
-      Ambient ocean hum is muted by default. Toggle in the footer controls (coming soon).
+  <div class="contact">
+    <p class="lead">
+      Open to research collaboration, product work, and public-interest projects.
     </p>
+
+    <div class="grid">
+      <a class="btn" href={LINKS.linkedin} target="_blank" rel="noopener noreferrer">
+        <Icon class="ico" name="ri:linkedin-line" />
+        <span>LinkedIn</span>
+      </a>
+
+      <a class="btn" href={LINKS.github} target="_blank" rel="noopener noreferrer">
+        <Icon class="ico" name="ri:github-line" />
+        <span>GitHub</span>
+      </a>
+
+      <a class="btn btn-strong" href={`mailto:${email}?subject=${emailSubject}`}>
+        <Icon class="ico" name="ri:mail-line" />
+        <span>Email</span>
+      </a>
+
+      <button class="btn btn-strong" type="button" data-cal-link={calLink}>
+        <Icon class="ico" name="ri:calendar-event-line" />
+        <span>Book a call</span>
+      </button>
+
+      <a class="btn btn-substack" href={LINKS.substack} target="_blank" rel="noopener noreferrer">
+        <Icon class="ico" name="ri:quill-pen-line" />
+        <span>Substack</span>
+      </a>
+    </div>
   </div>
 </Card>
+
+<script is:inline>
+  (function () {
+    const CAL_SRC = "https://app.cal.com/embed/embed.js";
+
+    function loadCal() {
+      return new Promise((resolve) => {
+        if (window.Cal) return resolve(window.Cal);
+
+        const existing = document.querySelector('script[src="' + CAL_SRC + '"]');
+        if (existing) {
+          existing.addEventListener("load", () => resolve(window.Cal));
+          return;
+        }
+
+        const s = document.createElement("script");
+        s.src = CAL_SRC;
+        s.async = true;
+        s.onload = () => resolve(window.Cal);
+        document.head.appendChild(s);
+      });
+    }
+
+    async function openCal(link) {
+      const Cal = await loadCal();
+      if (!Cal) return;
+
+      Cal("init", { origin: "https://cal.com" });
+      Cal("ui", {
+        theme: "dark",
+        styles: { branding: { brandColor: "#38BDF8" } },
+        hideEventTypeDetails: false,
+        layout: "month_view",
+      });
+
+      Cal("open", { calLink: link });
+    }
+
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-cal-link]");
+      if (!btn) return;
+      e.preventDefault();
+      const link = btn.getAttribute("data-cal-link");
+      if (link) openCal(link);
+    });
+  })();
+</script>
+
+<style>
+  .contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+
+  .lead {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.32;
+    color: rgba(255, 255, 255, 0.76);
+    letter-spacing: 0.01em;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.55rem;
+  }
+
+  .btn-substack {
+    grid-column: 1 / -1;
+  }
+
+  @media (max-width: 420px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .btn-substack {
+      grid-column: auto;
+    }
+  }
+
+  .btn {
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+
+    width: 100%;
+    padding: 0 0.75rem;
+    border-radius: 999px;
+
+    border: 1px solid rgba(56, 189, 248, 0.22);
+    background: rgba(56, 189, 248, 0.05);
+    color: rgba(255, 255, 255, 0.92);
+
+    text-decoration: none;
+    cursor: pointer;
+
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+
+    transition: transform 0.16s ease, border-color 0.16s ease,
+      background 0.16s ease, box-shadow 0.16s ease;
+    user-select: none;
+  }
+
+  .btn:hover,
+  .btn:focus-visible {
+    transform: translateY(-1px);
+    border-color: rgba(56, 189, 248, 0.55);
+    background: rgba(56, 189, 248, 0.12);
+    box-shadow: 0 12px 22px rgba(0, 0, 0, 0.30),
+      0 0 0 1px rgba(56, 189, 248, 0.12);
+    outline: none;
+  }
+
+  .btn.btn-strong {
+    border-color: rgba(56, 189, 248, 0.36);
+    background: rgba(56, 189, 248, 0.09);
+  }
+
+  .btn.btn-substack {
+    border-color: rgba(56, 189, 248, 0.30);
+    background: linear-gradient(
+      90deg,
+      rgba(56, 189, 248, 0.12),
+      rgba(56, 189, 248, 0.06)
+    );
+  }
+
+  .ico {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+    color: rgba(56, 189, 248, 0.98);
+  }
+
+  .btn span {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>

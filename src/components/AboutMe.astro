@@ -2,28 +2,32 @@
 import Card from "./Card/index.astro";
 ---
 
-<Card colSpan="md:col-span-1" rowSpan="md:row-span-6" title="About me">
-  <div class="flex flex-col gap-2">
-    <div class="text-sm font-light space-y-2">
-      <p>
-        Born in Sokoto and raised across Sheffield and Edmonton, I'm a Nigerian‑Canadian researcher pursuing an
-        MSc in Healthcare Data Science & AI at the University of Rochester.
+<Card colSpan="md:col-span-1" rowSpan="md:row-span-2" title="About me">
+  <div class="flex flex-col gap-5 h-full">
+    <div class="space-y-3">
+      <p class="m-0 text-sm leading-relaxed font-light text-white/90">
+        Born in Sokoto, raised across Sheffield and Edmonton. I build at the seam of biology, AI, and public-interest policy.
       </p>
-      <p>
-        My work spans genetic risk prediction, low‑bandwidth telehealth prototypes, and psychometric fairness in youth mental‑health assessments. I've led community initiatives like the EYE Initiative and Black Youth for Social Innovation, translating research into employability curricula and advocacy.
-      </p>
-      <p>
-        Mission: harness data and law to dismantle inequities in health and technology while empowering marginalized communities.
-      </p>
-    </div>
-    <div class="text-sm font-light">
-      <p class="mb-1 font-semibold">Focus areas</p>
-      <ul class="list-disc list-inside space-y-1">
-        <li>Healthcare data science · AI safety · fairness</li>
-        <li>Telehealth for low-bandwidth settings</li>
-        <li>Genetic risk modeling · psychometrics</li>
-        <li>Community research & policy translation</li>
+
+      <ul class="m-0 space-y-1.5 pl-4 text-sm leading-relaxed font-light list-disc marker:text-white/20">
+        <li>Research across genetics, low-bandwidth care, and fairness in youth mental-health measures.</li>
+        <li>Community work translating evidence into programs and advocacy (BYSI, EYE Initiative).</li>
+        <li>North Star: use data + law to close equity gaps.</li>
       </ul>
+    </div>
+
+    <div class="pt-1 border-t border-white/10">
+      <p class="m-0 mb-2 text-xs font-semibold tracking-wide text-white/70">
+        Focus areas
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <span class="px-1 py-1 rounded-md bg-white/5 text-[11px] text-white/75">Healthcare data</span>
+        <span class="px-1 py-1 rounded-md bg-white/5 text-[11px] text-white/75">Fairness</span>
+        <span class="px-1 py-1 rounded-md bg-white/5 text-[11px] text-white/75">Telehealth</span>
+        <span class="px-1 py-1 rounded-md bg-white/5 text-[11px] text-white/75">Genetics</span>
+        <span class="px-1 py-1 rounded-md bg-white/5 text-[11px] text-white/75">Psychometrics</span>
+        <span class="px-1 py-1 rounded-md bg-white/5 text-[11px] text-white/75">Policy</span>
+      </div>
     </div>
   </div>
 </Card>

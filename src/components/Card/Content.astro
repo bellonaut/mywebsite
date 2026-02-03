@@ -7,8 +7,66 @@ interface Props {
 const { title, body } = Astro.props;
 ---
 
-<>
-  {title && <h2 class="text-xl font-semibold m-0 z-20 text-[var(--text)] leading-snug tracking-tight">{title}</h2>}
-  {body && <p class="m-0 font-light text-base flex flex-col text-[var(--muted)] leading-relaxed">{body}</p>}
-  <slot />
-</>
+<div class="card-content-shell">
+  {(title || body) && (
+    <header class="card-content-head">
+      {title && <h3 class="card-title">{title}</h3>}
+      {body && <p class="card-body">{body}</p>}
+    </header>
+  )}
+
+  <!-- ✅ THIS is the scroll container -->
+  <div class="card-content-scroll">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .card-content-shell{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0; /* critical for grid children */
+  }
+
+  .card-content-head{
+    flex: 0 0 auto;
+    min-height: 0;
+  }
+
+  .card-title{
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .card-body{
+    margin: .4rem 0 0 0;
+    opacity: .8;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  .card-content-scroll{
+    flex: 1 1 auto;
+    min-height: 0;             /* critical */
+    overflow: auto;            /* ✅ enables scrolling */
+    overscroll-behavior: contain;
+    padding-top: .75rem;
+  }
+
+  /* Optional: nicer scrollbar (keeps your aesthetic) */
+  .card-content-scroll::-webkit-scrollbar{
+    width: 10px;
+  }
+  .card-content-scroll::-webkit-scrollbar-thumb{
+    background: rgba(175,200,214,0.18);
+    border-radius: 999px;
+    border: 2px solid rgba(0,0,0,0.0);
+    background-clip: padding-box;
+  }
+  .card-content-scroll::-webkit-scrollbar-thumb:hover{
+    background: rgba(56,189,248,0.25);
+    background-clip: padding-box;
+  }
+</style>

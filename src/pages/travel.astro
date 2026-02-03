@@ -1,31 +1,78 @@
 ---
+import Layout from "../layouts/Layout.astro";
 import Globe from "../components/Globe";
-import BasicLayout from "../layouts/BasicLayout.astro";
 ---
 
-<script>
-  import { animate, type AnimationSequence } from "motion";
+<Layout title="Travel" description=" ">
+  <main class="travel-wrap">
+    <button class="travel-back" id="travelBack" type="button" aria-label="Back">
+      ← Back
+    </button>
 
-  const sequence = [
-    [
-      ".loaderRef",
-      { opacity: [1, 0], pointerEvents: "none" },
-      { type: "spring", easing: "ease-out" },
-    ],
-  ];
+    <div class="travel-stage">
+      <Globe client:load variant="full" />
+    </div>
+  </main>
+</Layout>
 
-  animate(sequence as AnimationSequence);
+<script is:inline>
+  const btn = document.getElementById("travelBack");
+  if (btn) {
+    btn.addEventListener("click", () => {
+      const sameOriginReferrer =
+        document.referrer && document.referrer.includes(window.location.origin);
+
+      if (window.history.length > 1 && sameOriginReferrer) {
+        window.history.back();
+      } else {
+        window.location.href = "/";
+      }
+    });
+  }
 </script>
 
-<BasicLayout
-  description="A 3d globe showing countries that I have visited so far"
-  page="travel"
-  title="Gianmarco Cavallo - Visited Countries"
->
-  <a
-    class="text-white absolute bg-neutral-900 hover:bg-neutral-800 top-4 left-4 px-4 py-2 border-1 border-solid border-neutral-600 rounded-lg"
-    href="/">Back</a
-  >
+<style>
+  .travel-wrap {
+    position: relative;
+    min-height: calc(100dvh - 2.5rem);
+    padding: 1rem;
+  }
 
-  <Globe client:load />
-</BasicLayout>
+  .travel-stage {
+    position: relative;
+    height: calc(100dvh - 2.5rem);
+    width: 100%;
+    border-radius: 18px;
+    overflow: hidden;
+
+    /* optional: match site card vibe */
+    border: 1px solid rgba(175, 200, 214, 0.12);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .travel-back {
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 9999;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    padding: 0.45rem 0.7rem;
+    border-radius: 10px;
+
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(175, 200, 214, 0.25);
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 0.9rem;
+
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+  }
+
+  .travel-back:hover {
+    border-color: rgba(56, 189, 248, 0.45);
+  }
+</style>

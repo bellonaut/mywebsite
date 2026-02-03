@@ -20,24 +20,23 @@ const schema =
     ? {
         "@context": "http://schema.org",
         "@type": "Person",
-        name: "Bashir Aminu Bello",
+        name: "Gianmarco",
         url: Astro.url.origin,
         sameAs: [LINKS.linkedin, LINKS.github],
         image: `${Astro.url.origin}/og-image.png`,
-        jobTitle:
-          "Health data scientist, AI researcher, and policy advocate working at the intersection of technology, equity, and community.",
+        jobTitle: "Freelance Frontend Developer",
         worksFor: {
           "@type": "Organization",
-          name: "University of Rochester (MSc Healthcare Data Science & AI)",
+          name: "Self-Employed",
           address: {
             "@type": "PostalAddress",
-            addressLocality: "Rochester, NY",
-            addressCountry: "US",
+            addressLocality: "Italy",
+            addressCountry: "IT",
           },
         },
         nationality: {
           "@type": "Country",
-          name: "Canada / Nigeria",
+          name: "Italy",
         },
       }
     : {
@@ -52,13 +51,13 @@ const schema =
         image: `${Astro.url.origin}/og-image.png`, //TODO: dynamic
         author: {
           "@type": "Person",
-          name: "Bashir Aminu Bello",
+          name: "Gianmarco",
           url: Astro.url.origin,
           sameAs: [LINKS.linkedin, LINKS.github],
         },
         publisher: {
           "@type": "Organization",
-          name: "Bashir Aminu Bello",
+          name: "Gianmarco",
           logo: {
             "@type": "ImageObject",
             url: `${Astro.url.origin}/og-image.png`,
@@ -79,7 +78,7 @@ const schema =
     <title>{title}</title>
     <meta content={description} name="description" />
     <meta content="index, follow" name="robots" />
-    <!-- Basic OG tags for sharing your website's content on platforms like Facebook and LinkedIn -->
+
     <meta content={title} property="og:title" />
     <meta content={description} property="og:description" />
     <meta content="website" property="og:type" />
@@ -88,7 +87,7 @@ const schema =
       content={image || `${Astro.url.origin}/og-image.png`}
       property="og:image"
     />
-    <!-- Basic Twitter Card tags -->
+
     <meta content="summary_large_image" name="twitter:card" />
     <meta content={title} name="twitter:title" />
     <meta content={description} name="twitter:description" />
@@ -98,12 +97,6 @@ const schema =
     />
 
     <link href="https://cdn.fontshare.com" rel="preconnect" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
     <link href={Astro.url.href} rel="canonical" />
     <script
       is:inline
@@ -111,15 +104,13 @@ const schema =
       type="application/ld+json"
     />
   </head>
-  <body class="bg-canvas min-h-screen flex flex-col items-center">
-    <div class="ambient">
-      <div class="grain" />
-      <div class="caustics caustics-1" />
-      <div class="caustics caustics-2" />
-      <div class="dust" />
-    </div>
+
+  <!-- ✅ Key fixes: remove md:h-screen and justify-center; use min-h and normal flow -->
+  <body class="bg-darkslate-700 text-neutral-50 min-h-[100dvh]">
     <slot name="loader" />
-    <slot />
+    <div class="w-full flex flex-col items-center">
+      <slot />
+    </div>
   </body>
 </html>
 
@@ -127,7 +118,6 @@ const schema =
   @font-face {
     font-family: "CabinetGrotesk";
     src: url("/fonts/CabinetGrotesk-Variable.ttf") format("truetype-variations");
-    font-weight: normal;
     font-style: normal;
     font-display: swap;
     font-weight: 100 1000;
@@ -135,141 +125,31 @@ const schema =
   @font-face {
     font-family: "Satoshi";
     src: url("/fonts/Satoshi-Variable.ttf") format("truetype-variations");
-    font-weight: normal;
     font-style: normal;
     font-display: swap;
     font-weight: 100 1000;
   }
 
-  :root {
-    --bg: #00424b;
-    --bg-deep: #03262d;
-    --card: rgba(6, 42, 51, 0.88);
-    --card-border: rgba(44, 90, 99, 0.7);
-    --text: #f5f0e5;
-    --muted: #afc8d6;
-    --accent: #9c4e3b; /* burnt sienna */
-    --accent2: #25375b; /* indigo */
-    --accent3: #be8c3c; /* aged gold */
-    --accent4: #a36a46; /* terracotta */
-    --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E");
-  }
-
   body {
     margin: 0;
-    font-family: "Inter", "Satoshi", sans-serif;
-    line-height: 1.7;
-    letter-spacing: 0.01em;
+    font-family: "Inter", sans-serif;
     -webkit-font-smoothing: antialiased;
-    color: var(--text);
-    background:
-      radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.14), transparent 32%),
-      radial-gradient(circle at 74% 12%, rgba(120, 216, 214, 0.18), transparent 38%),
-      radial-gradient(circle at 46% 76%, rgba(92, 207, 213, 0.12), transparent 34%),
-      linear-gradient(180deg, #a8f1e9 0%, #74d5ce 45%, #4ab7bd 100%);
-    position: relative;
-    overflow-x: hidden;
+    overflow-x: hidden; /* ✅ prevent accidental horizontal scroll */
   }
 
-  .bg-canvas {
-    background: transparent;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: "EB Garamond", "Cabinet Grotesk", serif;
-    letter-spacing: 0.015em;
-    line-height: 1.25;
-    margin: 0 0 0.25rem 0;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Cabinet Grotesk", sans-serif;
   }
   p {
-    font-family: "Inter", "Satoshi", sans-serif;
-    margin: 0 0 0.35rem 0;
+    font-family: "Satoshi";
   }
 
   b {
     font-weight: 700 !important;
   }
-  a {
-    color: var(--muted);
-    text-decoration: none;
-  }
-  a:hover {
-    color: var(--accent3);
-  }
 
-  .ambient {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: -1;
-    overflow: hidden;
-  }
-  .grain,
-  .dust,
-  .caustics {
-    position: absolute;
-    inset: 0;
-    mix-blend-mode: soft-light;
-  }
-  .grain {
-    background-image: var(--paper-grain);
-    opacity: 0.35;
-  }
-  .dust {
-    background: radial-gradient(circle at 30% 20%, rgba(255, 237, 210, 0.06), transparent 42%),
-      radial-gradient(circle at 74% 36%, rgba(190, 140, 60, 0.06), transparent 44%),
-      radial-gradient(circle at 52% 64%, rgba(175, 200, 214, 0.05), transparent 40%);
-    animation: drift 42s ease-in-out infinite;
-  }
-  .caustics {
-    filter: blur(58px);
-    opacity: 0.12;
-    background: radial-gradient(ellipse 60% 40% at 40% 40%, rgba(190, 140, 60, 0.12), transparent),
-      radial-gradient(ellipse 50% 30% at 70% 60%, rgba(175, 200, 214, 0.14), transparent),
-      radial-gradient(ellipse 40% 32% at 46% 68%, rgba(37, 55, 91, 0.08), transparent);
-  }
-  .caustics-1 {
-    animation: slowWave 18s ease-in-out infinite;
-  }
-  .caustics-2 {
-    animation: slowWave 20s ease-in-out infinite reverse;
-  }
-  @keyframes slowWave {
-    0% {
-      transform: translate3d(-2%, -1%, 0) scale(1);
-    }
-    50% {
-      transform: translate3d(2%, 2%, 0) scale(1.04);
-    }
-    100% {
-      transform: translate3d(-2%, -1%, 0) scale(1);
-    }
-  }
-  @keyframes drift {
-    0% {
-      transform: translate3d(-2%, 0, 0);
-    }
-    50% {
-      transform: translate3d(2%, 1%, 0);
-    }
-    100% {
-      transform: translate3d(-2%, 0, 0);
-    }
-  }
-
-  /* Gentle bento misalignment */
-  .card {
-    margin-top: 4px;
-  }
-  .card:nth-child(odd) {
-    transform: translateY(-3px);
-  }
-  .card:nth-child(even) {
-    transform: translateY(2px);
+  /* ✅ Make layout sizing predictable everywhere */
+  *, *::before, *::after {
+    box-sizing: border-box;
   }
 </style>

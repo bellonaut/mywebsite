@@ -1,143 +1,264 @@
-import { onMount } from "solid-js";
+import { onMount, onCleanup } from "solid-js";
 import * as d3 from "d3";
 import worldData from "../lib/world.json";
 
-const GlobeComponent = () => {
+export type Props = {
+  /**
+   * widget: small aesthetic globe (no interaction, faster spin)
+   * full: travel page (drag to rotate, calmer spin)
+   */
+  variant?: "widget" | "full";
+};
+
+const GlobeComponent = (props: Props = {}) => {
   let mapContainer: HTMLDivElement | undefined;
 
-  const visitedCountries = ["Nigeria", "United Kingdom", "Canada", "United States"];
-  const waypoints = [
-    { name: "Sokoto", coords: [5.227, 13.005], color: "#BE8C3C" },
-    { name: "Sheffield", coords: [-1.4701, 53.3811], color: "#A36A46" },
-    { name: "Edmonton", coords: [-113.4938, 53.5461], color: "#9C4E3B" },
-    { name: "Rochester", coords: [-77.6088, 43.1566], color: "#AFC8D6" },
-  ];
+  const isFull = props.variant === "full";
+
+  // Visited countries (use dataset-friendly names)
+  const visited = new Set([
+    "France",
+    "Canada",
+    "India",
+    "Nigeria",
+    "Saudi Arabia",
+    "Saudi Arabia",
+    "Qatar",
+    "United Arab Emirates",
+    "Netherlands",
+    "Spain",
+    "United Kingdom",
+    "United States",
+  ]);
+
+  // Some datasets have alternate names
+  const aliases: Record<string, string> = {
+    Marocco: "Morocco",
+    "United States of America": "United States",
+    "Russian Federation": "Russia",
+    Czechia: "Czech Republic",
+    UAE: "United Arab Emirates",
+    Dubai: "United Arab Emirates",
+    Washington: "United States",
+  };
+
+  const isVisited = (name: string) => visited.has(aliases[name] ?? name);
+
+  // Journey coordinates [lon, lat]
+  // (These are good approximations; tweak if you want)
+  const journeyStops = [
+    { label: "Sokoto", coords: [5.2431, 13.0667] },
+    { label: "Sheffield", coords: [-1.4701, 53.3811] },
+    { label: "Edmonton", coords: [-113.4909, 53.5461] },
+    { label: "Rochester", coords: [-77.6109, 43.1566] },
+  ] as const;
 
   onMount(() => {
     if (!mapContainer) return;
 
-    const width = mapContainer.clientWidth;
-    const height = 500;
-    const sensitivity = 75;
+    const root = d3.select(mapContainer);
+    root.style("position", "relative").style("width", "100%").style("height", "100%");
 
-    let projection = d3
-      .geoOrthographic()
-      .scale(250)
-      .center([0, 0])
-      .rotate([0, -30])
-      .translate([width / 2, height / 2]);
-
-    const initialScale = projection.scale();
-    let pathGenerator = d3.geoPath().projection(projection);
-
-    let svg = d3
-      .select(mapContainer)
+    const svg = root
       .append("svg")
-      .attr("width", width)
-      .attr("height", height);
+      .attr("role", "img")
+      .attr("aria-label", "Rotating globe with journey arcs")
+      .style("width", "100%")
+      .style("height", "100%")
+      .style("display", "block");
 
-    svg
-      .append("circle")
-      .attr("fill", "#0c2f38")
-      .attr("stroke", "#1f4f59")
-      .attr("stroke-width", "0.5")
-      .attr("cx", width / 2)
-      .attr("cy", height / 2)
-      .attr("r", initialScale);
+    // Theme colors (blue panels vibe)
+    const oceanFill = "rgba(10, 36, 54, 0.90)";
+    const oceanStroke = "rgba(175, 200, 214, 0.35)";
+    const landFill = "rgba(245, 240, 229, 0.10)";
+    const landStroke = "rgba(175, 200, 214, 0.25)";
+    const visitedFill = "rgba(56, 189, 248, 0.22)"; // soft cyan tint on visited
+    const visitedStroke = "rgba(56, 189, 248, 0.55)";
+    const journeyStroke = "rgba(216, 30, 91, 0.85)"; // accent path
+    const journeyGlow = "rgba(216, 30, 91, 0.30)";
+    const nodeFill = "rgba(216, 30, 91, 0.95)";
 
-    let map = svg.append("g");
+    // Layers (order matters)
+    const g = svg.append("g");
+    const ocean = g.append("circle");
+    const landG = g.append("g").attr("class", "countries");
+    const arcsG = g.append("g").attr("class", "journey-arcs");
+    const nodesG = g.append("g").attr("class", "journey-nodes");
 
-    map
-      .append("g")
-      .attr("class", "countries")
-      .selectAll("path")
-      .data(worldData.features)
-      .enter()
-      .append("path")
-      .attr("d", (d: any) => pathGenerator(d as any))
-      .attr("fill", (d: { properties: { name: string } }) =>
-        visitedCountries.includes(d.properties.name) ? "#9C4E3B" : "rgba(245,240,229,0.12)"
-      )
-      .style("stroke", "rgba(245,240,229,0.25)")
-      .style("stroke-width", 0.35)
-      .style("opacity", 0.9);
+    // Projection/path – sized by ResizeObserver
+    const projection = d3.geoOrthographic().center([0, 0]).rotate([0, -25]);
+    const path = d3.geoPath(projection as any);
 
-    const projectedWaypoints = waypoints
-      .map((pt) => {
-        const proj = projection(pt.coords as [number, number]);
-        return proj ? { ...pt, projected: proj } : null;
-      })
-      .filter(Boolean) as { name: string; coords: [number, number]; color: string; projected: [number, number] }[];
+    // Build journey segments between stops
+    const segments = journeyStops.slice(0, -1).map((s, i) => ({
+      from: s,
+      to: journeyStops[i + 1],
+    }));
 
-    let journeyPath: d3.Selection<SVGPathElement, unknown, null, undefined> | null =
-      null;
-    let markerDots:
-      | d3.Selection<SVGCircleElement, { name: string; coords: [number, number]; color: string }, SVGGElement, unknown>
-      | null = null;
+    // Helper: arc points along a great-circle
+    const arcPoints = (a: [number, number], b: [number, number], steps = 64) => {
+      const interp = d3.geoInterpolate(a, b);
+      return d3.range(steps + 1).map((t) => interp(t / steps));
+    };
 
-    if (projectedWaypoints.length) {
-      const lineString = {
-        type: "LineString",
-        coordinates: projectedWaypoints.map((p) => p.coords),
-      } as any;
+    // Line generator in screen space
+    const line = d3
+      .line<[number, number]>()
+      .x((d) => d[0])
+      .y((d) => d[1])
+      .curve(d3.curveCatmullRom.alpha(0.6));
 
-      journeyPath = svg
-        .append("path")
-        .datum(lineString)
+    // Render/update everything on resize
+    const resize = () => {
+      if (!mapContainer) return;
+      const rect = mapContainer.getBoundingClientRect();
+      const width = Math.max(1, rect.width);
+      const height = Math.max(1, rect.height);
+
+      svg.attr("viewBox", `0 0 ${width} ${height}`);
+
+      const r = Math.min(width, height) * 0.43;
+      projection.translate([width / 2, height / 2]).scale(r);
+
+      ocean
+        .attr("cx", width / 2)
+        .attr("cy", height / 2)
+        .attr("r", r)
+        .attr("fill", oceanFill)
+        .attr("stroke", oceanStroke)
+        .attr("stroke-width", 1);
+
+      // Countries
+      landG
+        .selectAll("path")
+        .data((worldData as any).features)
+        .join("path")
+        .attr("d", (d: any) => path(d as any)!)
+        .attr("fill", (d: any) => (isVisited(d?.properties?.name) ? visitedFill : landFill))
+        .attr("stroke", (d: any) => (isVisited(d?.properties?.name) ? visitedStroke : landStroke))
+        .attr("stroke-width", (d: any) => (isVisited(d?.properties?.name) ? 0.9 : 0.45))
+        .attr("opacity", 0.95)
+        .style("filter", (d: any) =>
+          isVisited(d?.properties?.name)
+            ? "drop-shadow(0 0 6px rgba(56, 189, 248, 0.22))"
+            : "none"
+        );
+
+      // Build arc geometries in geographic space
+      const arcGeos = segments.map((seg) => arcPoints(seg.from.coords as any, seg.to.coords as any));
+
+      // Convert arc points to screen points via projection
+      const arcScreen = arcGeos
+        .map((pts) =>
+          pts
+            .map((p) => projection(p as any))
+            .filter(Boolean) as [number, number][]
+        )
+        .filter((pts) => pts.length > 2);
+
+      // Draw arcs
+      arcsG
+        .selectAll("path")
+        .data(arcScreen)
+        .join("path")
+        .attr("d", (pts) => line(pts)!)
         .attr("fill", "none")
-        .attr("stroke", "rgba(190,140,60,0.6)")
-        .attr("stroke-width", 1.4)
-        .attr("stroke-linecap", "round")
-        .attr("stroke-linejoin", "round")
-        .style("filter", "drop-shadow(0px 0px 6px rgba(190,140,60,0.3))");
+        .attr("stroke", journeyStroke)
+        .attr("stroke-width", 1.6)
+        .attr("opacity", 0.9)
+        .style("filter", `drop-shadow(0 0 8px ${journeyGlow})`);
 
-      markerDots = svg
-        .append("g")
-        .selectAll("circle.marker")
-        .data(waypoints)
-        .enter()
-        .append("circle")
-        .attr("class", "marker")
-        .attr("r", 4)
-        .attr("fill", (d) => d.color)
-        .attr("stroke", "#f5f0e5")
-        .attr("stroke-width", 0.8);
+      // Nodes (project each stop to screen)
+      const nodePts = journeyStops
+        .map((s) => {
+          const p = projection(s.coords as any);
+          return p ? { ...s, p } : null;
+        })
+        .filter(Boolean) as Array<{ label: string; coords: readonly [number, number]; p: [number, number] }>;
 
-      markerDots.append("title").text((d) => d.name);
-    }
+      nodesG
+        .selectAll("circle")
+        .data(nodePts, (d: any) => d.label)
+        .join("circle")
+        .attr("cx", (d) => d.p[0])
+        .attr("cy", (d) => d.p[1])
+        .attr("r", 3.2)
+        .attr("fill", nodeFill)
+        .attr("opacity", 0.95)
+        .style("filter", `drop-shadow(0 0 10px ${journeyGlow})`);
+    };
 
-    d3.timer(() => {
-      const rotate = projection.rotate();
-      const k = sensitivity / projection.scale();
-      projection.rotate([rotate[0] - 0.35 * k, rotate[1]]);
+    const ro = new ResizeObserver(resize);
+    ro.observe(mapContainer);
 
-      svg.selectAll("path").attr("d", (d: any) => pathGenerator(d as any));
+    // Smooth rotation (time-based)
+    const degreesPerSecond = isFull ? 3.5 : 6.0;
+    const timer = d3.timer((elapsed) => {
+      const t = elapsed / 1000;
+      const rot = projection.rotate();
+      projection.rotate([-(t * degreesPerSecond), rot[1], rot[2] || 0]);
 
-      if (journeyPath) {
-        const lineString = {
-          type: "LineString",
-          coordinates: waypoints.map((p) => p.coords),
-        } as any;
-        journeyPath.attr("d", pathGenerator(lineString) as string);
-      }
+      // Update all dynamic layers with new projection
+      landG.selectAll("path").attr("d", (d: any) => path(d as any)!);
 
-      if (markerDots) {
-        markerDots
-          .attr("cx", (d) => {
-            const proj = projection(d.coords as [number, number]);
-            return proj ? proj[0] : 0;
-          })
-          .attr("cy", (d) => {
-            const proj = projection(d.coords as [number, number]);
-            return proj ? proj[1] : 0;
-          });
-      }
-    }, 260);
+      // Recompute arcs + nodes on each tick (still light at this scale)
+      const arcGeos = segments.map((seg) => arcPoints(seg.from.coords as any, seg.to.coords as any));
+
+      const arcScreen = arcGeos
+        .map((pts) =>
+          pts
+            .map((p) => projection(p as any))
+            .filter(Boolean) as [number, number][]
+        )
+        .filter((pts) => pts.length > 2);
+
+      arcsG
+        .selectAll("path")
+        .data(arcScreen)
+        .join("path")
+        .attr("d", (pts) => line(pts)!)
+        .attr("fill", "none")
+        .attr("stroke", journeyStroke)
+        .attr("stroke-width", 1.6)
+        .attr("opacity", 0.9)
+        .style("filter", `drop-shadow(0 0 8px ${journeyGlow})`);
+
+      const nodePts = journeyStops
+        .map((s) => {
+          const p = projection(s.coords as any);
+          return p ? { ...s, p } : null;
+        })
+        .filter(Boolean) as Array<{ label: string; coords: readonly [number, number]; p: [number, number] }>;
+
+      nodesG
+        .selectAll("circle")
+        .data(nodePts, (d: any) => d.label)
+        .join("circle")
+        .attr("cx", (d) => d.p[0])
+        .attr("cy", (d) => d.p[1])
+        .attr("r", 3.2)
+        .attr("fill", nodeFill)
+        .attr("opacity", 0.95)
+        .style("filter", `drop-shadow(0 0 10px ${journeyGlow})`);
+    });
+
+    // Initial draw
+    resize();
+
+    onCleanup(() => {
+      timer.stop();
+      ro.disconnect();
+      svg.remove();
+    });
   });
 
   return (
-    <div class="flex flex-col text-white justify-center items-center w-full h-full">
-      <div class="w-full" ref={mapContainer}></div>
+    <div class="w-full h-full">
+      <div
+        ref={mapContainer}
+        class="w-full h-full"
+        style={isFull ? "" : "pointer-events:none"}
+      ></div>
     </div>
   );
 };

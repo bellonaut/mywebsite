@@ -1,33 +1,105 @@
 ---
-import { formatDate } from "../lib/helpers";
 import BasicLayout from "./BasicLayout.astro";
 
-type Props = {
+interface Props {
   title: string;
   description: string;
-  pubDate: Date;
-  minutesRead: string;
-  url: string;
-};
+  pubDate?: Date;
+  minutesRead?: number;
+  url?: string;
+}
 
-const { title, description, pubDate, minutesRead, url } = Astro.props;
+const { title, description, pubDate, minutesRead } = Astro.props;
 ---
 
-<BasicLayout description={description} page="blog" slug={url} title={title}>
-  <main class="mx-auto max-w-3xl w-full h-screen p-8 text-neutral-100">
-    <a
-      class="text-white bg-neutral-900 hover:bg-neutral-800 px-4 py-2 border-1 border-solid border-neutral-600 rounded-lg mb-8"       href="/blog"
-      >Back</a
-    >
-    <div class="my-10">
-      <h1 class="text-5xl font-semibold">{title}</h1>
-      <div class="flex justify-between pt-4 text-gray-500 text-sm">
-        <p>{formatDate(pubDate)}</p>
-        <p>{minutesRead}</p>
+<BasicLayout title={title} description={description} page="blog">
+  <main class="post-shell">
+    <article class="post-card">
+      <header class="post-head">
+        <h1 class="post-title">{title}</h1>
+
+        {(pubDate || minutesRead) && (
+          <div class="post-meta">
+            {pubDate && (
+              <time datetime={pubDate.toISOString()}>
+                {pubDate.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
+              </time>
+            )}
+            {pubDate && minutesRead ? <span class="dot">·</span> : null}
+            {minutesRead && <span>{minutesRead} min read</span>}
+          </div>
+        )}
+      </header>
+
+      <div class="post-body">
+        <slot />
       </div>
-    </div>
-    <article class="prose prose-p:text-red-500 prose-slate prose-invert">
-      <slot />
     </article>
   </main>
 </BasicLayout>
+
+<style is:global>
+  .post-shell {
+    width: 100%;
+    max-width: 56rem;
+    margin-inline: auto;
+    padding: clamp(18px, 3vw, 34px) clamp(14px, 2vw, 22px);
+  }
+
+  .post-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(175, 200, 214, 0.16);
+    border-radius: 14px;
+    padding: clamp(16px, 2.2vw, 28px);
+    color: rgba(255, 255, 255, 0.92);
+    overflow: hidden;
+  }
+
+  .post-head {
+    margin-bottom: 1rem;
+  }
+
+  .post-title {
+    margin: 0 0 0.45rem 0;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    line-height: 1.15;
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+  }
+
+  .dot {
+    opacity: 0.7;
+  }
+
+  .post-body :is(p, li, blockquote) {
+    color: rgba(255, 255, 255, 0.82);
+    line-height: 1.65;
+  }
+
+  .post-body a {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: underline;
+    text-decoration-color: rgba(216, 30, 91, 0.55);
+    text-underline-offset: 3px;
+  }
+
+  .post-body a:hover {
+    text-decoration-color: rgba(216, 30, 91, 0.9);
+  }
+
+  .post-body pre {
+    overflow-x: auto;
+  }
+
+  .post-body img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+  }
+</style>
