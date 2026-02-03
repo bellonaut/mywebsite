@@ -9,11 +9,13 @@ import { remarkReadingTime } from "./src/lib/remark-reading-time.mjs";
 import svelte from "@astrojs/svelte";
 
 export default defineConfig({
-  // update this to your actual canonical domain when ready
-  site: "https://bashir.bio/",
+  // Canonical site URL (no trailing slash is safest)
+  site: "https://bashir.bio",
+
   integrations: [
     sitemap(),
     robotsTxt({
+      // Match your canonical domain
       sitemap: ["https://bashir.bio/sitemap-index.xml"],
     }),
     solidJs(),
@@ -21,11 +23,15 @@ export default defineConfig({
     icon(),
     svelte(),
   ],
+
   markdown: {
     remarkPlugins: [remarkReadingTime],
   },
+
+  // Static output for Vercel is correct here
   output: "static",
+
   vite: {
-    assetsInclude: "**/*.riv",
+    assetsInclude: ["**/*.riv"],
   },
 });
