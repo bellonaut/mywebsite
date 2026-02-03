@@ -12,7 +12,7 @@ import svelte from "@astrojs/svelte";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://bellonaut.com/",
+  site: "https://bashir.bio",
   integrations: [
     sitemap(),
     robotsTxt({
