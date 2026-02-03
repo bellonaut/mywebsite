@@ -1,43 +1,143 @@
 ---
-import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
-import PostRow from "../../components/Blog/PostRow.astro";
+import Card from "../../components/Card/index.astro";
 
+import IntroCard from "../../components/IntroCard.astro";
+import ContactsCard from "../../components/ContactsCard.astro";
+import TimeZone from "../../components/TimeZoneCard.astro";
+import Globe from "../../components/Globe";
+import AudioToggle from "../../components/AudioToggle";
+
+import { getCollection } from "astro:content";
+import { formatDate } from "../../lib/helpers";
+
+// Page meta
+const title = "Writing";
+const description =
+  "Writing by Bashir Aminu Bello — health, policy, AI, and equity tech.";
+
+// Local blog posts (Astro content collection)
 const posts = (await getCollection("blog"))?.sort(
-  (blogEntryA, blogEntryB) =>
-    (blogEntryB.data.pubDate || new Date()).getTime() -
-    (blogEntryA.data.pubDate || new Date()).getTime()
+  (a, b) =>
+    (b.data.pubDate || new Date()).getTime() - (a.data.pubDate || new Date()).getTime()
 );
 ---
 
-<script>
-  import { animate, type AnimationSequence } from "motion";
-  import { loaderAnimation } from "../../lib/constants";
-
-  const sequence = [loaderAnimation];
-
-  animate(sequence as AnimationSequence);
-</script>
-
-<Layout
-  description="Software developer with strong focus on the user experience animations and micro interactions"   title="Gianmarco Cavallo - Blog"
->
+<Layout title={title} description={description}>
   <main
-    class="w-screen h-screen flex flex-col justify-start items-start max-w-3xl mx-auto p-8"
+    class="text-white m-auto p-2 grid gap-2 max-w-6xl overflow-hidden relative w-full sm:p-4 sm:gap-2 md:grid-cols-2 md:gap-3 md:p-6 lg:h-screen lg:grid-rows-8 lg:grid-cols-4 lg:gap-4 lg:max-h-[800px]"
   >
-    <a
-      class="text-white bg-neutral-900 hover:bg-neutral-800 px-4 py-2 mb-8 border-1 border-solid border-neutral-600 rounded-lg"       href="/"
-      >Back</a
+    <!-- Keep your recognizable hero -->
+    <IntroCard />
+
+    <!-- Sidebar cards -->
+    <ContactsCard />
+    <TimeZone />
+
+    <Card
+      colorText="text-neutral-900"
+      colSpan="md:col-span-1"
+      rowSpan="md:row-span-1"
+      title="Journey — pins"
     >
-    <h1 class="text-4xl font-bold mb-4 text-neutral-100">Posts</h1>
-    <ul class="w-full">
-      {
-        posts?.map((post) => (
-          <PostRow
-            date={post.data.pubDate || new Date()}             id={post.id}             title={post.data.title || "No title"}
-          />
-        ))
-      }
-    </ul>
+      <div class="h-full w-full absolute inset-0 -z-10">
+        <Globe client:load />
+      </div>
+      <p class="text-xs text-[var(--muted)]">Sokoto → Sheffield → Edmonton → Rochester</p>
+    </Card>
+
+    <!-- Main Writing panel -->
+    <Card colSpan="lg:col-span-3 md:col-span-2" rowSpan="lg:row-span-5 md:row-span-4" title="Writing">
+      <div class="flex flex-col gap-3">
+        {posts?.length ? (
+          posts.map((post) => (
+            <a
+              class="post-row"
+              href={`/blog/${post.id}`}
+            >
+              <div class="post-copy">
+                <p class="post-title">{post.data.title}</p>
+                {post.data.description && (
+                  <p class="post-desc">{post.data.description}</p>
+                )}
+              </div>
+
+              {post.data.pubDate && (
+                <time
+                  class="post-date tabular-nums"
+                  datetime={post.data.pubDate.toISOString()}
+                >
+                  {formatDate(post.data.pubDate)}
+                </time>
+              )}
+            </a>
+          ))
+        ) : (
+          <p class="text-sm text-[var(--muted)]">
+            Writing in progress — first dispatch coming soon.
+          </p>
+        )}
+      </div>
+    </Card>
   </main>
+
+  <div class="fixed bottom-4 right-4 z-50">
+    <AudioToggle client:idle />
+  </div>
 </Layout>
+
+<style>
+  .post-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.9rem;
+    align-items: start;
+
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.92);
+
+    padding: 0.65rem 0.7rem;
+    border-radius: 12px;
+
+    border: 1px solid rgba(175, 200, 214, 0.14);
+    background: rgba(255, 255, 255, 0.02);
+
+    transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+  }
+
+  .post-row:hover,
+  .post-row:focus-visible {
+    transform: translateY(-2px);
+    border-color: rgba(216, 30, 91, 0.30);
+    background: rgba(255, 255, 255, 0.03);
+    outline: none;
+  }
+
+  .post-copy {
+    min-width: 0;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .post-title {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .post-desc {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.35;
+    color: rgba(255, 255, 255, 0.66);
+    overflow-wrap: anywhere;
+  }
+
+  .post-date {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.55);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+</style>

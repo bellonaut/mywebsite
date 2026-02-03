@@ -1,30 +1,144 @@
 ---
-import { formatDate } from "../../lib/helpers";
+type Post = {
+  title: string;
+  subtitle?: string;
+  image?: string;
+  link: string;
+};
 
 interface Props {
-  title: string;
-  date: Date;
-  id: string;
+  posts: Post[];
+  limit?: number; // ✅ add
 }
 
-const { title, date, id } = Astro.props;
+const { posts, limit = 6 } = Astro.props as Props; // ✅ default 6 (or 10, up to you)
 ---
 
-<li
-  class="list-none w-full text-neutral-100 hover:text-neutral-400 ease-in-out transition-colors border-b-neutral-400 border-dashed border-b-1 my-2"
->
-  <a
-    class="text-sm md:text-base decoration-none flex justify-between"
-    href={`/blog/${id}`}
-  >
-    <p class="inline-block whitespace-nowrap">
-      {title}
-    </p>
-    <time
-      class="text-right tabular-nums"
-      data-date={date.toISOString()}       datetime={date.toISOString()}
-    >
-      {formatDate(date)}
-    </time>
-  </a>
-</li>
+<div class="writing-grid">
+  {
+    posts?.length ? (
+      posts.slice(0, limit).map((post) => (  /* ✅ use limit */
+        <a
+          class="writing-item"
+          href={post.link}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div class="thumb" aria-hidden="true">
+            {post.image ? (
+              <img src={post.image} alt="" loading="lazy" decoding="async" />
+            ) : (
+              <div class="thumb-fallback" />
+            )}
+          </div>
+
+          <div class="copy">
+            <p class="t">{post.title}</p>
+            {post.subtitle && <p class="s">{post.subtitle}</p>}
+          </div>
+        </a>
+      ))
+    ) : (
+      <p class="writing-empty">No posts found yet.</p>
+    )
+  }
+</div>
+
+
+<style>
+  /* ✅ this is the scroll container */
+  .postrow-scroll {
+    min-height: 0;
+    height: 100%;
+    overflow: auto;
+    padding-right: 6px;
+  }
+
+  .writing-grid {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .writing-item {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 0.85rem;
+    align-items: start;
+
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.92);
+
+    padding: 0.55rem;
+    border-radius: 12px;
+    border: 1px solid rgba(175, 200, 214, 0.14);
+    background: rgba(255, 255, 255, 0.02);
+
+    transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+  }
+
+  .writing-item:hover,
+  .writing-item:focus-visible {
+    transform: translateY(-2px);
+    border-color: rgba(216, 30, 91, 0.35);
+    background: rgba(255, 255, 255, 0.03);
+    outline: none;
+  }
+
+  .thumb {
+    width: 92px;
+    height: 64px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(175, 200, 214, 0.16);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .thumb-fallback {
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        circle at 30% 30%,
+        rgba(216, 30, 91, 0.18),
+        transparent 60%
+      ),
+      radial-gradient(
+        circle at 70% 70%,
+        rgba(175, 200, 214, 0.14),
+        transparent 55%
+      );
+  }
+
+  .copy {
+    min-width: 0;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .t {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .s {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.35;
+    color: rgba(255, 255, 255, 0.66);
+    overflow-wrap: anywhere;
+  }
+
+  .writing-empty {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 0.95rem;
+  }
+</style>

@@ -1,0 +1,308 @@
+---
+type ProjectLink = { label: string; href: string };
+
+export type Project = {
+  title: string;
+  year: string;
+  tagline: string;
+
+  // “blue bio” fields
+  tools?: string[];
+  dates?: string; // optional if you want a separate date string
+  role?: string;
+
+  background: string;
+  methods: string[];
+  findings: string[];
+  next: string;
+
+  links?: ProjectLink[];
+};
+
+const { projects } = Astro.props as { projects: Project[] };
+---
+
+<div class="projects" data-projects>
+  {projects.map((p, i) => (
+    <article class="project" data-project>
+      <button
+        type="button"
+        class="project-top"
+        aria-expanded={i === 0 ? "true" : "false"}
+      >
+        <div class="left">
+          <p class="title">{p.title}</p>
+          <p class="meta">
+            <span class="year">{p.year}</span>
+            <span class="dot">·</span>
+            <span class="tag">{p.tagline}</span>
+          </p>
+        </div>
+        <span class="toggle" aria-hidden="true">{i === 0 ? "–" : "+"}</span>
+      </button>
+
+      <div class="project-body" hidden={i !== 0}>
+        <!-- “Blue bio panel” -->
+        <div class="bio">
+          <div class="bio-head">
+            <div class="chips">
+              {p.tools?.length ? (
+                p.tools.slice(0, 6).map((t) => <span class="chip">{t}</span>)
+              ) : null}
+              {p.role ? <span class="chip chip-muted">{p.role}</span> : null}
+              {p.dates ? <span class="chip chip-muted">{p.dates}</span> : null}
+            </div>
+
+            {p.links?.length ? (
+              <div class="links">
+                {p.links.map((l) => (
+                  <a
+                    class="link"
+                    href={l.href}
+                    target={l.href.startsWith("http") ? "_blank" : undefined}
+                    rel="noreferrer"
+                  >
+                    {l.label} →
+                  </a>
+                ))}
+              </div>
+            ) : null}
+          </div>
+
+          <div class="bio-grid">
+            <section class="block">
+              <h6>Background</h6>
+              <p>{p.background}</p>
+            </section>
+
+            <section class="block">
+              <h6>Methods</h6>
+              <ul>
+                {p.methods.map((m) => <li>{m}</li>)}
+              </ul>
+            </section>
+
+            <section class="block">
+              <h6>Findings</h6>
+              <ul>
+                {p.findings.map((f) => <li>{f}</li>)}
+              </ul>
+            </section>
+
+            <section class="block">
+              <h6>Next</h6>
+              <p>{p.next}</p>
+            </section>
+          </div>
+        </div>
+      </div>
+    </article>
+  ))}
+</div>
+
+<style>
+  .projects {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+  }
+
+  .project {
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.03);
+    overflow: hidden;
+  }
+
+  .project-top {
+    width: 100%;
+    text-align: left;
+    padding: 12px 14px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    justify-content: space-between;
+    cursor: pointer;
+    background: transparent;
+  }
+
+  .project:hover .project-top,
+  .project-top:focus-visible {
+    outline: none;
+    transform: translateY(-1px);
+  }
+
+  .left { min-width: 0; }
+
+  .title {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .meta {
+    margin: 4px 0 0;
+    font-size: 0.80rem;
+    line-height: 1.25;
+    color: rgba(255,255,255,0.62);
+  }
+
+  .dot { padding: 0 6px; opacity: 0.7; }
+
+  .toggle {
+    font-size: 1.35rem;
+    line-height: 1;
+    margin-top: 1px;
+    color: rgba(255,255,255,0.75);
+    user-select: none;
+  }
+
+  .project-body {
+    padding: 0 14px 14px;
+  }
+
+  /* ✅ The “blue” bio panel */
+  .bio {
+    margin-top: 6px;
+    border-radius: 14px;
+    border: 1px solid rgba(120, 190, 255, 0.18);
+    background:
+      radial-gradient(700px 180px at 10% 0%, rgba(120, 190, 255, 0.14), transparent 60%),
+      radial-gradient(600px 180px at 90% 10%, rgba(216, 30, 91, 0.10), transparent 55%),
+      rgba(5, 24, 34, 0.55);
+    padding: 12px;
+  }
+
+  .bio-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  .chip {
+    display: inline-flex;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    line-height: 1;
+    color: rgba(255,255,255,0.86);
+    border: 1px solid rgba(175, 200, 214, 0.18);
+    background: rgba(255,255,255,0.04);
+  }
+
+  .chip-muted {
+    color: rgba(255,255,255,0.72);
+    border-color: rgba(255,255,255,0.12);
+  }
+
+  .links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .link {
+    font-size: 0.82rem;
+    text-decoration: none;
+    color: rgba(175, 200, 214, 0.92);
+    border-bottom: 1px solid rgba(175, 200, 214, 0.28);
+    padding-bottom: 2px;
+  }
+
+  .link:hover {
+    color: rgba(255,255,255,0.92);
+    border-color: rgba(255,255,255,0.55);
+  }
+
+  .bio-grid {
+    display: grid;
+    gap: 10px;
+  }
+
+  .block {
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    padding: 10px 12px;
+  }
+
+  .block h6 {
+    margin: 0 0 6px;
+    font-size: 0.70rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(175, 200, 214, 0.70);
+    font-weight: 700;
+  }
+
+  .block p {
+    margin: 0;
+    font-size: 0.86rem;
+    line-height: 1.45;
+    color: rgba(255,255,255,0.84);
+  }
+
+  .block ul {
+    margin: 0;
+    padding-left: 1.05rem;
+    font-size: 0.86rem;
+    line-height: 1.45;
+    color: rgba(255,255,255,0.84);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-top { transform: none !important; }
+  }
+</style>
+
+<script is:inline>
+  const tiles = Array.from(document.querySelectorAll("[data-project]"));
+
+  const closeAll = () => {
+    for (const t of tiles) {
+      const btn = t.querySelector(".project-top");
+      const body = t.querySelector(".project-body");
+      const tog = t.querySelector(".toggle");
+      if (btn) btn.setAttribute("aria-expanded", "false");
+      if (body) body.hidden = true;
+      if (tog) tog.textContent = "+";
+    }
+  };
+
+  const openTile = (t) => {
+    const btn = t.querySelector(".project-top");
+    const body = t.querySelector(".project-body");
+    const tog = t.querySelector(".toggle");
+    if (btn) btn.setAttribute("aria-expanded", "true");
+    if (body) body.hidden = false;
+    if (tog) tog.textContent = "–";
+  };
+
+  closeAll();
+  if (tiles[0]) openTile(tiles[0]);
+
+  for (const t of tiles) {
+    const btn = t.querySelector(".project-top");
+    if (!btn) continue;
+    btn.addEventListener("click", () => {
+      const isOpen = btn.getAttribute("aria-expanded") === "true";
+      closeAll();
+      if (!isOpen) openTile(t);
+    });
+  }
+
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeAll();
+  });
+</script>

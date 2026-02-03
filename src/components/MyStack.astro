@@ -1,57 +1,395 @@
 ---
-import Card from "./Card/index.astro";
-import { Icon } from "astro-icon/components";
+/**
+ * MyStack.astro
+ * Cardless accordion that expands into a “blue panel” detail view.
+ * (Outer Card is provided by the page/grid controller.)
+ */
+type ProjectLink = { label: string; href: string };
+type Project = {
+  title: string;
+  year: string;
+  tagline: string;
+
+  tools?: string[];
+  background: string;
+  methods: string[];
+  findings: string[];
+  next: string;
+  links?: ProjectLink[];
+};
+
+const projects: Project[] = [
+  {
+    title: "NaijaCare — Low-Bandwidth Telehealth",
+    year: "2024–25",
+    tagline: "WhatsApp triage + USSD fallback for rural Nigerian clinics.",
+    tools: ["WhatsApp", "USSD fallback", "Privacy-first UX"],
+    background:
+      "Rural clinics face triage bottlenecks, weak connectivity, and fragmented follow-up across visits.",
+    methods: [
+      "Designed WhatsApp-first intake + triage flows with USSD fallback paths.",
+      "Modeled privacy-first consent + referral handoffs for constrained settings.",
+    ],
+    findings: [
+      "Reduced friction in intake workflows and preserved continuity under low bandwidth.",
+      "Established ethical logging + consent language that survives constrained UX.",
+    ],
+    next: "Build clinician-facing dashboard + evaluate usability with real clinic partners.",
+    links: [{ label: "GitHub", href: "https://github.com/bellonaut/naijacare_v05" }],
+  },
+  {
+    title: "Measurement Invariance of the PedsQL in CAMHS",
+    year: "2025",
+    tagline: "CFA + DIF to ensure fair quality-of-life scoring.",
+    tools: ["CFA", "DIF", "Psychometrics"],
+    background:
+      "Quality-of-life instruments can behave differently across groups, risking biased interpretations and invalid comparisons.",
+    methods: [
+      "Ran CFA-based invariance testing across demographic groupings.",
+      "Screened for DIF and documented thresholds where comparisons become unreliable.",
+    ],
+    findings: [
+      "Identified sensitivity points where measurement structure shifts across groups.",
+      "Produced interpretation guidance and candidate revisions for improved fairness.",
+    ],
+    next: "Finalize reporting + propose recalibration strategy with stakeholders.",
+    links: [{ label: "GitHub", href: "https://github.com/bellonaut/pedsql-camhs" }],
+  },
+  {
+    title: "Genetic Risk Prediction with Machine Learning",
+    year: "2022",
+    tagline: "Position-weighted genetic-risk features + prediction pipeline.",
+    tools: ["ML", "Feature engineering", "Synthetic pop data"],
+    background:
+      "Risk prediction can be improved by encoding positional/biological structure into features rather than treating variants as flat inputs.",
+    methods: [
+      "Engineered position-weighted features that preserve genetic structure.",
+      "Built predictive pipeline and validated against synthetic population scenarios.",
+    ],
+    findings: [
+      "Demonstrated that structure-aware feature engineering can improve signal capture.",
+      "Produced a reusable pipeline design for future real-world datasets.",
+    ],
+    next: "Adapt pipeline to real cohort data and evaluate generalization.",
+    links: [
+      { label: "GitHub", href: "https://github.com/bellonaut/genetic-arms-race-malaria" },
+    ],
+  },
+  {
+    title: "Digital Leapfrog for Health in Nigeria",
+    year: "2025",
+    tagline: "Telehealth feasibility modelling + USSD triage proposal.",
+    tools: ["R/Viz", "Feasibility modelling", "USSD systems"],
+    background:
+      "Feasibility depends on where need intersects with connectivity and practical workflow constraints.",
+    methods: [
+      "Built modelling + visualization to estimate telehealth feasibility under constraints.",
+      "Designed USSD-based triage concept to cover low-connectivity settings.",
+    ],
+    findings: [
+      "Mapped feasibility bottlenecks and workflow choke points.",
+      "Produced an actionable architecture for low-bandwidth triage + routing.",
+    ],
+    next: "Package models into a small public dashboard + policy-facing narrative.",
+    links: [
+      {
+        label: "GitHub",
+        href: "https://github.com/bellonaut/naijacare_dscc482_visuals_repo_r",
+      },
+    ],
+  },
+  {
+    title: "Parasite-Dependent Protection of Sickle-Cell Trait",
+    year: "2025–",
+    tagline: "Independent analysis of parasite genotype influence on protection.",
+    tools: ["Literature synthesis", "Bio stats", "Causal framing"],
+    background:
+      "Sickle-cell trait protection varies across contexts; parasite genetics may modulate outcomes and explain heterogeneous findings.",
+    methods: [
+      "Synthesizing genotype-specific evidence across malaria studies.",
+      "Formulating testable hypotheses for parasite-mediated protection mechanisms.",
+    ],
+    findings: [
+      "Early synthesis suggests plausible genotype-driven interaction effects worth formal testing.",
+    ],
+    next: "Move from synthesis → preregistered analysis plan + target dataset options.",
+    links: [],
+  },
+  {
+    title: "EYE Initiative Curriculum",
+    year: "2025",
+    tagline: "12-week employability program for Central African newcomers.",
+    tools: ["Curriculum design", "Workshop facilitation", "Program logic"],
+    background:
+      "Newcomers face a mismatch between local hiring norms and their lived strengths; curriculum must translate capability into employer-recognized signals.",
+    methods: [
+      "Designed 12-week program with behaviorally specific skill ladders.",
+      "Built program logic model and implementation plan from stakeholder + evidence inputs.",
+    ],
+    findings: [
+      "Produced a scalable curriculum structure aligned to employer-valued behaviors.",
+      "Created artifacts that support delivery consistency across cohorts.",
+    ],
+    next: "Iterate via participant feedback + add portfolio-based assessment components.",
+    links: [],
+  },
+];
 ---
 
-<Card colSpan="md:col-span-2" rowSpan="md:row-span-2" title="Projects">
-  <ul class="text-sm font-light pl-5 list-disc space-y-2">
-    <li>
-      <span class="inline-flex items-center gap-2">
-        <Icon class="h-4 w-4 text-[var(--accent3)]" name="ri:stethoscope-line" />
-        <strong>NaijaCare — Low‑Bandwidth Telehealth (2024–25)</strong>
-      </span>
-      <br />
-      WhatsApp triage and routing for rural Nigerian clinics; privacy‑first. <a href="https://github.com/bellonaut/naijacare_v05" target="_blank">GitHub</a>
-    </li>
-    <li>
-      <span class="inline-flex items-center gap-2">
-        <Icon class="h-4 w-4 text-[var(--accent2)]" name="ri:scales-3-line" />
-        <strong>Measurement Invariance of the PedsQL in CAMHS (2025)</strong>
-      </span>
-      <br />
-      CFA and DIF on 434 youth clinical records to ensure fair quality‑of‑life scoring. <a href="https://github.com/bellonaut/pedsql-camhs" target="_blank">GitHub</a>
-    </li>
-    <li>
-      <span class="inline-flex items-center gap-2">
-        <Icon class="h-4 w-4 text-[var(--accent)]" name="ri:dna-line" />
-        <strong>Genetic Risk Prediction with Machine Learning (2022)</strong>
-      </span>
-      <br />
-      Position‑weighted genetic‑risk features and predictive pipeline on synthetic population data. <a href="https://github.com/bellonaut/genetic-arms-race-malaria" target="_blank">GitHub</a>
-    </li>
-    <li>
-      <span class="inline-flex items-center gap-2">
-        <Icon class="h-4 w-4 text-[var(--accent4)]" name="ri:map-pin-2-line" />
-        <strong>Digital Leapfrog for Health in Nigeria (2025)</strong>
-      </span>
-      <br />
-      Data‑visualization modelling telehealth feasibility; proposed USSD‑based triage system. <a href="https://github.com/bellonaut/naijacare_dscc482_visuals_repo_r" target="_blank">GitHub</a>
-    </li>
-    <li>
-      <span class="inline-flex items-center gap-2">
-        <Icon class="h-4 w-4 text-[var(--accent3)]" name="ri:seedling-line" />
-        <strong>Parasite‑Dependent Protection of Sickle‑Cell Trait (2025–)</strong>
-      </span>
-      <br />
-      Independent analysis of parasite genotype influence on malaria protection.
-    </li>
-    <li>
-      <span class="inline-flex items-center gap-2">
-        <Icon class="h-4 w-4 text-[var(--accent2)]" name="ri:book-3-line" />
-        <strong>EYE Initiative Curriculum (2025)</strong>
-      </span>
-      <br />
-      Designed a 12‑week employability program for Central African newcomers.
-    </li>
-  </ul>
-</Card>
+<div class="projects" data-accordion>
+  {projects.map((p, i) => (
+    <article class="tile" data-tile>
+      <button
+        type="button"
+        class="tile-top"
+        aria-expanded={i === 0 ? "true" : "false"}
+      >
+        <div class="left">
+          <p class="title">{p.title}</p>
+          <p class="meta">
+            <span class="year">{p.year}</span>
+            <span class="dot">·</span>
+            <span class="tag">{p.tagline}</span>
+          </p>
+        </div>
+        <span class="toggle" aria-hidden="true">{i === 0 ? "–" : "+"}</span>
+      </button>
+
+      <div class="body" hidden={i !== 0}>
+        <div class="panel">
+          {p.tools?.length ? (
+            <div class="chips">
+              {p.tools.map((t) => (
+                <span class="chip">{t}</span>
+              ))}
+            </div>
+          ) : null}
+
+          <div class="grid">
+            <section class="block">
+              <h6>Background</h6>
+              <p>{p.background}</p>
+            </section>
+
+            <section class="block">
+              <h6>Methods</h6>
+              <ul>
+                {p.methods.map((m) => <li>{m}</li>)}
+              </ul>
+            </section>
+
+            <section class="block">
+              <h6>Findings</h6>
+              <ul>
+                {p.findings.map((f) => <li>{f}</li>)}
+              </ul>
+            </section>
+
+            <section class="block">
+              <h6>Next</h6>
+              <p>{p.next}</p>
+            </section>
+          </div>
+
+          {p.links?.length ? (
+            <div class="links">
+              {p.links.map((l) => (
+                <a class="link" href={l.href} target="_blank" rel="noreferrer">
+                  {l.label} →
+                </a>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </article>
+  ))}
+</div>
+
+<style>
+  .projects {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .tile {
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.03);
+    overflow: hidden;
+  }
+
+  .tile-top {
+    width: 100%;
+    text-align: left;
+    padding: 12px 14px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    justify-content: space-between;
+    cursor: pointer;
+    background: transparent;
+  }
+
+  .tile:hover .tile-top,
+  .tile-top:focus-visible {
+    outline: none;
+    transform: translateY(-1px);
+  }
+
+  .left { min-width: 0; }
+  .title {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 650;
+    line-height: 1.2;
+  }
+
+  .meta {
+    margin: 4px 0 0;
+    font-size: 0.80rem;
+    line-height: 1.25;
+    color: rgba(255,255,255,0.62);
+  }
+
+  .dot { padding: 0 6px; opacity: 0.7; }
+
+  .toggle {
+    font-size: 1.35rem;
+    line-height: 1;
+    margin-top: 1px;
+    color: rgba(160, 210, 255, 0.90);
+    user-select: none;
+  }
+
+  .body { padding: 0 14px 14px; }
+
+  /* “Blue panel” expanded detail */
+  .panel {
+    margin-top: 8px;
+    border-radius: 14px;
+    border: 1px solid rgba(120, 190, 255, 0.22);
+    background:
+      linear-gradient(180deg,
+        rgba(80, 160, 255, 0.16),
+        rgba(10, 30, 60, 0.12)
+      );
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    padding: 12px;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .chip {
+    font-size: 0.72rem;
+    padding: 5px 9px;
+    border-radius: 999px;
+    border: 1px solid rgba(120, 190, 255, 0.22);
+    background: rgba(15, 35, 70, 0.35);
+    color: rgba(235, 245, 255, 0.85);
+  }
+
+  .grid {
+    display: grid;
+    gap: 10px;
+  }
+
+  .block {
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(0,0,0,0.18);
+    padding: 10px 10px;
+  }
+
+  .block h6 {
+    margin: 0 0 6px;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(200, 235, 255, 0.65);
+    font-weight: 650;
+  }
+
+  .block p,
+  .block ul {
+    margin: 0;
+    font-size: 0.86rem;
+    line-height: 1.45;
+    color: rgba(245, 250, 255, 0.85);
+  }
+
+  .block ul { padding-left: 1.05rem; }
+
+  .links {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .link {
+    font-size: 0.80rem;
+    text-decoration: none;
+    color: rgba(160, 210, 255, 0.95);
+    border-bottom: 1px solid rgba(160, 210, 255, 0.35);
+    padding-bottom: 2px;
+  }
+
+  .link:hover {
+    color: rgba(255,255,255,0.92);
+    border-bottom-color: rgba(255,255,255,0.55);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tile-top { transform: none !important; }
+  }
+</style>
+
+<script is:inline>
+  const tiles = Array.from(document.querySelectorAll("[data-accordion] [data-tile]"));
+
+  const closeAll = () => {
+    for (const t of tiles) {
+      const btn = t.querySelector(".tile-top");
+      const body = t.querySelector(".body");
+      const tog = t.querySelector(".toggle");
+      if (btn) btn.setAttribute("aria-expanded", "false");
+      if (body) body.hidden = true;
+      if (tog) tog.textContent = "+";
+    }
+  };
+
+  const openTile = (t) => {
+    const btn = t.querySelector(".tile-top");
+    const body = t.querySelector(".body");
+    const tog = t.querySelector(".toggle");
+    if (btn) btn.setAttribute("aria-expanded", "true");
+    if (body) body.hidden = false;
+    if (tog) tog.textContent = "–";
+  };
+
+  closeAll();
+  if (tiles[0]) openTile(tiles[0]);
+
+  for (const t of tiles) {
+    const btn = t.querySelector(".tile-top");
+    if (!btn) continue;
+    btn.addEventListener("click", () => {
+      const isOpen = btn.getAttribute("aria-expanded") === "true";
+      closeAll();
+      if (!isOpen) openTile(t);
+    });
+  }
+
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeAll();
+  });
+</script>

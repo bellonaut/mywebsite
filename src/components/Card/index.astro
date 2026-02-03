@@ -17,11 +17,9 @@ const { title, body, colSpan, rowSpan, href, colorText, height } = Astro.props;
 ---
 
 <div
-  class={`card flex flex-col h-max sm:h-auto group overflow-hidden p-6 align-start flex-none ${
-    height || "h-full"
-  } justify-start relative w-full transition duration-150 ease-in-out col-span-1 ${
-    colSpan || "md:col-span-2"
-  } ${rowSpan || ""}`}
+  class={`card group relative w-full flex flex-col overflow-hidden p-6 align-start transition duration-150 ease-in-out
+    ${height || "h-full"}
+    col-span-1 ${colSpan || "md:col-span-2"} ${rowSpan || ""}`}
   style="
     color: var(--text);
     background: linear-gradient(135deg, rgba(175,200,214,0.07), rgba(190,140,60,0.05)) , var(--card);
@@ -29,26 +27,107 @@ const { title, body, colSpan, rowSpan, href, colorText, height } = Astro.props;
     border-radius: 10px;
     box-shadow: 0 14px 38px rgba(0,0,0,0.24), inset 0 1px 0 rgba(245,240,229,0.04);
     backdrop-filter: blur(6px);
-    position: relative;
   "
 >
-  <div class="pointer-events-none absolute inset-0 mix-blend-soft-light" style="background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27160%27 height=%27160%27 viewBox=%270 0 160 160%27%3E%3Cfilter id=%27n%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.7%27 numOctaves=%272%27 stitchTiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23n)%27 opacity=%270.3%27/%3E%3C/svg%3E'); border-radius:10px; opacity:0.18;"></div>
-  <div class="pointer-events-none absolute inset-0" style="border-radius:10px; border: 1px solid rgba(190,140,60,0.16); mix-blend-mode:soft-light; opacity:0.28;"></div>
-  <div class="pointer-events-none absolute inset-x-4 top-0 h-[6px] opacity-25" style="background: repeating-linear-gradient(90deg, rgba(158,106,70,0.45) 0, rgba(158,106,70,0.45) 6px, transparent 6px, transparent 12px), linear-gradient(90deg, rgba(37,55,91,0.35), rgba(190,140,60,0.32)); filter: blur(0.1px); border-radius: 0 0 8px 8px;"></div>
-  {
-    href ? (
-      <a class={`h-full w-full ${colorText || ""}`} href={href}>
-        <Icon
-          class="h-6 float-right group-hover:text-primary-500 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform ease-in-out duration-100 z-20"           name="ri:arrow-right-up-line"
-        />
-        <Content body={body} title={title}>
-          <slot />
-        </Content>
-      </a>
-    ) : (
+  <!-- grain -->
+  <div
+    class="pointer-events-none absolute inset-0 mix-blend-soft-light"
+    style="background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27160%27 height=%27160%27 viewBox=%270 0 160 160%27%3E%3Cfilter id=%27n%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.7%27 numOctaves=%272%27 stitchTiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23n)%27 opacity=%270.3%27/%3E%3C/svg%3E'); border-radius:10px; opacity:0.18;"
+  ></div>
+
+  <!-- subtle inner border -->
+  <div
+    class="pointer-events-none absolute inset-0"
+    style="border-radius:10px; border: 1px solid rgba(190,140,60,0.16); mix-blend-mode:soft-light; opacity:0.28;"
+  ></div>
+
+  <!-- top accent -->
+  <div
+    class="pointer-events-none absolute inset-x-4 top-0 h-[6px] opacity-25"
+    style="background: repeating-linear-gradient(90deg, rgba(158,106,70,0.45) 0, rgba(158,106,70,0.45) 6px, transparent 6px, transparent 12px), linear-gradient(90deg, rgba(37,55,91,0.35), rgba(190,140,60,0.32)); filter: blur(0.1px); border-radius: 0 0 8px 8px;"
+  ></div>
+
+  {href ? (
+    <a class={`h-full w-full ${colorText || ""}`} href={href}>
+      <Icon
+        class="h-6 float-right group-hover:text-primary-500 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform ease-in-out duration-100 z-20"
+        name="ri:arrow-right-up-line"
+      />
       <Content body={body} title={title}>
         <slot />
       </Content>
-    )
-  }
+    </a>
+  ) : (
+    <Content body={body} title={title}>
+      <slot />
+    </Content>
+  )}
 </div>
+
+<script is:inline>
+  // One-time init: mouse-follow blue overlay for ALL cards
+  (() => {
+    if (window.__CARD_HOVER_FX__) return;
+    window.__CARD_HOVER_FX__ = true;
+
+    const setVars = (card, e) => {
+      const r = card.getBoundingClientRect();
+      const x = e.clientX - r.left;
+      const y = e.clientY - r.top;
+      card.style.setProperty("--mx", `${x}px`);
+      card.style.setProperty("--my", `${y}px`);
+    };
+
+    const attach = () => {
+      document.querySelectorAll(".card").forEach((card) => {
+        if (card.__hasCardFx) return;
+        card.__hasCardFx = true;
+
+        card.addEventListener("mousemove", (e) => setVars(card, e), { passive: true });
+        card.addEventListener("mouseenter", (e) => setVars(card, e), { passive: true });
+      });
+    };
+
+    attach();
+    // In case of client navigation / hydration changes
+    const mo = new MutationObserver(() => attach());
+    mo.observe(document.documentElement, { childList: true, subtree: true });
+  })();
+</script>
+
+<style is:global>
+  /* Blue hover overlay on EVERY card */
+  .card {
+    --mx: 50%;
+    --my: 35%;
+  }
+
+  .card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.16s ease;
+    border-radius: 10px;
+
+    /* “template-like” spotlight that follows the cursor */
+    background:
+      radial-gradient(
+        520px 320px at var(--mx) var(--my),
+        rgba(56, 189, 248, 0.22),
+        transparent 60%
+      ),
+      radial-gradient(
+        220px 180px at calc(var(--mx) + 40px) calc(var(--my) + 20px),
+        rgba(56, 189, 248, 0.10),
+        transparent 65%
+      );
+    mix-blend-mode: screen;
+  }
+
+  .card:hover::after,
+  .card:focus-within::after {
+    opacity: 1;
+  }
+</style>

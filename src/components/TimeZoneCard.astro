@@ -1,40 +1,136 @@
 ---
-import { getCurrentTimeInRochester, formatTimeForRochester } from "../lib/helpers";
 import Card from "./Card/index.astro";
+import {
+  getCurrentTimeInMountain,
+  getCurrentTimeInSokoto,
+  getCurrentTimeInNewYork,
+  formatTimeForMountain,
+  formatTimeForSokoto,
+  formatTimeForNewYork,
+} from "../lib/helpers";
 ---
 
-<script>
-  import { onCleanup, onMount } from "solid-js";
-  import { formatTimeForRochester } from "../lib/helpers";
+<!-- Scaled down: smaller min-height + tighter padding + slightly smaller type -->
+<Card
+  colSpan="md:col-span-1"
+  rowSpan="md:row-span-2"
+  height="min-h-[170px] sm:min-h-[190px]"
+>
+  <div class="tz-wrap flex flex-col gap-2">
+    <div class="tz-stack flex flex-col gap-2">
+      <!-- Edmonton -->
+      <div class="tz-row rounded-xl px-3 py-3">
+        <div class="flex items-baseline justify-between gap-3">
+          <p class="m-0 text-[11px] tracking-wide uppercase tz-label">Edmonton</p>
+          <time
+            id="tz-mt"
+            class="m-0 text-base font-serif tabular-nums whitespace-nowrap tz-time"
+            datetime=""
+          >
+            {formatTimeForMountain(getCurrentTimeInMountain())}
+          </time>
+        </div>
+      </div>
 
-  let interval: ReturnType<typeof setInterval>;
+      <!-- Sokoto -->
+      <div class="tz-row rounded-xl px-3 py-3">
+        <div class="flex items-baseline justify-between gap-3">
+          <p class="m-0 text-[11px] tracking-wide uppercase tz-label">Sokoto</p>
+          <time
+            id="tz-wat"
+            class="m-0 text-base font-serif tabular-nums whitespace-nowrap tz-time"
+            datetime=""
+          >
+            {formatTimeForSokoto(getCurrentTimeInSokoto())}
+          </time>
+        </div>
+      </div>
 
-  function updateClock() {
-    const timeDisplay = document.getElementById("timeDisplay");
-    const now = new Date();
+      <!-- New York -->
+      <div class="tz-row rounded-xl px-3 py-3">
+        <div class="flex items-baseline justify-between gap-3">
+          <p class="m-0 text-[11px] tracking-wide uppercase tz-label">New York</p>
+          <time
+            id="tz-et"
+            class="m-0 text-base font-serif tabular-nums whitespace-nowrap tz-time"
+            datetime=""
+          >
+            {formatTimeForNewYork(getCurrentTimeInNewYork())}
+          </time>
+        </div>
+      </div>
+    </div>
+  </div>
+</Card>
 
-    if (timeDisplay) {
-      timeDisplay.textContent = formatTimeForRochester(now);
-      timeDisplay.setAttribute("datetime", now.toISOString());
+<style>
+  /* Blue theme without screaming */
+  .tz-row {
+    border: 1px solid rgba(175, 200, 214, 0.14);
+    background: linear-gradient(
+        135deg,
+        rgba(175, 200, 214, 0.06),
+        rgba(0, 160, 255, 0.03)
+      ),
+      rgba(255, 255, 255, 0.02);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+    transition: transform 0.14s ease, border-color 0.14s ease,
+      background 0.14s ease;
+  }
+
+  .tz-row:hover {
+    transform: translateY(-1px);
+    border-color: rgba(120, 190, 255, 0.35);
+    background: linear-gradient(
+        135deg,
+        rgba(175, 200, 214, 0.08),
+        rgba(0, 160, 255, 0.045)
+      ),
+      rgba(255, 255, 255, 0.025);
+  }
+
+  .tz-label {
+    color: rgba(185, 215, 235, 0.62);
+  }
+
+  .tz-time {
+    color: rgba(245, 250, 255, 0.92);
+    text-shadow: 0 0 18px rgba(40, 160, 255, 0.08);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tz-row {
+      transition: none;
+    }
+  }
+</style>
+
+<script is:inline>
+  const zones = [
+    { id: "tz-mt", tz: "America/Edmonton" },
+    { id: "tz-wat", tz: "Africa/Lagos" },
+    { id: "tz-et", tz: "America/New_York" },
+  ];
+
+  const fmt = (tz) => {
+    return new Intl.DateTimeFormat("en-US", {
+      timeZone: tz,
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    }).format(new Date());
+  };
+
+  function tick() {
+    const nowISO = new Date().toISOString();
+    for (const z of zones) {
+      const el = document.getElementById(z.id);
+      if (!el) continue;
+      el.textContent = fmt(z.tz);
+      el.setAttribute("datetime", nowISO);
     }
   }
 
-  onMount(() => {
-    interval = setInterval(updateClock, 1000);
-  });
-
-  onCleanup(() => {
-    clearInterval(interval);
-  });
+  tick();
+  setInterval(tick, 1000);
 </script>
-
-<Card colSpan="lg:col-span-2" rowSpan="md:row-span-2" title="Time zone — Rochester, NY (ET)">
-  <time
-    class="text-2xl xl:text-5xl xl:whitespace-nowrap w-50 xl:w-100 h-[calc(100%-28px)] font-serif flex justify-center items-center"
-    datetime=""
-    id="timeDisplay"
-    aria-live="polite"
-  >
-    {formatTimeForRochester(getCurrentTimeInRochester())}
-  </time>
-</Card>
