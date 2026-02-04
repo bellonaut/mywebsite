@@ -1,7 +1,5 @@
 ﻿---
 import Card from "./Card/index.astro";
-import Button from "./Button.astro";
-import SonicEasterEgg from "../components/SonicEasterEgg.astro";
 ---
 
 <Card colSpan="md:col-span-3" rowSpan="md:row-span-4">
@@ -47,7 +45,45 @@ import SonicEasterEgg from "../components/SonicEasterEgg.astro";
           Nigerian-born health data scientist & community agent working on
           equitable, privacy-preserving ML for African health systems.
         </p>
-        <div></div>
+        <div class="hero-actions">
+          <div class="hero-actions-grid">
+            <div class="hero-actions-left">
+              <div class="hero-cta-row">
+                <a class="hero-cta" href="/projects">View all projects →</a>
+              </div>
+
+              <div class="hero-interests" aria-label="Interests">
+                <span class="interest">🏃 Running</span>
+                <span class="interest">💙 Chelsea FC</span>
+                <span class="interest">
+                  <img
+                    class="interest-icon"
+                    src="https://cdn.simpleicons.org/overwatch/ffffff"
+                    alt="Overwatch"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  Overwatch
+                </span>
+                <span class="interest">📚 Fantasy books</span>
+              </div>
+            </div>
+
+            <div class="hero-logos" aria-label="Languages, frameworks, and tools">
+              <img src="https://cdn.simpleicons.org/python/ffffff" alt="Python" />
+              <img src="https://cdn.simpleicons.org/r/ffffff" alt="R" />
+              <img src="https://cdn.simpleicons.org/typescript/ffffff" alt="TypeScript" />
+              <img src="https://cdn.simpleicons.org/javascript/ffffff" alt="JavaScript" />
+              <img src="https://cdn.simpleicons.org/astro/ffffff" alt="Astro" />
+              <img src="https://cdn.simpleicons.org/react/ffffff" alt="React" />
+              <img src="https://cdn.simpleicons.org/svelte/ffffff" alt="Svelte" />
+              <img src="https://cdn.simpleicons.org/tailwindcss/ffffff" alt="Tailwind CSS" />
+              <img src="https://cdn.simpleicons.org/docker/ffffff" alt="Docker" />
+              <img src="https://cdn.simpleicons.org/postgresql/ffffff" alt="PostgreSQL" />
+              <img src="https://cdn.simpleicons.org/github/ffffff" alt="GitHub" />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -67,6 +103,102 @@ import SonicEasterEgg from "../components/SonicEasterEgg.astro";
 <style>
   .hero-card {
     position: relative;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .hero-actions-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+
+  .hero-actions-left {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .hero-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(120, 190, 255, 0.35);
+    background: rgba(10, 30, 60, 0.45);
+    color: rgba(235, 245, 255, 0.95);
+    font-size: 0.9rem;
+    text-decoration: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .hero-cta:hover {
+    border-color: rgba(56, 189, 248, 0.65);
+    transform: translateY(-1px);
+  }
+
+  .hero-logos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    justify-items: center;
+    align-content: start;
+    justify-self: center;
+    max-width: 260px;
+  }
+
+  .hero-logos img {
+    width: 18px;
+    height: 18px;
+    opacity: 0.6;
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+  }
+
+  .hero-interests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .interest {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    color: rgba(230, 245, 255, 0.85);
+    border: 1px solid rgba(120, 190, 255, 0.18);
+    background: rgba(10, 20, 35, 0.35);
+  }
+
+  .interest-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  @media (max-width: 900px) {
+    .hero-actions-grid {
+      grid-template-columns: 1fr;
+    }
+    .hero-logos {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      justify-items: start;
+    }
   }
 </style>
 <style>
