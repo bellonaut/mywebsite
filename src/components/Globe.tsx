@@ -67,6 +67,22 @@ const GlobeComponent = (props: Props = {}) => {
       .style("height", "100%")
       .style("display", "block");
 
+    const tooltip = root
+      .append("div")
+      .style("position", "absolute")
+      .style("pointer-events", "none")
+      .style("padding", "6px 10px")
+      .style("border-radius", "999px")
+      .style("font-size", "12px")
+      .style("letter-spacing", "0.08em")
+      .style("text-transform", "uppercase")
+      .style("background", "rgba(10, 20, 30, 0.85)")
+      .style("border", "1px solid rgba(175, 200, 214, 0.3)")
+      .style("color", "rgba(235, 245, 255, 0.9)")
+      .style("box-shadow", "0 10px 20px rgba(0, 0, 0, 0.35)")
+      .style("opacity", "0")
+      .style("transform", "translate(-50%, -140%)");
+
     // Theme colors (blue panels vibe)
     const oceanFill = "rgba(10, 36, 54, 0.90)";
     const oceanStroke = "rgba(175, 200, 214, 0.35)";
@@ -185,7 +201,22 @@ const GlobeComponent = (props: Props = {}) => {
           isVisited(d?.properties?.name)
             ? "drop-shadow(0 0 6px rgba(56, 189, 248, 0.22))"
             : "none"
-        );
+        )
+        .on("mousemove", (event: MouseEvent, d: any) => {
+          const name = d?.properties?.name;
+          if (!isVisited(name)) {
+            tooltip.style("opacity", "0");
+            return;
+          }
+          tooltip.text(name);
+          tooltip
+            .style("left", `${event.offsetX}px`)
+            .style("top", `${event.offsetY}px`)
+            .style("opacity", "1");
+        })
+        .on("mouseleave", () => {
+          tooltip.style("opacity", "0");
+        });
 
       updateLayers();
     };
@@ -233,6 +264,7 @@ const GlobeComponent = (props: Props = {}) => {
     onCleanup(() => {
       timer.stop();
       ro.disconnect();
+      tooltip.remove();
       svg.remove();
     });
   });
