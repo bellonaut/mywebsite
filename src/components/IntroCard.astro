@@ -57,16 +57,6 @@ import Card from "./Card/index.astro";
                 <span class="interest" data-interest="running" role="button" tabindex="0">
                   <span class="interest-label">🏃 Running</span>
                 </span>
-                <span
-                  class="interest"
-                  data-interest="chelsea"
-                  data-detail="Next: vs Brighton · Sat, Feb 7 · 10:00 ET"
-                  role="button"
-                  tabindex="0"
-                >
-                  <span class="interest-label">💙 Chelsea FC</span>
-                  <span class="interest-detail"></span>
-                </span>
                 <span class="interest" data-interest="overwatch" role="button" tabindex="0">
                   <img
                     class="interest-icon"
@@ -76,6 +66,16 @@ import Card from "./Card/index.astro";
                     decoding="async"
                   />
                   <span class="interest-label">Overwatch</span>
+                </span>
+                <span
+                  class="interest"
+                  data-interest="chelsea"
+                  data-detail="Next: vs Brighton · Sat, Feb 7 · 10:00 ET"
+                  role="button"
+                  tabindex="0"
+                >
+                  <span class="interest-label">💙 Chelsea FC</span>
+                  <span class="interest-detail"></span>
                 </span>
                 <span
                   class="interest"
@@ -328,13 +328,14 @@ import Card from "./Card/index.astro";
   /* Overwatch burst */
   .ow-star {
     position: absolute;
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     border-radius: 999px;
     background: radial-gradient(circle at 40% 40%, rgba(255, 225, 140, 0.98), rgba(255, 160, 70, 0.16));
     box-shadow:
-      0 0 16px rgba(255, 215, 140, 0.8),
-      0 0 28px rgba(255, 150, 70, 0.35);
+      0 0 18px rgba(255, 215, 140, 0.9),
+      0 0 36px rgba(255, 150, 70, 0.42);
+    z-index: 1800;
     pointer-events: none;
     animation: ow-burst 740ms cubic-bezier(0.18, 0.65, 0.3, 1) forwards;
   }
