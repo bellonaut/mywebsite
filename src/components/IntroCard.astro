@@ -65,7 +65,15 @@ import Card from "./Card/index.astro";
                   />
                   Overwatch
                 </span>
-                <span class="interest" data-interest="fantasy">📚 Fantasy books</span>
+                <a
+                  class="interest interest-link-button"
+                  href="https://www.goodreads.com/review/list/159707285?ref=nav_mybooks"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Fantasy books reading list on Goodreads"
+                >
+                  📚 Fantasy books
+                </a>
               </div>
             </div>
 
@@ -321,6 +329,19 @@ import Card from "./Card/index.astro";
     background: rgba(10, 20, 35, 0.35);
   }
 
+  .interest-link-button {
+    text-decoration: none;
+  }
+
+  .interest-link-button:hover {
+    border-color: rgba(56, 189, 248, 0.5);
+  }
+
+  .interest-link-button:focus-visible {
+    outline: 2px solid rgba(120, 200, 255, 0.6);
+    outline-offset: 2px;
+  }
+
   .interest-icon {
     width: 16px;
     height: 16px;
@@ -412,11 +433,13 @@ import Card from "./Card/index.astro";
     .hero-shell {
       flex-direction: column;
       align-items: stretch;
+      height: auto;
     }
 
     .hero-layout {
       flex-direction: column;
       align-items: flex-start;
+      height: auto;
     }
 
     .hero-content {
