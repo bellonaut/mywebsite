@@ -53,9 +53,9 @@ import Card from "./Card/index.astro";
               </div>
 
               <div class="hero-interests" aria-label="Interests">
-                <span class="interest">🏃 Running</span>
-                <span class="interest">💙 Chelsea FC</span>
-                <span class="interest">
+                <span class="interest" data-interest="running">🏃 Running</span>
+                <span class="interest" data-interest="chelsea">💙 Chelsea FC</span>
+                <span class="interest" data-interest="overwatch">
                   <img
                     class="interest-icon"
                     src="/icons/overwatch.png"
@@ -65,7 +65,7 @@ import Card from "./Card/index.astro";
                   />
                   Overwatch
                 </span>
-                <span class="interest">📚 Fantasy books</span>
+                <span class="interest" data-interest="fantasy">📚 Fantasy books</span>
               </div>
             </div>
 
@@ -100,6 +100,141 @@ import Card from "./Card/index.astro";
     </div>
   </div>
 </Card>
+<script is:inline>
+  (() => {
+    const interests = document.querySelectorAll(".hero-interests .interest");
+    if (!interests.length) return;
+
+    const pop = document.createElement("div");
+    pop.className = "interest-pop";
+    pop.innerHTML = `
+      <div class="interest-pop-title"></div>
+      <div class="interest-pop-body"></div>
+      <div class="interest-pop-footer"></div>
+    `;
+    pop.hidden = true;
+    document.body.appendChild(pop);
+
+    const titleEl = pop.querySelector(".interest-pop-title");
+    const bodyEl = pop.querySelector(".interest-pop-body");
+    const footEl = pop.querySelector(".interest-pop-footer");
+
+    const setContent = (key) => {
+      switch (key) {
+        case "chelsea":
+          titleEl.textContent = "Chelsea FC";
+          bodyEl.textContent = "Next: vs Brighton · Sat, Feb 7 · 10:00 ET (PL)";
+          footEl.textContent = "CFC | form: W · L · D · W";
+          break;
+        case "fantasy":
+          titleEl.textContent = "Fantasy books";
+          bodyEl.innerHTML =
+            'My Goodreads shelves — epic & Afrofantasy picks.<br/><a class="interest-link" href="https://www.goodreads.com/user/show/159707285-bashir-bello" target="_blank" rel="noopener noreferrer">Profile</a> · <a class="interest-link" href="https://www.goodreads.com/review/list/159707285?ref=nav_mybooks" target="_blank" rel="noopener noreferrer">Read list</a>';
+          footEl.textContent = "Currently: spinning up a new trilogy.";
+          break;
+        case "running":
+          titleEl.textContent = "Running log";
+          bodyEl.textContent = "Base: 25 km/wk · Tempo Thu · Long Sat";
+          footEl.textContent = "Goal: 10K under 45 min";
+          break;
+        default:
+          titleEl.textContent = "";
+          bodyEl.textContent = "";
+          footEl.textContent = "";
+      }
+    };
+
+    const showPop = (el, key) => {
+      setContent(key);
+      pop.hidden = false;
+      pop.classList.add("show");
+
+      const rect = el.getBoundingClientRect();
+      const top = rect.top + window.scrollY - 8;
+      const left = rect.left + window.scrollX + rect.width / 2;
+      pop.style.top = `${top}px`;
+      pop.style.left = `${left}px`;
+    };
+
+    const hidePop = () => {
+      pop.classList.remove("show");
+      pop.hidden = true;
+    };
+
+    let hideTimer;
+    const queueHide = () => {
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(hidePop, 120);
+    };
+
+    const burstStars = (el) => {
+      const rect = el.getBoundingClientRect();
+      const originX = rect.left + window.scrollX + rect.width / 2;
+      const originY = rect.top + window.scrollY + rect.height / 2;
+
+      for (let i = 0; i < 9; i++) {
+        const s = document.createElement("span");
+        s.className = "ow-star";
+        const dx = (Math.random() - 0.5) * 120;
+        const dy = -40 - Math.random() * 80;
+        const rot = (Math.random() - 0.5) * 120;
+        s.style.setProperty("--dx", `${dx}px`);
+        s.style.setProperty("--dy", `${dy}px`);
+        s.style.setProperty("--rot", `${rot}deg`);
+        s.style.left = `${originX}px`;
+        s.style.top = `${originY}px`;
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 650);
+      }
+    };
+
+    interests.forEach((item) => {
+      const key = item.getAttribute("data-interest");
+      if (!key) return;
+
+      if (key === "overwatch") {
+        item.addEventListener("click", () => burstStars(item));
+        return;
+      }
+
+      if (key === "fantasy") {
+        item.addEventListener("click", () => {
+          const open = pop.classList.contains("show") && !pop.hidden && titleEl.textContent === "Fantasy books";
+          if (open) {
+            hidePop();
+          } else {
+            showPop(item, key);
+          }
+        });
+      }
+
+      item.addEventListener(
+        "pointerenter",
+        () => {
+          clearTimeout(hideTimer);
+          showPop(item, key);
+        },
+        { passive: true }
+      );
+      item.addEventListener("pointerleave", queueHide, { passive: true });
+      item.addEventListener("blur", queueHide);
+    });
+
+    pop.addEventListener("pointerenter", () => clearTimeout(hideTimer));
+    pop.addEventListener("pointerleave", queueHide);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") hidePop();
+    });
+
+    document.addEventListener("click", (e) => {
+      const target = e.target;
+      if (!target) return;
+      if (target.closest(".interest") || target.closest(".interest-pop")) return;
+      hidePop();
+    });
+  })();
+</script>
 <style>
   .hero-card {
     position: relative;
@@ -189,6 +324,78 @@ import Card from "./Card/index.astro";
   .interest-icon {
     width: 16px;
     height: 16px;
+  }
+
+  /* Interest overlays */
+  .interest-pop {
+    position: absolute;
+    z-index: 1200;
+    min-width: 210px;
+    max-width: 260px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(120, 190, 255, 0.28);
+    background: rgba(8, 16, 28, 0.9);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.32);
+    color: rgba(235, 245, 255, 0.9);
+    backdrop-filter: blur(8px);
+    transform: translate(-50%, -100%) scale(0.98);
+    opacity: 0;
+    transition: opacity 120ms ease, transform 120ms ease;
+    pointer-events: auto;
+  }
+
+  .interest-pop.show {
+    opacity: 1;
+    transform: translate(-50%, -100%) scale(1);
+  }
+
+  .interest-pop-title {
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    margin-bottom: 4px;
+  }
+
+  .interest-pop-body {
+    font-size: 0.88rem;
+    line-height: 1.35;
+    margin: 0 0 6px;
+  }
+
+  .interest-pop-footer {
+    font-size: 0.76rem;
+    color: rgba(180, 210, 230, 0.78);
+  }
+
+  .interest-link {
+    color: rgba(120, 200, 255, 0.95);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(120, 200, 255, 0.35);
+  }
+
+  .interest-link:hover {
+    color: rgba(255, 255, 255, 0.95);
+    border-bottom-color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Overwatch burst */
+  .ow-star {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(255, 210, 120, 0.95), rgba(255, 140, 60, 0.1));
+    box-shadow: 0 0 12px rgba(255, 210, 120, 0.65);
+    pointer-events: none;
+    animation: ow-burst 620ms ease-out forwards;
+  }
+
+  @keyframes ow-burst {
+    to {
+      transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.2);
+      opacity: 0;
+      filter: blur(1px);
+    }
   }
 
   @media (max-width: 900px) {
