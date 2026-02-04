@@ -125,32 +125,29 @@ import Card from "./Card/index.astro";
           titleEl.textContent = "Chelsea FC";
           bodyEl.textContent = "Next: vs Brighton · Sat, Feb 7 · 10:00 ET (PL)";
           footEl.textContent = "CFC | form: W · L · D · W";
-          break;
+          return true;
         case "fantasy":
           titleEl.textContent = "Fantasy books";
           bodyEl.innerHTML =
             'My Goodreads shelves — epic & Afrofantasy picks.<br/><a class="interest-link" href="https://www.goodreads.com/user/show/159707285-bashir-bello" target="_blank" rel="noopener noreferrer">Profile</a> · <a class="interest-link" href="https://www.goodreads.com/review/list/159707285?ref=nav_mybooks" target="_blank" rel="noopener noreferrer">Read list</a>';
-          footEl.textContent = "Currently: spinning up a new trilogy.";
-          break;
-        case "running":
-          titleEl.textContent = "Running log";
-          bodyEl.textContent = "Base: 25 km/wk · Tempo Thu · Long Sat";
-          footEl.textContent = "Goal: 10K under 45 min";
-          break;
+          footEl.textContent = "Click to open my read list.";
+          return true;
         default:
           titleEl.textContent = "";
           bodyEl.textContent = "";
           footEl.textContent = "";
+          return false;
       }
     };
 
     const showPop = (el, key) => {
-      setContent(key);
+      const ok = setContent(key);
+      if (!ok) return;
       pop.hidden = false;
       pop.classList.add("show");
 
       const rect = el.getBoundingClientRect();
-      const top = rect.top + window.scrollY - 8;
+      const top = rect.top + window.scrollY - 10;
       const left = rect.left + window.scrollX + rect.width / 2;
       pop.style.top = `${top}px`;
       pop.style.left = `${left}px`;
@@ -172,11 +169,11 @@ import Card from "./Card/index.astro";
       const originX = rect.left + window.scrollX + rect.width / 2;
       const originY = rect.top + window.scrollY + rect.height / 2;
 
-      for (let i = 0; i < 9; i++) {
+      for (let i = 0; i < 12; i++) {
         const s = document.createElement("span");
         s.className = "ow-star";
-        const dx = (Math.random() - 0.5) * 120;
-        const dy = -40 - Math.random() * 80;
+        const dx = (Math.random() - 0.5) * 160;
+        const dy = -60 - Math.random() * 120;
         const rot = (Math.random() - 0.5) * 120;
         s.style.setProperty("--dx", `${dx}px`);
         s.style.setProperty("--dy", `${dy}px`);
@@ -192,6 +189,8 @@ import Card from "./Card/index.astro";
       const key = item.getAttribute("data-interest");
       if (!key) return;
 
+      if (key === "running") return; // keep simple
+
       if (key === "overwatch") {
         item.addEventListener("click", () => burstStars(item));
         return;
@@ -199,12 +198,7 @@ import Card from "./Card/index.astro";
 
       if (key === "fantasy") {
         item.addEventListener("click", () => {
-          const open = pop.classList.contains("show") && !pop.hidden && titleEl.textContent === "Fantasy books";
-          if (open) {
-            hidePop();
-          } else {
-            showPop(item, key);
-          }
+          window.open("https://www.goodreads.com/review/list/159707285?ref=nav_mybooks", "_blank", "noopener");
         });
       }
 
@@ -332,11 +326,14 @@ import Card from "./Card/index.astro";
     z-index: 1200;
     min-width: 210px;
     max-width: 260px;
-    padding: 10px 12px;
-    border-radius: 10px;
-    border: 1px solid rgba(120, 190, 255, 0.28);
-    background: rgba(8, 16, 28, 0.9);
-    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.32);
+    padding: 11px 13px;
+    border-radius: 12px;
+    border: 1px solid rgba(120, 190, 255, 0.38);
+    background: radial-gradient(circle at 20% 20%, rgba(90, 160, 255, 0.12), transparent 35%),
+      rgba(6, 12, 22, 0.94);
+    box-shadow:
+      0 16px 32px rgba(0, 0, 0, 0.36),
+      0 0 22px rgba(80, 150, 255, 0.12);
     color: rgba(235, 245, 255, 0.9);
     backdrop-filter: blur(8px);
     transform: translate(-50%, -100%) scale(0.98);
@@ -348,6 +345,22 @@ import Card from "./Card/index.astro";
   .interest-pop.show {
     opacity: 1;
     transform: translate(-50%, -100%) scale(1);
+  }
+
+  .interest-pop::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -10px;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 16px;
+    background: rgba(6, 12, 22, 0.94);
+    border-left: 1px solid rgba(120, 190, 255, 0.32);
+    border-bottom: 1px solid rgba(120, 190, 255, 0.32);
+    transform-origin: center;
+    clip-path: polygon(50% 100%, 0 0, 100% 0);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
   }
 
   .interest-pop-title {
@@ -381,20 +394,22 @@ import Card from "./Card/index.astro";
   /* Overwatch burst */
   .ow-star {
     position: absolute;
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     border-radius: 999px;
-    background: radial-gradient(circle, rgba(255, 210, 120, 0.95), rgba(255, 140, 60, 0.1));
-    box-shadow: 0 0 12px rgba(255, 210, 120, 0.65);
+    background: radial-gradient(circle at 40% 40%, rgba(255, 225, 140, 0.98), rgba(255, 160, 70, 0.16));
+    box-shadow:
+      0 0 16px rgba(255, 215, 140, 0.8),
+      0 0 28px rgba(255, 150, 70, 0.35);
     pointer-events: none;
-    animation: ow-burst 620ms ease-out forwards;
+    animation: ow-burst 740ms cubic-bezier(0.18, 0.65, 0.3, 1) forwards;
   }
 
   @keyframes ow-burst {
     to {
-      transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.2);
+      transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.18);
       opacity: 0;
-      filter: blur(1px);
+      filter: blur(1.6px);
     }
   }
 
