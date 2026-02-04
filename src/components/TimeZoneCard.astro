@@ -98,31 +98,35 @@ import {
     text-shadow: 0 0 16px rgba(255, 255, 255, 0.08);
   }
 
+  .tz-wrap {
+    position: relative;
+  }
+
   .tz-toast {
-    position: fixed;
-    left: 50%;
-    top: 20%;
-    transform: translateX(-50%) translateY(-6px);
-    padding: 12px 16px;
+    position: absolute;
+    right: -6px;
+    top: -12px;
+    transform: translateY(-8px);
+    padding: 12px 18px;
     border-radius: 14px;
     border: 1px solid rgba(120, 190, 255, 0.42);
-    background: radial-gradient(circle at 24% 24%, rgba(90, 170, 255, 0.18), transparent 42%),
-      linear-gradient(135deg, rgba(18, 36, 60, 0.94), rgba(10, 22, 38, 0.96));
+    background: radial-gradient(circle at 24% 24%, rgba(90, 170, 255, 0.22), transparent 45%),
+      linear-gradient(135deg, rgba(18, 36, 60, 0.96), rgba(10, 22, 38, 0.98));
     box-shadow:
-      0 18px 38px rgba(0, 0, 0, 0.38),
-      0 0 26px rgba(90, 170, 255, 0.22);
+      0 18px 34px rgba(0, 0, 0, 0.4),
+      0 0 32px rgba(90, 170, 255, 0.28);
     color: rgba(235, 245, 255, 0.96);
-    font-size: 0.92rem;
+    font-size: 0.9rem;
     letter-spacing: 0.01em;
     opacity: 0;
-    transition: opacity 160ms ease, transform 160ms ease;
+    transition: opacity 180ms ease, transform 180ms ease;
     backdrop-filter: blur(12px);
     z-index: 2000;
   }
 
   .tz-toast.show {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
+    transform: translateY(0);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -184,7 +188,7 @@ import {
       toast = document.createElement("div");
       toast.className = "tz-toast";
       toast.hidden = true;
-      document.body.appendChild(toast);
+      wrap.appendChild(toast);
       return toast;
     };
 
@@ -204,7 +208,7 @@ import {
       const lines = zones.map((z) => `${z.label}: ${fmtWithZone(z.tz)}`);
       try {
         await navigator.clipboard.writeText(lines.join("\\n"));
-        showToast("Times copied");
+        showToast("Times copied to clipboard");
       } catch (err) {
         console.debug("Timezone copy failed:", err);
         showToast("Copy blocked");
