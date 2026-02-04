@@ -11,6 +11,13 @@
     "eslint": "eslint 'src/**/*.{js,astro}'",
     "check": "astro check"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "esbuild",
+      "sharp"
+    ]
+  },
   "dependencies": {
     "@astrojs/check": "^0.9.6",
     "@astrojs/netlify": "^6.6.3",
