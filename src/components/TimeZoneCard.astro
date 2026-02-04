@@ -98,37 +98,6 @@ import {
     text-shadow: 0 0 16px rgba(255, 255, 255, 0.08);
   }
 
-  .tz-wrap {
-    position: relative;
-  }
-
-  .tz-toast {
-    position: absolute;
-    right: -6px;
-    top: -12px;
-    transform: translateY(-8px);
-    padding: 12px 18px;
-    border-radius: 14px;
-    border: 1px solid rgba(120, 190, 255, 0.42);
-    background: radial-gradient(circle at 24% 24%, rgba(90, 170, 255, 0.22), transparent 45%),
-      linear-gradient(135deg, rgba(18, 36, 60, 0.96), rgba(10, 22, 38, 0.98));
-    box-shadow:
-      0 18px 34px rgba(0, 0, 0, 0.4),
-      0 0 32px rgba(90, 170, 255, 0.28);
-    color: rgba(235, 245, 255, 0.96);
-    font-size: 0.9rem;
-    letter-spacing: 0.01em;
-    opacity: 0;
-    transition: opacity 180ms ease, transform 180ms ease;
-    backdrop-filter: blur(12px);
-    z-index: 2000;
-  }
-
-  .tz-toast.show {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .tz-row {
       transition: none;
@@ -138,9 +107,9 @@ import {
 
 <script is:inline>
   const zones = [
-    { id: "tz-mt", tz: "America/Edmonton", label: "Edmonton" },
-    { id: "tz-wat", tz: "Africa/Lagos", label: "Sokoto" },
-    { id: "tz-et", tz: "America/New_York", label: "New York" },
+    { id: "tz-mt", tz: "America/Edmonton" },
+    { id: "tz-wat", tz: "Africa/Lagos" },
+    { id: "tz-et", tz: "America/New_York" },
   ];
 
   const fmt = (tz) => {
@@ -149,16 +118,6 @@ import {
       hour: "numeric",
       minute: "2-digit",
       hour12: true,
-    }).format(new Date());
-  };
-
-  const fmtWithZone = (tz) => {
-    return new Intl.DateTimeFormat("en-US", {
-      timeZone: tz,
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-      timeZoneName: "short",
     }).format(new Date());
   };
 
@@ -174,52 +133,4 @@ import {
 
   tick();
   setInterval(tick, 1000);
-
-  // Click-to-copy all times
-  (() => {
-    const wrap = document.querySelector(".tz-wrap");
-    if (!wrap || !navigator.clipboard) return;
-
-    let toast = null;
-    let toastTimer;
-
-    const ensureToast = () => {
-      if (toast) return toast;
-      toast = document.createElement("div");
-      toast.className = "tz-toast";
-      toast.hidden = true;
-      wrap.appendChild(toast);
-      return toast;
-    };
-
-    const showToast = (msg) => {
-      const t = ensureToast();
-      t.textContent = msg;
-      t.hidden = false;
-      t.classList.add("show");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => {
-        t.classList.remove("show");
-        setTimeout(() => (t.hidden = true), 160);
-      }, 1700);
-    };
-
-    const handleCopy = async () => {
-      const lines = zones.map((z) => `${z.label}: ${fmtWithZone(z.tz)}`);
-      try {
-        await navigator.clipboard.writeText(lines.join("\\n"));
-        showToast("Times copied to clipboard");
-      } catch (err) {
-        console.debug("Timezone copy failed:", err);
-        showToast("Copy blocked");
-      }
-    };
-
-    wrap.addEventListener("click", (e) => {
-      const target = e.target;
-      if (!target) return;
-      if (target.closest("a, button")) return; // ignore any links/buttons inside
-      handleCopy();
-    });
-  })();
 </script>
