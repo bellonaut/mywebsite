@@ -148,6 +148,8 @@ import Card from "./Card/index.astro";
 
     const openGoodreads = () =>
       window.open("https://www.goodreads.com/review/list/159707285?ref=nav_mybooks", "_blank", "noopener");
+    const openChelsea = () =>
+      window.open("https://www.chelseafc.com/en/matches/fixtures", "_blank", "noopener");
 
     const burstStars = (el) => {
       const rect = el.getBoundingClientRect();
@@ -198,9 +200,7 @@ import Card from "./Card/index.astro";
       }
 
       if (key === "chelsea") {
-        const msg = chip.getAttribute("data-detail") || "Next fixture";
-        chip.addEventListener("pointerenter", () => showFloat(msg, chip.getBoundingClientRect()));
-        chip.addEventListener("pointerleave", hideFloat, { passive: true });
+        chip.addEventListener("click", openChelsea);
       }
     });
   })();
