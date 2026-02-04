@@ -3,7 +3,7 @@ import Card from "./Card/index.astro";
 ---
 
 <Card colSpan="md:col-span-3" rowSpan="md:row-span-4">
-  <div class="flex w-full h-full relative overflow-hidden">
+  <div class="hero-shell flex w-full h-full relative overflow-hidden">
     <div class="hero-electrons" aria-hidden="true">
       <div class="spark"></div>
       <div class="spark"></div>
@@ -65,7 +65,15 @@ import Card from "./Card/index.astro";
                   />
                   Overwatch
                 </span>
-                <span class="interest" data-interest="fantasy">📚 Fantasy books</span>
+                <a
+                  class="interest interest-link-button"
+                  href="https://www.goodreads.com/review/list/159707285?ref=nav_mybooks"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Fantasy books reading list on Goodreads"
+                >
+                  📚 Fantasy books
+                </a>
               </div>
             </div>
 
@@ -319,6 +327,19 @@ import Card from "./Card/index.astro";
     color: rgba(230, 245, 255, 0.85);
     border: 1px solid rgba(120, 190, 255, 0.18);
     background: rgba(10, 20, 35, 0.35);
+  }
+
+  .interest-link-button {
+    text-decoration: none;
+  }
+
+  .interest-link-button:hover {
+    border-color: rgba(56, 189, 248, 0.5);
+  }
+
+  .interest-link-button:focus-visible {
+    outline: 2px solid rgba(120, 200, 255, 0.6);
+    outline-offset: 2px;
   }
 
   .interest-icon {
