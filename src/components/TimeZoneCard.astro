@@ -17,6 +17,9 @@ import {
   height="min-h-[170px] sm:min-h-[190px]"
 >
   <div class="tz-wrap flex flex-col gap-2">
+    <div class="tz-header">
+      <span class="tz-pulse" aria-hidden="true"></span>
+    </div>
     <div class="tz-stack flex flex-col gap-2">
       <!-- Edmonton -->
       <div class="tz-row rounded-xl px-3 py-3">
@@ -64,6 +67,22 @@ import {
 </Card>
 
 <style>
+  .tz-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 0 2px;
+  }
+
+  .tz-pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(56, 189, 248, 0.7);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
+  }
+
   /* Blue theme without screaming */
   .tz-row {
     border: 1px solid rgba(175, 200, 214, 0.14);

@@ -108,6 +108,49 @@ const GlobeComponent = (props: Props = {}) => {
       .y((d) => d[1])
       .curve(d3.curveCatmullRom.alpha(0.6));
 
+    const arcGeos = segments.map((seg) => arcPoints(seg.from.coords as any, seg.to.coords as any));
+
+    const updateLayers = () => {
+      landG.selectAll("path").attr("d", (d: any) => path(d as any)!);
+
+      const arcScreen = arcGeos
+        .map((pts) =>
+          pts
+            .map((p) => projection(p as any))
+            .filter(Boolean) as [number, number][]
+        )
+        .filter((pts) => pts.length > 2);
+
+      arcsG
+        .selectAll("path")
+        .data(arcScreen)
+        .join("path")
+        .attr("d", (pts) => line(pts)!)
+        .attr("fill", "none")
+        .attr("stroke", journeyStroke)
+        .attr("stroke-width", 1.6)
+        .attr("opacity", 0.9)
+        .style("filter", `drop-shadow(0 0 8px ${journeyGlow})`);
+
+      const nodePts = journeyStops
+        .map((s) => {
+          const p = projection(s.coords as any);
+          return p ? { ...s, p } : null;
+        })
+        .filter(Boolean) as Array<{ label: string; coords: readonly [number, number]; p: [number, number] }>;
+
+      nodesG
+        .selectAll("circle")
+        .data(nodePts, (d: any) => d.label)
+        .join("circle")
+        .attr("cx", (d) => d.p[0])
+        .attr("cy", (d) => d.p[1])
+        .attr("r", 3.2)
+        .attr("fill", nodeFill)
+        .attr("opacity", 0.95)
+        .style("filter", `drop-shadow(0 0 10px ${journeyGlow})`);
+    };
+
     // Render/update everything on resize
     const resize = () => {
       if (!mapContainer) return;
@@ -144,48 +187,7 @@ const GlobeComponent = (props: Props = {}) => {
             : "none"
         );
 
-      // Build arc geometries in geographic space
-      const arcGeos = segments.map((seg) => arcPoints(seg.from.coords as any, seg.to.coords as any));
-
-      // Convert arc points to screen points via projection
-      const arcScreen = arcGeos
-        .map((pts) =>
-          pts
-            .map((p) => projection(p as any))
-            .filter(Boolean) as [number, number][]
-        )
-        .filter((pts) => pts.length > 2);
-
-      // Draw arcs
-      arcsG
-        .selectAll("path")
-        .data(arcScreen)
-        .join("path")
-        .attr("d", (pts) => line(pts)!)
-        .attr("fill", "none")
-        .attr("stroke", journeyStroke)
-        .attr("stroke-width", 1.6)
-        .attr("opacity", 0.9)
-        .style("filter", `drop-shadow(0 0 8px ${journeyGlow})`);
-
-      // Nodes (project each stop to screen)
-      const nodePts = journeyStops
-        .map((s) => {
-          const p = projection(s.coords as any);
-          return p ? { ...s, p } : null;
-        })
-        .filter(Boolean) as Array<{ label: string; coords: readonly [number, number]; p: [number, number] }>;
-
-      nodesG
-        .selectAll("circle")
-        .data(nodePts, (d: any) => d.label)
-        .join("circle")
-        .attr("cx", (d) => d.p[0])
-        .attr("cy", (d) => d.p[1])
-        .attr("r", 3.2)
-        .attr("fill", nodeFill)
-        .attr("opacity", 0.95)
-        .style("filter", `drop-shadow(0 0 10px ${journeyGlow})`);
+      updateLayers();
     };
 
     const ro = new ResizeObserver(resize);
@@ -193,57 +195,40 @@ const GlobeComponent = (props: Props = {}) => {
 
     // Smooth rotation (time-based)
     const degreesPerSecond = isFull ? 3.5 : 6.0;
+    let isDragging = false;
     const timer = d3.timer((elapsed) => {
+      if (isDragging) return;
       const t = elapsed / 1000;
       const rot = projection.rotate();
       projection.rotate([-(t * degreesPerSecond), rot[1], rot[2] || 0]);
 
-      // Update all dynamic layers with new projection
-      landG.selectAll("path").attr("d", (d: any) => path(d as any)!);
-
-      // Recompute arcs + nodes on each tick (still light at this scale)
-      const arcGeos = segments.map((seg) => arcPoints(seg.from.coords as any, seg.to.coords as any));
-
-      const arcScreen = arcGeos
-        .map((pts) =>
-          pts
-            .map((p) => projection(p as any))
-            .filter(Boolean) as [number, number][]
-        )
-        .filter((pts) => pts.length > 2);
-
-      arcsG
-        .selectAll("path")
-        .data(arcScreen)
-        .join("path")
-        .attr("d", (pts) => line(pts)!)
-        .attr("fill", "none")
-        .attr("stroke", journeyStroke)
-        .attr("stroke-width", 1.6)
-        .attr("opacity", 0.9)
-        .style("filter", `drop-shadow(0 0 8px ${journeyGlow})`);
-
-      const nodePts = journeyStops
-        .map((s) => {
-          const p = projection(s.coords as any);
-          return p ? { ...s, p } : null;
-        })
-        .filter(Boolean) as Array<{ label: string; coords: readonly [number, number]; p: [number, number] }>;
-
-      nodesG
-        .selectAll("circle")
-        .data(nodePts, (d: any) => d.label)
-        .join("circle")
-        .attr("cx", (d) => d.p[0])
-        .attr("cy", (d) => d.p[1])
-        .attr("r", 3.2)
-        .attr("fill", nodeFill)
-        .attr("opacity", 0.95)
-        .style("filter", `drop-shadow(0 0 10px ${journeyGlow})`);
+      updateLayers();
     });
 
     // Initial draw
     resize();
+
+    if (isFull) {
+      svg.style("cursor", "grab");
+      const sensitivity = 0.25;
+      const dragBehavior = d3
+        .drag<SVGSVGElement, unknown>()
+        .on("start", () => {
+          isDragging = true;
+          svg.style("cursor", "grabbing");
+        })
+        .on("drag", (event) => {
+          const rot = projection.rotate();
+          projection.rotate([rot[0] + event.dx * sensitivity, rot[1] - event.dy * sensitivity, rot[2] || 0]);
+          updateLayers();
+        })
+        .on("end", () => {
+          isDragging = false;
+          svg.style("cursor", "grab");
+        });
+
+      svg.call(dragBehavior as any);
+    }
 
     onCleanup(() => {
       timer.stop();
