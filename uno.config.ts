@@ -1,29 +1,34 @@
 // uno.config.ts
-import { defineConfig, presetWind3, presetWebFonts } from "unocss";
+import { defineConfig, presetWind3 } from "unocss";
 
 export default defineConfig({
   content: {
     filesystem: [
-      // Narrow scope to specific directories
-      "src/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}}",
-      "src/components/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}}",
-      "src/pages/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}}",
-      "src/layouts/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}}"
-    ],  },
+      "src/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}",
+      "src/components/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}",
+      "src/pages/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}",
+      "src/layouts/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}",
+    ],
+  },
+
   theme: {
     boxShadow: {
       custom: `2px 2px 0`,
       "custom-hover": `1px 1px 0`,
     },
+
+    // ✅ make it a string (your TS types require string)
     fontFamily: {
-      sans: ["CabinetGrotesk", "Satoshi"],
+      sans: "CabinetGrotesk, Satoshi, ui-sans-serif, system-ui",
     },
-    gridTemplateRows: {
+
+    gridTemplateRow: {
       "auto-250": "repeat(auto-fill, 250px)",
     },
-    gridTemplateColumns: {
+    gridTemplateColumn: {
       "4-minmax": "repeat(4, minmax(150px, 1fr))",
     },
+
     colors: {
       gray: {
         50: "#FAFAFA",
@@ -43,11 +48,11 @@ export default defineConfig({
         200: "#262626",
         300: "#202020",
         400: "#1A1A1A",
-        500: "#171717" /* Exactly your example for the background */,
+        500: "#171717",
         600: "#141414",
         700: "#111111",
         800: "#0E0E0E",
-        900: "#0B0B0B" /* Deeper and darker */,
+        900: "#0B0B0B",
       },
       primary: {
         100: "#F9CDD3",
@@ -62,14 +67,7 @@ export default defineConfig({
       },
     },
   },
-  presets: [
-    presetWind3(),
-    presetWebFonts({
-      provider: "fontshare",
-      fonts: {
-        sans: ["Cabinet Grotesk", "Satoshi"],
-        serif: "Zodiak",
-      },
-    }),
-  ],
+
+  // ✅ ONLY wind preset. NO presetWebFonts.
+  presets: [presetWind3()],
 });
