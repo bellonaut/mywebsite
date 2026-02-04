@@ -283,6 +283,17 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
       animation: latestGlow 1.4s ease-out 2;
     }
 
+    .new-highlight::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      pointer-events: none;
+      box-shadow:
+        inset 0 0 0 1px rgba(120, 200, 255, 0.14),
+        0 0 0 2px rgba(120, 200, 255, 0.08);
+    }
+
     @keyframes latestGlow {
       0% {
         box-shadow:
@@ -343,10 +354,10 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
     (() => {
       const latestCard = document.querySelector(".g-writing .card");
       if (!latestCard) return;
-      if (sessionStorage.getItem("latest-highlighted")) return;
+      if (sessionStorage.getItem("latest-highlighted-v2")) return;
 
       latestCard.classList.add("new-highlight");
-      sessionStorage.setItem("latest-highlighted", "1");
+      sessionStorage.setItem("latest-highlighted-v2", "1");
       setTimeout(() => latestCard.classList.remove("new-highlight"), 2600);
     })();
 
