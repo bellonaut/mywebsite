@@ -277,10 +277,10 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
 
     .new-highlight {
       box-shadow:
-        0 0 0 1px rgba(120, 200, 255, 0.42),
-        0 0 16px rgba(120, 200, 255, 0.32),
-        0 0 38px rgba(80, 140, 255, 0.2);
-      animation: latestGlow 1.6s ease-out 3;
+        0 0 0 1px rgba(120, 200, 255, 0.48),
+        0 0 22px rgba(120, 200, 255, 0.38),
+        0 0 46px rgba(80, 140, 255, 0.26);
+      animation: latestGlow 2.2s ease-out 1;
       position: relative;
       overflow: hidden;
     }
@@ -296,7 +296,7 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
         0 0 0 2px rgba(120, 200, 255, 0.08);
       background: radial-gradient(circle at 50% 20%, rgba(120, 200, 255, 0.14), transparent 45%);
       mix-blend-mode: screen;
-      animation: latestPulse 2.6s ease-in-out 2;
+      animation: latestPulse 2.4s ease-in-out 1;
     }
 
     @keyframes latestGlow {

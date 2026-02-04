@@ -148,23 +148,24 @@ import Card from "./Card/index.astro";
 
     const openGoodreads = () =>
       window.open("https://www.goodreads.com/review/list/159707285?ref=nav_mybooks", "_blank", "noopener");
-    const openChelsea = () =>
-      window.open("https://www.chelseafc.com/en/matches/fixtures", "_blank", "noopener");
 
     const burstStars = (el, variant = "ow") => {
       const rect = el.getBoundingClientRect();
       const originX = rect.left + window.scrollX + rect.width / 2;
       const originY = rect.top + window.scrollY + rect.height / 2;
 
-      for (let i = 0; i < 18; i++) {
+      const total = variant === "ow" ? 24 : 18;
+      for (let i = 0; i < total; i++) {
         const s = document.createElement("span");
-        s.className = variant === "chelsea" ? "star-chelsea" : "ow-star";
-        const dx = (Math.random() - 0.5) * 220;
-        const dy = -70 - Math.random() * 170;
-        const rot = (Math.random() - 0.5) * 160;
+        s.className = variant === "chelsea" ? "star-chelsea" : "ow-firework";
+        const dx = (Math.random() - 0.5) * (variant === "ow" ? 260 : 220);
+        const dy = -70 - Math.random() * (variant === "ow" ? 200 : 170);
+        const rot = (Math.random() - 0.5) * 180;
+        const hue = Math.round(28 + Math.random() * 50);
         s.style.setProperty("--dx", `${dx}px`);
         s.style.setProperty("--dy", `${dy}px`);
         s.style.setProperty("--rot", `${rot}deg`);
+        s.style.setProperty("--hue", `${hue}`);
         s.style.left = `${originX}px`;
         s.style.top = `${originY}px`;
         document.body.appendChild(s);
@@ -193,6 +194,10 @@ import Card from "./Card/index.astro";
           showFloat(chip.getAttribute("data-detail") || "Check out my Goodreads", chip.getBoundingClientRect())
         );
         chip.addEventListener("pointerleave", hideFloat, { passive: true });
+        chip.addEventListener("focus", () =>
+          showFloat(chip.getAttribute("data-detail") || "Check out my Goodreads", chip.getBoundingClientRect())
+        );
+        chip.addEventListener("blur", hideFloat, { passive: true });
       }
 
       if (key === "overwatch") {
@@ -201,6 +206,14 @@ import Card from "./Card/index.astro";
 
       if (key === "chelsea") {
         chip.addEventListener("click", () => burstStars(chip, "chelsea"));
+        chip.addEventListener("pointerenter", () =>
+          showFloat(chip.getAttribute("data-detail") || "Next Chelsea match", chip.getBoundingClientRect())
+        );
+        chip.addEventListener("pointerleave", hideFloat, { passive: true });
+        chip.addEventListener("focus", () =>
+          showFloat(chip.getAttribute("data-detail") || "Next Chelsea match", chip.getBoundingClientRect())
+        );
+        chip.addEventListener("blur", hideFloat, { passive: true });
       }
     });
   })();
@@ -368,18 +381,22 @@ import Card from "./Card/index.astro";
 
 
   /* Overwatch burst */
-  .ow-star {
+  .ow-firework {
     position: absolute;
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     border-radius: 999px;
-    background: radial-gradient(circle at 40% 40%, rgba(255, 225, 140, 0.98), rgba(255, 160, 70, 0.16));
+    background: radial-gradient(
+      circle at 40% 40%,
+      hsla(var(--hue, 32), 95%, 72%, 0.98),
+      hsla(var(--hue, 32), 90%, 54%, 0.22)
+    );
     box-shadow:
-      0 0 18px rgba(255, 215, 140, 0.9),
-      0 0 36px rgba(255, 150, 70, 0.42);
+      0 0 16px hsla(var(--hue, 32), 90%, 70%, 0.85),
+      0 0 32px hsla(var(--hue, 32), 90%, 55%, 0.4);
     z-index: 1800;
     pointer-events: none;
-    animation: ow-burst 740ms cubic-bezier(0.18, 0.65, 0.3, 1) forwards;
+    animation: ow-burst 760ms cubic-bezier(0.18, 0.65, 0.3, 1) forwards;
   }
 
   .star-chelsea {
