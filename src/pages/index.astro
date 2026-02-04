@@ -18,25 +18,46 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
 ---
 
 <script>
-  import { stagger, animate, type AnimationSequence } from "motion";
+  import type { AnimationSequence } from "motion";
   import { loaderAnimation } from "../lib/constants";
 
-  const cards = document.querySelectorAll(".card");
+  const runEntrance = async () => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-  const sequence = [
-    loaderAnimation,
-    [
-      cards,
-      { y: ["80%", "0%"], opacity: [0, 1] },
-      {
-        type: "spring",
-        at: "-0.1",
-        delay: stagger(0.12),
-      },
-    ],
-  ];
+    const cards = document.querySelectorAll(".card");
+    if (!cards.length) return;
 
-  animate(sequence as AnimationSequence);
+    const { animate, stagger } = await import("motion");
+
+    const sequence: AnimationSequence = [
+      loaderAnimation,
+      [
+        cards,
+        { y: ["80%", "0%"], opacity: [0, 1] },
+        {
+          type: "spring",
+          at: "-0.1",
+          delay: stagger(0.12),
+        },
+      ],
+    ];
+
+    animate(sequence);
+  };
+
+  const scheduleEntrance = () => {
+    if ("requestIdleCallback" in window) {
+      requestIdleCallback(runEntrance, { timeout: 1200 });
+    } else {
+      setTimeout(runEntrance, 150);
+    }
+  };
+
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    requestAnimationFrame(scheduleEntrance);
+  } else {
+    window.addEventListener("DOMContentLoaded", scheduleEntrance, { once: true });
+  }
 </script>
 
 <Layout
@@ -299,6 +320,22 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
       const trigger = document.querySelector("[data-sonic-trigger]");
       const audio = document.querySelector("[data-sonic-audio]");
       if (!trigger || !audio) return;
+
+      const warmAudio = () => {
+        try {
+          audio.load();
+        } catch (err) {
+          console.debug("Sonic audio could not warm:", err);
+        }
+      };
+
+      if ("requestIdleCallback" in window) {
+        requestIdleCallback(warmAudio, { timeout: 800 });
+      } else {
+        setTimeout(warmAudio, 400);
+      }
+
+      trigger.addEventListener("pointerenter", warmAudio, { once: true, passive: true });
 
       trigger.addEventListener("click", async () => {
         try {

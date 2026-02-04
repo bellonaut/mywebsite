@@ -36,6 +36,22 @@ const enableBg = true;    // set false if you only want audio
     audio.loop = true;
     audio.volume = 0.45;
 
+    const warmAudio = () => {
+      try {
+        audio.load();
+      } catch (err) {
+        console.debug("Crafted Sonic audio warm failed:", err);
+      }
+    };
+
+    if ("requestIdleCallback" in window) {
+      requestIdleCallback(warmAudio, { timeout: 800 });
+    } else {
+      setTimeout(warmAudio, 400);
+    }
+
+    btn.addEventListener("pointerenter", warmAudio, { once: true, passive: true });
+
     function setBadge(text) {
       badge.textContent = text || "";
       badge.style.display = text ? "grid" : "none";
