@@ -430,16 +430,9 @@ import Card from "./Card/index.astro";
   }
 
   @media (max-width: 720px) {
-    .hero-shell {
-      flex-direction: column;
-      align-items: stretch;
-      height: auto;
-    }
-
     .hero-layout {
       flex-direction: column;
       align-items: flex-start;
-      height: auto;
     }
 
     .hero-content {
@@ -454,8 +447,7 @@ import Card from "./Card/index.astro";
     }
 
     .hero-portrait img {
-      width: min(70vw, 220px);
-      max-width: clamp(160px, 60vw, 220px);
+      max-width: min(70vw, 220px);
     }
   }
 </style>
