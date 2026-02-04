@@ -114,6 +114,29 @@ import Card from "./Card/index.astro";
     const chips = document.querySelectorAll(".hero-interests .interest");
     if (!chips.length) return;
 
+    const tip = document.createElement("div");
+    tip.className = "interest-tooltip";
+    tip.hidden = true;
+    document.body.appendChild(tip);
+
+    const showTip = (text, e) => {
+      tip.textContent = text;
+      tip.hidden = false;
+      tip.classList.add("show");
+      moveTip(e);
+    };
+
+    const hideTip = () => {
+      tip.classList.remove("show");
+      tip.hidden = true;
+    };
+
+    const moveTip = (e) => {
+      if (!tip || tip.hidden) return;
+      tip.style.left = `${e.clientX}px`;
+      tip.style.top = `${e.clientY}px`;
+    };
+
     const openGoodreads = () =>
       window.open("https://www.goodreads.com/review/list/159707285?ref=nav_mybooks", "_blank", "noopener");
 
@@ -151,12 +174,25 @@ import Card from "./Card/index.astro";
 
       if (key === "fantasy") {
         chip.addEventListener("click", openGoodreads);
+        chip.addEventListener("pointerenter", (e) => showTip("Check out my Goodreads", e));
+        chip.addEventListener("pointermove", moveTip, { passive: true });
+        chip.addEventListener("pointerleave", hideTip, { passive: true });
       }
 
       if (key === "overwatch") {
         chip.addEventListener("click", () => burstStars(chip));
+        chip.addEventListener("pointerleave", hideTip, { passive: true });
+      }
+
+      if (key === "chelsea") {
+        const msg = "Next: vs Brighton · Sat, Feb 7 · 10:00 ET";
+        chip.addEventListener("pointerenter", (e) => showTip(msg, e));
+        chip.addEventListener("pointermove", moveTip, { passive: true });
+        chip.addEventListener("pointerleave", hideTip, { passive: true });
       }
     });
+
+    document.addEventListener("scroll", hideTip, { passive: true });
   })();
 </script>
 <style>
@@ -251,9 +287,9 @@ import Card from "./Card/index.astro";
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 5px 12px;
+    padding: 4px 10px;
     border-radius: 999px;
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     color: rgba(230, 245, 255, 0.9);
     border: 1px solid rgba(120, 190, 255, 0.28);
     background: linear-gradient(130deg, rgba(14, 30, 55, 0.65), rgba(8, 16, 28, 0.75));
@@ -274,14 +310,7 @@ import Card from "./Card/index.astro";
   }
 
   .interest-detail {
-    max-width: 0;
-    opacity: 0;
-    margin-left: 4px;
-    color: rgba(180, 215, 255, 0.9);
-    font-size: 0.75rem;
-    white-space: nowrap;
-    overflow: hidden;
-    transition: max-width 160ms ease, opacity 160ms ease;
+    display: none;
   }
 
   .interest:hover,
@@ -297,12 +326,35 @@ import Card from "./Card/index.astro";
 
   .interest:hover .interest-detail,
   .interest:focus-visible .interest-detail {
-    max-width: 320px;
-    opacity: 1;
+    display: none;
   }
 
   .interest[data-interest="overwatch"] {
     gap: 8px;
+  }
+
+  .interest-tooltip {
+    position: fixed;
+    z-index: 1500;
+    padding: 9px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(120, 190, 255, 0.35);
+    background: radial-gradient(circle at 20% 20%, rgba(90, 160, 255, 0.14), transparent 45%),
+      rgba(10, 18, 30, 0.96);
+    color: rgba(235, 245, 255, 0.95);
+    font-size: 0.82rem;
+    box-shadow:
+      0 12px 26px rgba(0, 0, 0, 0.32),
+      0 0 16px rgba(90, 170, 255, 0.18);
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -130%) scale(0.98);
+    transition: opacity 120ms ease, transform 120ms ease;
+  }
+
+  .interest-tooltip.show {
+    opacity: 1;
+    transform: translate(-50%, -130%) scale(1);
   }
 
   /* Overwatch burst */
