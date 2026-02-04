@@ -2,7 +2,12 @@
 import Card from "./Card/index.astro";
 ---
 
-<Card colSpan="md:col-span-3" rowSpan="md:row-span-4">
+<Card
+  colSpan="md:col-span-3"
+  rowSpan="md:row-span-4"
+  height="h-auto md:h-full"
+  overflow="overflow-visible md:overflow-hidden"
+>
   <div class="hero-shell flex w-full h-full relative overflow-hidden">
     <div class="hero-electrons" aria-hidden="true">
       <div class="spark"></div>
@@ -430,9 +435,16 @@ import Card from "./Card/index.astro";
   }
 
   @media (max-width: 720px) {
+    .hero-shell {
+      flex-direction: column;
+      align-items: stretch;
+      height: auto;
+    }
+
     .hero-layout {
       flex-direction: column;
       align-items: flex-start;
+      height: auto;
     }
 
     .hero-content {
@@ -447,7 +459,10 @@ import Card from "./Card/index.astro";
     }
 
     .hero-portrait img {
-      max-width: min(70vw, 220px);
+      width: min(70vw, 220px);
+      max-width: clamp(160px, 60vw, 220px);
+      max-height: 180px;
+      height: auto;
     }
   }
 </style>

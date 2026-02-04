@@ -11,13 +11,14 @@ interface Props {
   colorText?: string;
   height?: string;
   width?: string;
+  overflow?: string;
 }
 
-const { title, body, colSpan, rowSpan, href, colorText, height } = Astro.props;
+const { title, body, colSpan, rowSpan, href, colorText, height, overflow } = Astro.props;
 ---
 
 <div
-  class={`card group relative w-full flex flex-col overflow-hidden p-6 align-start transition duration-150 ease-in-out
+  class={`card group relative w-full flex flex-col ${overflow || "overflow-hidden"} p-6 align-start transition duration-150 ease-in-out
     ${height || "h-full"}
     col-span-1 ${colSpan || "md:col-span-2"} ${rowSpan || ""}`}
   style="
