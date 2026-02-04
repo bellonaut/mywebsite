@@ -1,0 +1,82 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/Card/index.astro";
+import MyStack from "../components/MyStack.astro";
+---
+
+<Layout
+  title="Projects — Bashir Aminu Bello"
+  description="Expanded project archive with methods, findings, and next steps."
+>
+  <main class="projects-page">
+    <header class="projects-header">
+      <a class="back-link" href="/">← Back home</a>
+      <h1>Projects</h1>
+      <p>
+        Full project narratives, methods, and next steps. Tap any entry to expand.
+      </p>
+    </header>
+
+    <Card title="All Projects" height="h-full">
+      <div class="card-body">
+        <div class="card-scroll">
+          <MyStack />
+        </div>
+      </div>
+    </Card>
+  </main>
+</Layout>
+
+<style is:global>
+  .projects-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .projects-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    color: rgba(235, 245, 255, 0.92);
+  }
+
+  .projects-header h1 {
+    margin: 0;
+    font-size: clamp(2rem, 3vw, 2.6rem);
+  }
+
+  .projects-header p {
+    margin: 0;
+    max-width: 700px;
+    color: rgba(220, 235, 255, 0.7);
+  }
+
+  .back-link {
+    color: rgba(160, 210, 255, 0.95);
+    text-decoration: none;
+    font-size: 0.9rem;
+    width: fit-content;
+  }
+
+  .back-link:hover {
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    margin-top: 0.25rem;
+  }
+
+  .card-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow: visible;
+  }
+</style>
