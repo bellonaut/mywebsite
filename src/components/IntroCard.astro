@@ -2,8 +2,13 @@
 import Card from "./Card/index.astro";
 ---
 
-<Card colSpan="md:col-span-3" rowSpan="md:row-span-4">
-  <div class="flex w-full h-full relative overflow-hidden">
+<Card
+  colSpan="md:col-span-3"
+  rowSpan="md:row-span-4"
+  height="h-auto md:h-full"
+  overflow="overflow-visible md:overflow-hidden"
+>
+  <div class="hero-shell flex w-full h-full relative overflow-hidden">
     <div class="hero-electrons" aria-hidden="true">
       <div class="spark"></div>
       <div class="spark"></div>
@@ -35,9 +40,9 @@ import Card from "./Card/index.astro";
     <div class="absolute inset-0 pointer-events-none hero-electrons"></div>
 
     <div
-      class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-10 w-full h-full"
+      class="hero-layout relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-10 w-full h-full"
     >
-      <div class="flex-1 space-y-4 order-1">
+      <div class="hero-content flex-1 space-y-4 order-1">
         <h1 class="m-0 font-bold text-3xl md:text-4xl leading-tight">
           Hi, I’m Bashir Aminu Bello.
         </h1>
@@ -65,7 +70,15 @@ import Card from "./Card/index.astro";
                   />
                   Overwatch
                 </span>
-                <span class="interest" data-interest="fantasy">📚 Fantasy books</span>
+                <a
+                  class="interest interest-link-button"
+                  href="https://www.goodreads.com/review/list/159707285?ref=nav_mybooks"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Fantasy books reading list on Goodreads"
+                >
+                  📚 Fantasy books
+                </a>
               </div>
             </div>
 
@@ -88,7 +101,7 @@ import Card from "./Card/index.astro";
     </div>
 
     <div
-      class="flex-shrink-0 order-2 md:order-none w-full md:w-auto flex justify-center md:justify-end"
+      class="hero-portrait flex-shrink-0 order-2 md:order-none w-full md:w-auto flex justify-center md:justify-end"
     >
       <img
         src="/portrait.svg"
@@ -321,6 +334,19 @@ import Card from "./Card/index.astro";
     background: rgba(10, 20, 35, 0.35);
   }
 
+  .interest-link-button {
+    text-decoration: none;
+  }
+
+  .interest-link-button:hover {
+    border-color: rgba(56, 189, 248, 0.5);
+  }
+
+  .interest-link-button:focus-visible {
+    outline: 2px solid rgba(120, 200, 255, 0.6);
+    outline-offset: 2px;
+  }
+
   .interest-icon {
     width: 16px;
     height: 16px;
@@ -405,6 +431,38 @@ import Card from "./Card/index.astro";
     .hero-logos {
       grid-template-columns: repeat(6, minmax(0, 1fr));
       justify-items: start;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .hero-shell {
+      flex-direction: column;
+      align-items: stretch;
+      height: auto;
+    }
+
+    .hero-layout {
+      flex-direction: column;
+      align-items: flex-start;
+      height: auto;
+    }
+
+    .hero-content {
+      width: 100%;
+    }
+
+    .hero-portrait {
+      order: -1;
+      width: 100%;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .hero-portrait img {
+      width: min(70vw, 220px);
+      max-width: clamp(160px, 60vw, 220px);
+      max-height: 180px;
+      height: auto;
     }
   }
 </style>
