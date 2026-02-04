@@ -126,6 +126,26 @@ import Card from "./Card/index.astro";
     const chips = document.querySelectorAll(".hero-interests .interest");
     if (!chips.length) return;
 
+    const float = document.createElement("div");
+    float.className = "interest-float";
+    float.hidden = true;
+    document.body.appendChild(float);
+
+    const showFloat = (text, rect) => {
+      float.textContent = text;
+      float.hidden = false;
+      float.classList.add("show");
+      const left = rect.left + window.scrollX + rect.width / 2;
+      const top = rect.top + window.scrollY;
+      float.style.left = `${left}px`;
+      float.style.top = `${top}px`;
+    };
+
+    const hideFloat = () => {
+      float.classList.remove("show");
+      float.hidden = true;
+    };
+
     const openGoodreads = () =>
       window.open("https://www.goodreads.com/review/list/159707285?ref=nav_mybooks", "_blank", "noopener");
 
@@ -167,10 +187,20 @@ import Card from "./Card/index.astro";
 
       if (key === "fantasy") {
         chip.addEventListener("click", openGoodreads);
+        chip.addEventListener("pointerenter", () =>
+          showFloat(chip.getAttribute("data-detail") || "Check out my Goodreads", chip.getBoundingClientRect())
+        );
+        chip.addEventListener("pointerleave", hideFloat, { passive: true });
       }
 
       if (key === "overwatch") {
         chip.addEventListener("click", () => burstStars(chip));
+      }
+
+      if (key === "chelsea") {
+        const msg = chip.getAttribute("data-detail") || "Next fixture";
+        chip.addEventListener("pointerenter", () => showFloat(msg, chip.getBoundingClientRect()));
+        chip.addEventListener("pointerleave", hideFloat, { passive: true });
       }
     });
   })();
@@ -290,16 +320,7 @@ import Card from "./Card/index.astro";
   }
 
   .interest-detail {
-    display: inline-block;
-    max-width: 0;
-    opacity: 0;
-    margin-left: 6px;
-    color: rgba(180, 215, 255, 0.9);
-    font-size: 0.74rem;
-    white-space: nowrap;
-    overflow: hidden;
-    transform: translateX(-2px);
-    transition: max-width 180ms ease, opacity 180ms ease, transform 180ms ease;
+    display: none;
   }
 
   .interest:hover,
@@ -315,13 +336,34 @@ import Card from "./Card/index.astro";
 
   .interest:hover .interest-detail,
   .interest:focus-visible .interest-detail {
-    max-width: 320px;
-    opacity: 1;
-    transform: translateX(0);
+    display: none;
   }
 
   .interest[data-interest="overwatch"] {
     gap: 8px;
+  }
+
+  .interest-float {
+    position: fixed;
+    z-index: 1550;
+    padding: 9px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(120, 190, 255, 0.32);
+    background: linear-gradient(135deg, rgba(16, 32, 56, 0.9), rgba(10, 20, 34, 0.9));
+    color: rgba(235, 245, 255, 0.95);
+    font-size: 0.82rem;
+    box-shadow:
+      0 12px 26px rgba(0, 0, 0, 0.32),
+      0 0 16px rgba(90, 170, 255, 0.16);
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -110%) scale(0.98);
+    transition: opacity 120ms ease, transform 120ms ease;
+  }
+
+  .interest-float.show {
+    opacity: 1;
+    transform: translate(-50%, -110%) scale(1);
   }
 
 
