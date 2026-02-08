@@ -115,70 +115,9 @@ import Card from "./Card/index.astro";
 </Card>
 <script is:inline>
   (() => {
+    // Light interaction only: keep the Overwatch burst, remove tooltips for clubs/running.
     const interests = document.querySelectorAll(".hero-interests .interest");
     if (!interests.length) return;
-
-    const pop = document.createElement("div");
-    pop.className = "interest-pop";
-    pop.innerHTML = `
-      <div class="interest-pop-title"></div>
-      <div class="interest-pop-body"></div>
-      <div class="interest-pop-footer"></div>
-    `;
-    pop.hidden = true;
-    document.body.appendChild(pop);
-
-    const titleEl = pop.querySelector(".interest-pop-title");
-    const bodyEl = pop.querySelector(".interest-pop-body");
-    const footEl = pop.querySelector(".interest-pop-footer");
-
-    const setContent = (key) => {
-      switch (key) {
-        case "chelsea":
-          titleEl.textContent = "Chelsea FC";
-          bodyEl.textContent = "Next: vs Brighton · Sat, Feb 7 · 10:00 ET (PL)";
-          footEl.textContent = "CFC | form: W · L · D · W";
-          break;
-        case "fantasy":
-          titleEl.textContent = "Fantasy books";
-          bodyEl.innerHTML =
-            'My Goodreads shelves — epic & Afrofantasy picks.<br/><a class="interest-link" href="https://www.goodreads.com/user/show/159707285-bashir-bello" target="_blank" rel="noopener noreferrer">Profile</a> · <a class="interest-link" href="https://www.goodreads.com/review/list/159707285?ref=nav_mybooks" target="_blank" rel="noopener noreferrer">Read list</a>';
-          footEl.textContent = "Currently: spinning up a new trilogy.";
-          break;
-        case "running":
-          titleEl.textContent = "Running log";
-          bodyEl.textContent = "Base: 25 km/wk · Tempo Thu · Long Sat";
-          footEl.textContent = "Goal: 10K under 45 min";
-          break;
-        default:
-          titleEl.textContent = "";
-          bodyEl.textContent = "";
-          footEl.textContent = "";
-      }
-    };
-
-    const showPop = (el, key) => {
-      setContent(key);
-      pop.hidden = false;
-      pop.classList.add("show");
-
-      const rect = el.getBoundingClientRect();
-      const top = rect.top + window.scrollY - 8;
-      const left = rect.left + window.scrollX + rect.width / 2;
-      pop.style.top = `${top}px`;
-      pop.style.left = `${left}px`;
-    };
-
-    const hidePop = () => {
-      pop.classList.remove("show");
-      pop.hidden = true;
-    };
-
-    let hideTimer;
-    const queueHide = () => {
-      clearTimeout(hideTimer);
-      hideTimer = setTimeout(hidePop, 120);
-    };
 
     const burstStars = (el) => {
       const rect = el.getBoundingClientRect();
@@ -204,47 +143,9 @@ import Card from "./Card/index.astro";
     interests.forEach((item) => {
       const key = item.getAttribute("data-interest");
       if (!key) return;
-
       if (key === "overwatch") {
         item.addEventListener("click", () => burstStars(item));
-        return;
       }
-
-      if (key === "fantasy") {
-        item.addEventListener("click", () => {
-          const open = pop.classList.contains("show") && !pop.hidden && titleEl.textContent === "Fantasy books";
-          if (open) {
-            hidePop();
-          } else {
-            showPop(item, key);
-          }
-        });
-      }
-
-      item.addEventListener(
-        "pointerenter",
-        () => {
-          clearTimeout(hideTimer);
-          showPop(item, key);
-        },
-        { passive: true }
-      );
-      item.addEventListener("pointerleave", queueHide, { passive: true });
-      item.addEventListener("blur", queueHide);
-    });
-
-    pop.addEventListener("pointerenter", () => clearTimeout(hideTimer));
-    pop.addEventListener("pointerleave", queueHide);
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") hidePop();
-    });
-
-    document.addEventListener("click", (e) => {
-      const target = e.target;
-      if (!target) return;
-      if (target.closest(".interest") || target.closest(".interest-pop")) return;
-      hidePop();
     });
   })();
 </script>
