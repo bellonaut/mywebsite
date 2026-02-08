@@ -20,6 +20,37 @@ type Project = {
 
 const projects: Project[] = [
   {
+    title: "Nigeria Health Desert Risk Scorer",
+    year: "Feb 2026–Present",
+    tagline:
+      "Policy-ready LGA risk flags built from access, facility, and connectivity indicators.",
+    tools: [
+      "Python",
+      "geopandas",
+      "shapely",
+      "pyproj",
+      "scikit-learn",
+      "XGBoost",
+      "Streamlit",
+    ],
+    background:
+      "Prototype that fuses DHS-derived outcomes with travel-time, facility-density, and mobile-coverage signals to highlight LGAs facing compounded access risk.",
+    methods: [
+      "Merged DHS outcomes with travel-time matrices, facility-density stats, and 3G/4G coverage per LGA.",
+      "Engineered composite risk features and trained scikit-learn/XGBoost models with explainable outputs.",
+      "Built a Streamlit UI for transparent parameter tweaks and export-ready tables for policy teams.",
+    ],
+    findings: [
+      "Surfaced LGAs where connectivity and facility proximity deficits compound health-access risk.",
+      "Clarity of tabular outputs improved handoff to policy stakeholders for prioritization.",
+    ],
+    next: "Add ablation comparisons and publish a brief for state-level partners.",
+    links: [
+      { label: "Launch live app", href: "https://bashir-healthdesert.streamlit.app/" },
+      { label: "GitHub", href: "https://github.com/bellonaut/health-desert-scorer" },
+    ],
+  },
+  {
     title: "NaijaCare — Low-Bandwidth Telehealth",
     year: "2024–25",
     tagline: "WhatsApp triage + USSD fallback for rural Nigerian clinics.",

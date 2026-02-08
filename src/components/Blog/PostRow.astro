@@ -34,7 +34,6 @@ const { posts, limit = 6 } = Astro.props as Props; // ✅ default 6 (or 10, up t
 
           <div class="copy">
             <p class="t">{post.title}</p>
-            {post.subtitle && <p class="s">{post.subtitle}</p>}
           </div>
         </a>
       ))
@@ -118,21 +117,13 @@ const { posts, limit = 6 } = Astro.props as Props; // ✅ default 6 (or 10, up t
   .copy {
     min-width: 0;
     display: grid;
-    gap: 0.25rem;
+    gap: 0.15rem;
   }
 
   .t {
     margin: 0;
     font-size: 0.95rem;
     line-height: 1.25;
-    overflow-wrap: anywhere;
-  }
-
-  .s {
-    margin: 0;
-    font-size: 0.85rem;
-    line-height: 1.35;
-    color: rgba(255, 255, 255, 0.66);
     overflow-wrap: anywhere;
   }
 

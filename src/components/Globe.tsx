@@ -21,6 +21,7 @@ const GlobeComponent = (props: Props = {}) => {
     "Canada",
     "India",
     "Nigeria",
+    "Egypt",
     "Saudi Arabia",
     "Saudi Arabia",
     "Qatar",
@@ -39,6 +40,7 @@ const GlobeComponent = (props: Props = {}) => {
     Czechia: "Czech Republic",
     UAE: "United Arab Emirates",
     Dubai: "United Arab Emirates",
+    USA: "United States",
     Washington: "United States",
   };
 
