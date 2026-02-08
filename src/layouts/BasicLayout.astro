@@ -142,21 +142,21 @@ const schema =
     inset: -5%;
     pointer-events: none;
     background-image:
-      radial-gradient(circle at 18% 24%, rgba(200, 235, 255, 0.32) 1.1px, transparent 3px),
-      radial-gradient(circle at 62% 48%, rgba(160, 210, 255, 0.26) 1.1px, transparent 3px),
-      radial-gradient(circle at 40% 80%, rgba(170, 220, 240, 0.24) 1px, transparent 3px),
-      radial-gradient(circle at 74% 20%, rgba(170, 210, 255, 0.22) 1px, transparent 3px);
+      radial-gradient(circle at 18% 24%, rgba(230, 255, 255, 0.9) 1.8px, transparent 4px),
+      radial-gradient(circle at 62% 48%, rgba(200, 240, 255, 0.8) 1.6px, transparent 4px),
+      radial-gradient(circle at 40% 80%, rgba(210, 240, 255, 0.78) 1.5px, transparent 4px),
+      radial-gradient(circle at 74% 20%, rgba(200, 235, 255, 0.78) 1.6px, transparent 4px);
     mix-blend-mode: screen;
-    opacity: 0.45;
-    filter: blur(0.35px);
-    animation: sky-drift-a 52s linear infinite;
+    opacity: 0.85;
+    filter: blur(0.2px);
+    animation: sky-drift-a 22s linear infinite;
     transform-origin: center;
   }
 
   .site-bg::after {
-    opacity: 0.28;
-    filter: blur(0.55px);
-    animation: sky-drift-b 74s linear infinite;
+    opacity: 0.65;
+    filter: blur(0.3px);
+    animation: sky-drift-b 28s linear infinite;
   }
 
   .site-bg-cells {
@@ -166,14 +166,14 @@ const schema =
     pointer-events: none;
     mix-blend-mode: screen;
     background-image:
-      radial-gradient(circle, rgba(120, 200, 255, 0.16) 0%, transparent 40%),
-      radial-gradient(circle, rgba(216, 80, 140, 0.12) 0%, transparent 42%),
-      radial-gradient(circle, rgba(120, 255, 210, 0.12) 0%, transparent 38%),
-      radial-gradient(circle, rgba(255, 210, 120, 0.10) 0%, transparent 36%);
+      radial-gradient(circle, rgba(120, 200, 255, 0.6) 0%, transparent 42%),
+      radial-gradient(circle, rgba(216, 80, 140, 0.45) 0%, transparent 44%),
+      radial-gradient(circle, rgba(120, 255, 210, 0.45) 0%, transparent 40%),
+      radial-gradient(circle, rgba(255, 210, 120, 0.38) 0%, transparent 38%);
     background-size: 480px 480px, 420px 420px, 360px 360px, 320px 320px;
     background-position: 20% 32%, 78% 18%, 42% 78%, 66% 26%;
-    animation: cells-drift 36s ease-in-out infinite alternate;
-    filter: blur(0.2px);
+    animation: cells-drift 14s ease-in-out infinite alternate;
+    filter: blur(0.1px);
   }
 
   .site-bg-streaks {
@@ -185,48 +185,48 @@ const schema =
     background:
       repeating-linear-gradient(
         25deg,
-        rgba(120, 200, 255, 0.06) 0,
-        rgba(120, 200, 255, 0.06) 120px,
+        rgba(120, 200, 255, 0.2) 0,
+        rgba(120, 200, 255, 0.2) 120px,
         transparent 120px,
-        transparent 360px
+        transparent 280px
       ),
       repeating-linear-gradient(
         -18deg,
-        rgba(216, 30, 91, 0.05) 0,
-        rgba(216, 30, 91, 0.05) 140px,
+        rgba(216, 30, 91, 0.18) 0,
+        rgba(216, 30, 91, 0.18) 140px,
         transparent 140px,
-        transparent 400px
+        transparent 300px
       );
     background-size: 1100px 1100px, 1200px 1200px;
     background-position: 0 0, 0 0;
-    animation: streak-pan 28s linear infinite;
-    opacity: 0.35;
-    filter: blur(0.6px);
+    animation: streak-pan 12s linear infinite;
+    opacity: 0.9;
+    filter: blur(0.45px);
   }
 </style>
 
 <style is:global>
   @keyframes sky-drift-a {
-    0% { transform: translate3d(-2%, -1%, 0) scale(1); }
-    50% { transform: translate3d(2%, 1%, 0) scale(1.02); }
-    100% { transform: translate3d(-2%, -1%, 0) scale(1); }
+    0% { transform: translate3d(-4%, -2%, 0) scale(1); }
+    50% { transform: translate3d(4%, 2%, 0) scale(1.05); }
+    100% { transform: translate3d(-4%, -2%, 0) scale(1); }
   }
 
   @keyframes sky-drift-b {
-    0% { transform: translate3d(1%, 0.5%, 0) scale(1); }
-    50% { transform: translate3d(-1.5%, -0.8%, 0) scale(1.015); }
-    100% { transform: translate3d(1%, 0.5%, 0) scale(1); }
+    0% { transform: translate3d(2%, 1%, 0) scale(1); }
+    50% { transform: translate3d(-2.5%, -1.5%, 0) scale(1.04); }
+    100% { transform: translate3d(2%, 1%, 0) scale(1); }
   }
 
   @keyframes cells-drift {
-    0%   { background-position: 18% 28%, 80% 16%, 40% 76%, 64% 24%; background-size: 480px 480px, 420px 420px, 360px 360px, 320px 320px; }
-    50%  { background-position: 26% 34%, 74% 22%, 46% 70%, 58% 30%; background-size: 520px 520px, 440px 440px, 340px 340px, 300px 300px; }
-    100% { background-position: 22% 30%, 70% 18%, 42% 78%, 62% 26%; background-size: 500px 500px, 460px 460px, 360px 360px, 320px 320px; }
+    0%   { background-position: 18% 28%, 80% 16%, 40% 76%, 64% 24%; background-size: 520px 520px, 460px 460px, 380px 380px, 340px 340px; }
+    50%  { background-position: 28% 36%, 70% 24%, 48% 68%, 56% 32%; background-size: 580px 580px, 500px 500px, 360px 360px, 320px 320px; }
+    100% { background-position: 22% 30%, 70% 18%, 42% 78%, 62% 26%; background-size: 540px 540px, 480px 480px, 380px 380px, 340px 340px; }
   }
 
   @keyframes streak-pan {
     0% { background-position: 0 0, 0 0; }
-    100% { background-position: 800px 600px, -900px 700px; }
+    100% { background-position: 1400px 900px, -1500px 950px; }
   }
 </style>
   </body>
