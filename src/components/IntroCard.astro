@@ -9,6 +9,7 @@ import Card from "./Card/index.astro";
   overflow="overflow-visible md:overflow-hidden"
 >
   <div class="hero-shell flex w-full h-full relative overflow-hidden">
+    <div class="hero-bg" aria-hidden="true"></div>
 
     <div
       class="hero-layout relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-10 w-full h-full"
@@ -123,6 +124,51 @@ import Card from "./Card/index.astro";
 <style>
   .hero-card {
     position: relative;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(900px 520px at 25% 20%, rgba(70, 130, 180, 0.16), transparent 65%),
+      radial-gradient(720px 440px at 75% 10%, rgba(216, 30, 91, 0.12), transparent 60%),
+      linear-gradient(180deg, rgba(6, 14, 24, 0.95), rgba(6, 14, 24, 0.88));
+    overflow: hidden;
+  }
+
+  .hero-bg::before,
+  .hero-bg::after {
+    content: "";
+    position: absolute;
+    inset: -10%;
+    background-image:
+      radial-gradient(circle at 18% 24%, rgba(160, 210, 255, 0.28) 1px, transparent 3px),
+      radial-gradient(circle at 62% 48%, rgba(200, 235, 255, 0.22) 1.2px, transparent 3.5px),
+      radial-gradient(circle at 40% 80%, rgba(180, 220, 240, 0.18) 1.1px, transparent 3px),
+      radial-gradient(circle at 74% 20%, rgba(170, 210, 255, 0.2) 1.2px, transparent 3px);
+    opacity: 0.35;
+    filter: blur(0.3px);
+    animation: drift-a 46s linear infinite;
+  }
+
+  .hero-bg::after {
+    opacity: 0.22;
+    filter: blur(0.45px);
+    animation: drift-b 64s linear infinite;
+  }
+
+  @keyframes drift-a {
+    0% { transform: translate3d(-2%, -1%, 0) rotate(0deg); }
+    50% { transform: translate3d(2%, 1%, 0) rotate(0.5deg); }
+    100% { transform: translate3d(-2%, -1%, 0) rotate(0deg); }
+  }
+
+  @keyframes drift-b {
+    0% { transform: translate3d(1%, 0.4%, 0) rotate(-0.4deg); }
+    50% { transform: translate3d(-1.5%, -0.6%, 0) rotate(0.6deg); }
+    100% { transform: translate3d(1%, 0.4%, 0) rotate(-0.4deg); }
   }
 
   .hero-actions {
