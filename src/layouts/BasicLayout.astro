@@ -113,7 +113,6 @@ const schema =
   <!-- ✅ Key fixes: remove md:h-screen and justify-center; use min-h and normal flow -->
 <body class="bg-darkslate-700 text-neutral-50 min-h-[100dvh]">
   <div class="site-bg" aria-hidden="true"></div>
-  <div id="comet-layer" aria-hidden="true"></div>
 
   <slot />
 </body>
@@ -129,100 +128,8 @@ const schema =
     overflow: hidden;
   }
 
-  #comet-layer {
-    position: fixed;
-    inset: 0;
-    z-index: -51;
-    pointer-events: none;
-    overflow: hidden;
-    mix-blend-mode: screen;
-  }
-
-  .comet {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 18vw;
-    height: 2px;
-    background: linear-gradient(90deg, rgba(255,255,255,0), var(--comet-color, rgba(120,180,255,0.9)), rgba(255,255,255,0));
-    filter: blur(1px);
-    opacity: 0;
-    transform: rotate(var(--angle, 8deg));
-    animation: comet-run var(--duration, 2400ms) linear forwards;
-  }
-
-  @keyframes comet-run {
-    0% { opacity: 0; transform: translate3d(-12vw, -6vh, 0) rotate(var(--angle, 8deg)); }
-    8% { opacity: 1; }
-    30% { opacity: 0.8; }
-    60% { opacity: 0.2; }
-    100% { transform: translate3d(115vw, 38vh, 0) rotate(var(--angle, 8deg)); opacity: 0; }
-  }
+  /* static gradient background only */
 </style>
-
-<script is:inline>
-  (() => {
-    const reduce =
-      typeof window !== "undefined" &&
-      window.matchMedia &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
-
-    const layer = document.getElementById("comet-layer");
-    if (!layer) return;
-
-    const colors = [
-      "rgba(100,180,255,0.95)",
-      "rgba(140,200,255,0.95)",
-      "rgba(80,160,240,0.9)",
-      "rgba(170,220,255,0.9)",
-    ];
-
-    const spawn = (depth = 0, opts = {}) => {
-      const el = document.createElement("div");
-      el.className = "comet";
-
-      const top = opts.top ?? Math.random() * window.innerHeight * 0.8;
-      const left = opts.left ?? -0.18 * window.innerWidth;
-      const angle = opts.angle ?? (Math.random() * 10 + 4);
-      const duration = opts.duration ?? 2200 + Math.random() * 600;
-      const color = colors[Math.floor(Math.random() * colors.length)];
-
-      el.style.top = `${top}px`;
-      el.style.left = `${left}px`;
-      el.style.setProperty("--angle", `${angle}deg`);
-      el.style.setProperty("--duration", `${duration}ms`);
-      el.style.setProperty("--comet-color", color);
-
-      layer.appendChild(el);
-      el.addEventListener("animationend", () => el.remove(), { once: true });
-
-      // probabilistic split (max depth 2)
-      if (depth < 2 && Math.random() < 0.55) {
-        const branches = Math.random() < 0.6 ? 2 : 1;
-        for (let i = 0; i < branches; i++) {
-          const drift = (Math.random() - 0.5) * 140;
-          setTimeout(() => {
-            spawn(depth + 1, {
-              top: top + drift,
-              left: left + window.innerWidth * 0.25,
-              angle: angle + (Math.random() - 0.5) * 14,
-              duration: duration * (0.55 + Math.random() * 0.25),
-            });
-          }, 140 + Math.random() * 220);
-        }
-      }
-    };
-
-    const loop = () => {
-      spawn();
-      const jitter = Math.random() * 800 - 400; // +/- 0.4s
-      setTimeout(loop, 4000 + jitter);
-    };
-
-    loop();
-  })();
-</script>
 
 <style is:global>
   @font-face {
@@ -283,11 +190,8 @@ const schema =
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .site-bg-glow,
-    .site-bg-twinkle,
-    .site-bg-comet {
+    .site-bg {
       animation: none !important;
-      opacity: 0.3;
     }
   }
 </style>

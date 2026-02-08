@@ -23,11 +23,11 @@ const { title, body, colSpan, rowSpan, href, colorText, height, overflow } = Ast
     col-span-1 ${colSpan || "md:col-span-2"} ${rowSpan || ""}`}
   style="
     color: var(--text);
-    background: rgba(8, 18, 30, 0.38);
-    border: 1px solid rgba(175, 200, 214, 0.16);
+    background: transparent;
+    border: none;
     border-radius: 12px;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.04);
-    backdrop-filter: blur(6px);
+    box-shadow: none;
+    backdrop-filter: none;
   "
 >
   {href ? (
