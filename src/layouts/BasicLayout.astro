@@ -113,9 +113,7 @@ const schema =
   <!-- ✅ Key fixes: remove md:h-screen and justify-center; use min-h and normal flow -->
 <body class="bg-darkslate-700 text-neutral-50 min-h-[100dvh]">
   <div class="site-bg" aria-hidden="true"></div>
-  <div class="site-bg-glow" aria-hidden="true"></div>
-  <div class="site-bg-twinkle" aria-hidden="true"></div>
-  <div class="site-bg-comet" aria-hidden="true"></div>
+  <div id="comet-layer" aria-hidden="true"></div>
 
   <slot />
 </body>
@@ -127,89 +125,104 @@ const schema =
     z-index: -50;
     pointer-events: none;
 
-    background:
-      radial-gradient(1200px 900px at 20% 20%, rgba(56, 189, 248, 0.14), transparent 60%),
-      radial-gradient(1000px 700px at 80% 10%, rgba(216, 30, 91, 0.12), transparent 65%),
-      linear-gradient(180deg, rgba(6, 14, 24, 0.95), rgba(6, 14, 24, 0.88));
-
+    background: linear-gradient(180deg, rgba(6, 14, 24, 0.95), rgba(6, 14, 24, 0.88));
     overflow: hidden;
   }
 
-  /* Soft glow layer */
-  .site-bg-glow {
+  #comet-layer {
     position: fixed;
-    inset: -6%;
+    inset: 0;
     z-index: -51;
     pointer-events: none;
-    background:
-      radial-gradient(900px 600px at 22% 24%, rgba(80, 180, 255, 0.16), transparent 65%),
-      radial-gradient(900px 600px at 78% 14%, rgba(216, 50, 110, 0.12), transparent 62%),
-      radial-gradient(720px 520px at 50% 72%, rgba(90, 200, 180, 0.10), transparent 60%);
-    animation: glow-drift 24s ease-in-out infinite alternate;
-    filter: blur(0.2px);
+    overflow: hidden;
+    mix-blend-mode: screen;
   }
 
-  /* Sparse twinkles */
-  .site-bg-twinkle {
-    position: fixed;
-    width: 2px;
+  .comet {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 18vw;
     height: 2px;
-    inset: 0;
-    z-index: -52;
-    pointer-events: none;
-    background: rgba(230, 245, 255, 0.9);
-    box-shadow:
-      12vw 8vh rgba(230,245,255,0.9),
-      28vw 16vh rgba(200,230,255,0.75),
-      42vw 32vh rgba(210,240,255,0.8),
-      58vw 12vh rgba(220,250,255,0.82),
-      72vw 28vh rgba(230,245,255,0.7),
-      86vw 6vh rgba(200,235,255,0.85),
-      18vw 54vh rgba(210,240,255,0.8),
-      34vw 68vh rgba(230,245,255,0.75),
-      62vw 74vh rgba(220,240,255,0.78),
-      80vw 56vh rgba(230,245,255,0.8);
-    animation: twinkle 4s steps(2, end) infinite;
-  }
-
-  /* Occasional comet */
-  .site-bg-comet {
-    position: fixed;
-    top: -8vh;
-    left: -18vw;
-    width: 38vw;
-    height: 2px;
-    z-index: -53;
-    pointer-events: none;
-    background: linear-gradient(90deg, rgba(255,255,255,0), rgba(190, 230, 255, 0.65), rgba(255,255,255,0));
+    background: linear-gradient(90deg, rgba(255,255,255,0), var(--comet-color, rgba(120,180,255,0.9)), rgba(255,255,255,0));
     filter: blur(1px);
     opacity: 0;
-    animation: comet 18s linear infinite;
+    transform: rotate(var(--angle, 8deg));
+    animation: comet-run var(--duration, 2400ms) linear forwards;
+  }
+
+  @keyframes comet-run {
+    0% { opacity: 0; transform: translate3d(-12vw, -6vh, 0) rotate(var(--angle, 8deg)); }
+    8% { opacity: 1; }
+    30% { opacity: 0.8; }
+    60% { opacity: 0.2; }
+    100% { transform: translate3d(115vw, 38vh, 0) rotate(var(--angle, 8deg)); opacity: 0; }
   }
 </style>
 
-<style is:global>
-  @keyframes glow-drift {
-    0% { transform: translate3d(-2%, -1%, 0) scale(1); }
-    50% { transform: translate3d(2%, 1.5%, 0) scale(1.02); }
-    100% { transform: translate3d(-1%, 0.5%, 0) scale(1); }
-  }
+<script is:inline>
+  (() => {
+    const reduce =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
 
-  @keyframes twinkle {
-    0%, 48% { opacity: 0.25; }
-    50% { opacity: 0.9; }
-    52%, 100% { opacity: 0.3; }
-  }
+    const layer = document.getElementById("comet-layer");
+    if (!layer) return;
 
-  @keyframes comet {
-    0% { opacity: 0; transform: translate3d(-10vw, -6vh, 0) rotate(8deg) scaleX(1); }
-    8% { opacity: 0.9; }
-    30% { opacity: 0; }
-    100% { transform: translate3d(110vw, 40vh, 0) rotate(8deg) scaleX(1); opacity: 0; }
-  }
-</style>
-  </body>
-</html>
+    const colors = [
+      "rgba(100,180,255,0.95)",
+      "rgba(140,200,255,0.95)",
+      "rgba(80,160,240,0.9)",
+      "rgba(170,220,255,0.9)",
+    ];
+
+    const spawn = (depth = 0, opts = {}) => {
+      const el = document.createElement("div");
+      el.className = "comet";
+
+      const top = opts.top ?? Math.random() * window.innerHeight * 0.8;
+      const left = opts.left ?? -0.18 * window.innerWidth;
+      const angle = opts.angle ?? (Math.random() * 10 + 4);
+      const duration = opts.duration ?? 2200 + Math.random() * 600;
+      const color = colors[Math.floor(Math.random() * colors.length)];
+
+      el.style.top = `${top}px`;
+      el.style.left = `${left}px`;
+      el.style.setProperty("--angle", `${angle}deg`);
+      el.style.setProperty("--duration", `${duration}ms`);
+      el.style.setProperty("--comet-color", color);
+
+      layer.appendChild(el);
+      el.addEventListener("animationend", () => el.remove(), { once: true });
+
+      // probabilistic split (max depth 2)
+      if (depth < 2 && Math.random() < 0.55) {
+        const branches = Math.random() < 0.6 ? 2 : 1;
+        for (let i = 0; i < branches; i++) {
+          const drift = (Math.random() - 0.5) * 140;
+          setTimeout(() => {
+            spawn(depth + 1, {
+              top: top + drift,
+              left: left + window.innerWidth * 0.25,
+              angle: angle + (Math.random() - 0.5) * 14,
+              duration: duration * (0.55 + Math.random() * 0.25),
+            });
+          }, 140 + Math.random() * 220);
+        }
+      }
+    };
+
+    const loop = () => {
+      spawn();
+      const jitter = Math.random() * 800 - 400; // +/- 0.4s
+      setTimeout(loop, 4000 + jitter);
+    };
+
+    loop();
+  })();
+</script>
 
 <style is:global>
   @font-face {
