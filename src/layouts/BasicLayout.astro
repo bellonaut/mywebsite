@@ -111,9 +111,10 @@ const schema =
   </head>
 
   <!-- ✅ Key fixes: remove md:h-screen and justify-center; use min-h and normal flow -->
-  <body class="bg-darkslate-700 text-neutral-50 min-h-[100dvh]">
-    <body>
+<body class="bg-darkslate-700 text-neutral-50 min-h-[100dvh]">
   <div class="site-bg" aria-hidden="true"></div>
+  <div class="site-bg-cells" aria-hidden="true"></div>
+  <div class="site-bg-streaks" aria-hidden="true"></div>
 
   <slot />
 </body>
@@ -157,6 +158,51 @@ const schema =
     filter: blur(0.55px);
     animation: sky-drift-b 74s linear infinite;
   }
+
+  .site-bg-cells {
+    position: fixed;
+    inset: -8%;
+    z-index: -51;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    background-image:
+      radial-gradient(circle, rgba(120, 200, 255, 0.16) 0%, transparent 40%),
+      radial-gradient(circle, rgba(216, 80, 140, 0.12) 0%, transparent 42%),
+      radial-gradient(circle, rgba(120, 255, 210, 0.12) 0%, transparent 38%),
+      radial-gradient(circle, rgba(255, 210, 120, 0.10) 0%, transparent 36%);
+    background-size: 480px 480px, 420px 420px, 360px 360px, 320px 320px;
+    background-position: 20% 32%, 78% 18%, 42% 78%, 66% 26%;
+    animation: cells-drift 36s ease-in-out infinite alternate;
+    filter: blur(0.2px);
+  }
+
+  .site-bg-streaks {
+    position: fixed;
+    inset: -4%;
+    z-index: -52;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    background:
+      repeating-linear-gradient(
+        25deg,
+        rgba(120, 200, 255, 0.06) 0,
+        rgba(120, 200, 255, 0.06) 120px,
+        transparent 120px,
+        transparent 360px
+      ),
+      repeating-linear-gradient(
+        -18deg,
+        rgba(216, 30, 91, 0.05) 0,
+        rgba(216, 30, 91, 0.05) 140px,
+        transparent 140px,
+        transparent 400px
+      );
+    background-size: 1100px 1100px, 1200px 1200px;
+    background-position: 0 0, 0 0;
+    animation: streak-pan 28s linear infinite;
+    opacity: 0.35;
+    filter: blur(0.6px);
+  }
 </style>
 
 <style is:global>
@@ -170,6 +216,17 @@ const schema =
     0% { transform: translate3d(1%, 0.5%, 0) scale(1); }
     50% { transform: translate3d(-1.5%, -0.8%, 0) scale(1.015); }
     100% { transform: translate3d(1%, 0.5%, 0) scale(1); }
+  }
+
+  @keyframes cells-drift {
+    0%   { background-position: 18% 28%, 80% 16%, 40% 76%, 64% 24%; background-size: 480px 480px, 420px 420px, 360px 360px, 320px 320px; }
+    50%  { background-position: 26% 34%, 74% 22%, 46% 70%, 58% 30%; background-size: 520px 520px, 440px 440px, 340px 340px, 300px 300px; }
+    100% { background-position: 22% 30%, 70% 18%, 42% 78%, 62% 26%; background-size: 500px 500px, 460px 460px, 360px 360px, 320px 320px; }
+  }
+
+  @keyframes streak-pan {
+    0% { background-position: 0 0, 0 0; }
+    100% { background-position: 800px 600px, -900px 700px; }
   }
 </style>
   </body>
