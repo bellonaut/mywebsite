@@ -115,6 +115,83 @@ const schema =
   <div class="site-bg" aria-hidden="true"></div>
 
   <slot />
+
+  <script is:inline>
+    (() => {
+      const endpoint = "/api/visit";
+      const startedAt = Date.now();
+      const startPerf = performance.now();
+      const sessionId = crypto.randomUUID();
+      const interactions = [];
+      let sent = false;
+
+      const recordInteraction = (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        const hit = target.closest("a, button, [role='button']");
+        if (!hit) return;
+
+        const label =
+          hit.getAttribute("aria-label") ||
+          hit.textContent?.trim().slice(0, 120) ||
+          hit.tagName.toLowerCase();
+
+        interactions.push({
+          type: hit.tagName.toLowerCase(),
+          label,
+          href: hit instanceof HTMLAnchorElement ? hit.href : undefined,
+          atMs: Math.round(performance.now() - startPerf),
+        });
+
+        if (interactions.length > 30) {
+          interactions.shift();
+        }
+      };
+
+      const sendSummary = () => {
+        if (sent) return;
+        sent = true;
+
+        const url = new URL(window.location.href);
+        const payload = {
+          sessionId,
+          url: url.toString(),
+          path: url.pathname,
+          referrer: document.referrer || null,
+          startedAt,
+          durationMs: Math.round(performance.now() - startPerf),
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          language: navigator.language,
+          interactions,
+          utm: Object.fromEntries(url.searchParams.entries()),
+        };
+
+        const body = JSON.stringify(payload);
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon(
+            endpoint,
+            new Blob([body], { type: "application/json" })
+          );
+          return;
+        }
+
+        fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body,
+          keepalive: true,
+        }).catch(() => {});
+      };
+
+      document.addEventListener("click", recordInteraction, { capture: true });
+      window.addEventListener("pagehide", sendSummary);
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "hidden") {
+          sendSummary();
+        }
+      });
+    })();
+  </script>
 </body>
 
 <style is:global>
