@@ -124,6 +124,20 @@ const schema =
       const sessionId = crypto.randomUUID();
       const interactions = [];
       let sent = false;
+      const notifyStorageKey = "bashir-visit-notify";
+
+      const url = new URL(window.location.href);
+      const notifyParam = url.searchParams.get("notify");
+      if (notifyParam === "off") {
+        localStorage.setItem(notifyStorageKey, "off");
+      }
+      if (notifyParam === "on") {
+        localStorage.removeItem(notifyStorageKey);
+      }
+
+      const isSuppressed =
+        localStorage.getItem(notifyStorageKey) === "off" ||
+        ["localhost", "127.0.0.1"].includes(window.location.hostname);
 
       const recordInteraction = (event) => {
         const target = event.target;
@@ -150,6 +164,7 @@ const schema =
 
       const sendSummary = () => {
         if (sent) return;
+        if (isSuppressed) return;
         sent = true;
 
         const url = new URL(window.location.href);
@@ -164,6 +179,7 @@ const schema =
           language: navigator.language,
           interactions,
           utm: Object.fromEntries(url.searchParams.entries()),
+          suppressNotifications: isSuppressed,
         };
 
         const body = JSON.stringify(payload);

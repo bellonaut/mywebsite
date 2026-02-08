@@ -4,6 +4,7 @@ const NOTIFY_EMAIL =
   import.meta.env.NOTIFY_EMAIL ?? "bashiraminubellok@gmail.com";
 const RESEND_API_KEY = import.meta.env.RESEND_API_KEY;
 const RESEND_FROM = import.meta.env.RESEND_FROM ?? "onboarding@resend.dev";
+const NOTIFY_EXCLUDE_IPS = import.meta.env.NOTIFY_EXCLUDE_IPS ?? "";
 
 type Interaction = {
   type?: string;
@@ -23,6 +24,7 @@ type VisitPayload = {
   language?: string;
   interactions?: Interaction[];
   utm?: Record<string, string>;
+  suppressNotifications?: boolean;
 };
 
 const formatDuration = (durationMs?: number) => {
@@ -63,6 +65,9 @@ export const POST: APIRoute = async ({ request }) => {
   const ip =
     headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
     headers.get("cf-connecting-ip");
+  const excludedIps = NOTIFY_EXCLUDE_IPS.split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
   const city = headers.get("x-vercel-ip-city");
   const region = headers.get("x-vercel-ip-country-region");
   const country = headers.get("x-vercel-ip-country");
@@ -90,6 +95,14 @@ export const POST: APIRoute = async ({ request }) => {
     locationParts.length > 0 ? locationParts.join(", ") : "Unknown";
   const coordinates =
     latitude && longitude ? `${latitude}, ${longitude}` : "Unknown";
+
+  if (payload?.suppressNotifications) {
+    return new Response("Notifications suppressed", { status: 204 });
+  }
+
+  if (ip && excludedIps.includes(ip)) {
+    return new Response("Excluded IP", { status: 204 });
+  }
 
   const textBody = [
     "New bashir.bio visit summary",
