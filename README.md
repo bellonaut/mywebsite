@@ -22,3 +22,8 @@ And cool Overwatch gamer, Last Cloudia Enjoyer, avid walker through nature, and 
 ```bash
 pnpm install
 pnpm dev
+```
+
+## Visit notifications
+- Set `RESEND_API_KEY` plus optional `RESEND_FROM`, `NOTIFY_EMAIL`, and `NOTIFY_EXCLUDE_IPS` (comma-separated) in your deployment environment.
+- To suppress notifications for your own browser, visit `https://bashir.bio/?notify=off` once (use `?notify=on` to re-enable).
