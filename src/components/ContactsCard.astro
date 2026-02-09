@@ -8,6 +8,11 @@ const calLink = LINKS.calendar;
 const emailSubject = encodeURIComponent("Hello Bashir");
 ---
 
+<link
+  rel="stylesheet"
+  href="https://assets.calendly.com/assets/external/widget.css"
+/>
+
 <Card colSpan="md:col-span-1" rowSpan="md:row-span-4" title="Contact">
   <div class="contact">
     <p class="lead">
@@ -30,7 +35,7 @@ const emailSubject = encodeURIComponent("Hello Bashir");
         <span>Email</span>
       </a>
 
-      <button class="btn btn-strong" type="button" data-cal-link={calLink}>
+      <button class="btn btn-strong" type="button" data-calendly-url={calLink}>
         <Icon class="ico" name="ri:calendar-event-line" />
         <span>Book a call</span>
       </button>
@@ -45,47 +50,40 @@ const emailSubject = encodeURIComponent("Hello Bashir");
 
 <script is:inline>
   (function () {
-    const CAL_SRC = "https://app.cal.com/embed/embed.js";
+    const CALENDLY_SRC = "https://assets.calendly.com/assets/external/widget.js";
 
-    function loadCal() {
+    function loadCalendly() {
       return new Promise((resolve) => {
-        if (window.Cal) return resolve(window.Cal);
+        if (window.Calendly) return resolve(window.Calendly);
 
-        const existing = document.querySelector('script[src="' + CAL_SRC + '"]');
+        const existing = document.querySelector(
+          'script[src="' + CALENDLY_SRC + '"]'
+        );
         if (existing) {
-          existing.addEventListener("load", () => resolve(window.Cal));
+          existing.addEventListener("load", () => resolve(window.Calendly));
           return;
         }
 
         const s = document.createElement("script");
-        s.src = CAL_SRC;
+        s.src = CALENDLY_SRC;
         s.async = true;
-        s.onload = () => resolve(window.Cal);
+        s.onload = () => resolve(window.Calendly);
         document.head.appendChild(s);
       });
     }
 
-    async function openCal(link) {
-      const Cal = await loadCal();
-      if (!Cal) return;
-
-      Cal("init", { origin: "https://cal.com" });
-      Cal("ui", {
-        theme: "dark",
-        styles: { branding: { brandColor: "#38BDF8" } },
-        hideEventTypeDetails: false,
-        layout: "month_view",
-      });
-
-      Cal("open", { calLink: link });
+    async function openCalendly(url) {
+      const Calendly = await loadCalendly();
+      if (!Calendly?.initPopupWidget) return;
+      Calendly.initPopupWidget({ url });
     }
 
     document.addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-cal-link]");
+      const btn = e.target.closest("[data-calendly-url]");
       if (!btn) return;
       e.preventDefault();
-      const link = btn.getAttribute("data-cal-link");
-      if (link) openCal(link);
+      const link = btn.getAttribute("data-calendly-url");
+      if (link) openCalendly(link);
     });
   })();
 </script>
