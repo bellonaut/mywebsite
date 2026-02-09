@@ -5,14 +5,20 @@ import Globe from "../components/Globe";
 
 <Layout title="Travel" description=" ">
   <main class="travel-wrap">
-    <button class="travel-back" id="travelBack" type="button" aria-label="Back">
-      ← Back
-    </button>
+    <a class="back-link travel-back" id="travelBack" href="/" aria-label="Back home">
+      &larr; Back home
+    </a>
 
     <div class="travel-stage" id="travelStage">
-      <div class="mini-toggle" id="miniToggle">
+      <button
+        class="mini-toggle"
+        id="miniToggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="miniPanel"
+      >
         <span>Play pin-the-city?</span>
-      </div>
+      </button>
 
       <div class="mini-panel hidden" id="miniPanel">
         <header class="mini-head">
@@ -20,7 +26,7 @@ import Globe from "../components/Globe";
             <p class="mini-eyebrow">Pin the City</p>
             <p class="mini-title">Drop the marker where the target lives.</p>
           </div>
-          <button class="mini-close" id="miniClose" type="button" aria-label="Close mini game">×</button>
+          <button class="mini-close" id="miniClose" type="button" aria-label="Close mini game">&times;</button>
         </header>
         <div class="mini-body">
           <div class="mini-target">
@@ -49,20 +55,6 @@ import Globe from "../components/Globe";
 </Layout>
 
 <script is:inline>
-  const btn = document.getElementById("travelBack");
-  if (btn) {
-    btn.addEventListener("click", () => {
-      const sameOriginReferrer =
-        document.referrer && document.referrer.includes(window.location.origin);
-
-      if (window.history.length > 1 && sameOriginReferrer) {
-        window.history.back();
-      } else {
-        window.location.href = "/";
-      }
-    });
-  }
-
   (() => {
     const stage = document.getElementById("travelStage");
     const pinLayer = document.getElementById("pinLayer");
@@ -187,10 +179,12 @@ import Globe from "../components/Globe";
     toggle.addEventListener("click", () => {
       panel.classList.remove("hidden");
       toggle.classList.add("hidden");
+      toggle.setAttribute("aria-expanded", "true");
     });
     closeBtn.addEventListener("click", () => {
       panel.classList.add("hidden");
       toggle.classList.remove("hidden");
+      toggle.setAttribute("aria-expanded", "false");
     });
 
     setTarget();
@@ -214,6 +208,17 @@ import Globe from "../components/Globe";
     background: rgba(255, 255, 255, 0.02);
   }
 
+  .back-link {
+    color: rgba(160, 210, 255, 0.95);
+    text-decoration: none;
+    font-size: 0.9rem;
+    width: fit-content;
+  }
+
+  .back-link:hover {
+    color: rgba(255, 255, 255, 0.95);
+  }
+
   .mini-toggle {
     position: absolute;
     right: 16px;
@@ -228,6 +233,10 @@ import Globe from "../components/Globe";
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
     font-weight: 700;
     letter-spacing: 0.01em;
+  }
+
+  .mini-toggle.hidden {
+    display: none;
   }
 
   .mini-panel {
@@ -406,21 +415,7 @@ import Globe from "../components/Globe";
     top: 14px;
     left: 14px;
     z-index: 9999;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.45rem 0.7rem;
-    border-radius: 10px;
-    background: rgba(0, 0, 0, 0.55);
-    border: 1px solid rgba(175, 200, 214, 0.25);
-    color: rgba(255, 255, 255, 0.92);
-    font-size: 0.9rem;
     cursor: pointer;
-    backdrop-filter: blur(10px);
-  }
-
-  .travel-back:hover {
-    border-color: rgba(56, 189, 248, 0.45);
   }
 
   @media (max-width: 900px) {

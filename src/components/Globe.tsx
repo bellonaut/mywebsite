@@ -29,6 +29,10 @@ const GlobeComponent = (props: Props = {}) => {
     "Netherlands",
     "Spain",
     "United Kingdom",
+    "England",
+    "Scotland",
+    "Wales",
+    "Northern Ireland",
     "United States",
   ]);
 
@@ -41,6 +45,13 @@ const GlobeComponent = (props: Props = {}) => {
     UAE: "United Arab Emirates",
     Dubai: "United Arab Emirates",
     USA: "United States",
+    UK: "United Kingdom",
+    "Great Britain": "United Kingdom",
+    "United Kingdom of Great Britain and Northern Ireland": "United Kingdom",
+    England: "United Kingdom",
+    Scotland: "United Kingdom",
+    Wales: "United Kingdom",
+    "Northern Ireland": "United Kingdom",
     Washington: "United States",
   };
 
@@ -226,11 +237,13 @@ const GlobeComponent = (props: Props = {}) => {
     const ro = new ResizeObserver(resize);
     ro.observe(mapContainer);
 
-    // Smooth rotation (time-based) — stops permanently after first user drag
+    // Smooth rotation (time-based) — pauses on interaction, resumes after idle
     const degreesPerSecond = isFull ? 3.5 : 6.0;
+    const idleDelayMs = isFull ? 7000 : 5000;
     let isDragging = false;
-    let hasInteracted = false;
+    let isPaused = false;
     let autoTimer: d3.Timer | null = null;
+    let resumeTimeout: ReturnType<typeof setTimeout> | null = null;
 
     const stopAutoRotate = () => {
       if (autoTimer) {
@@ -239,13 +252,30 @@ const GlobeComponent = (props: Props = {}) => {
       }
     };
 
+    const scheduleResume = () => {
+      if (resumeTimeout) clearTimeout(resumeTimeout);
+      resumeTimeout = setTimeout(() => {
+        isPaused = false;
+        startAutoRotate();
+      }, idleDelayMs);
+    };
+
+    const markInteraction = () => {
+      isPaused = true;
+      stopAutoRotate();
+      scheduleResume();
+    };
+
     const startAutoRotate = () => {
       stopAutoRotate();
-      autoTimer = d3.timer((elapsed) => {
-        if (isDragging || hasInteracted) return;
-        const t = elapsed / 1000;
+      let prev = performance.now();
+      autoTimer = d3.timer(() => {
+        if (isDragging || isPaused) return;
+        const now = performance.now();
+        const delta = (now - prev) / 1000;
+        prev = now;
         const rot = projection.rotate();
-        projection.rotate([-(t * degreesPerSecond), rot[1], rot[2] || 0]);
+        projection.rotate([rot[0] - delta * degreesPerSecond, rot[1], rot[2] || 0]);
         updateLayers();
       });
     };
@@ -262,8 +292,7 @@ const GlobeComponent = (props: Props = {}) => {
         .drag<SVGSVGElement, unknown>()
         .on("start", () => {
           isDragging = true;
-          hasInteracted = true;
-          stopAutoRotate();
+          markInteraction();
           svg.style("cursor", "grabbing");
         })
         .on("drag", (event) => {
@@ -274,12 +303,14 @@ const GlobeComponent = (props: Props = {}) => {
         .on("end", () => {
           isDragging = false;
           svg.style("cursor", "grab");
+          scheduleResume();
         });
 
       svg.call(dragBehavior as any);
 
       // Click to pick
       svg.on("click", (event: MouseEvent) => {
+        markInteraction();
         const pt = d3.pointer(event, svg.node() as any);
         const lonLat = projection.invert(pt as any);
         if (!lonLat) return;
@@ -293,6 +324,7 @@ const GlobeComponent = (props: Props = {}) => {
 
       // External drop handler (e.g., drag pin UI)
       const handleExternalDrop = (e: Event) => {
+        markInteraction();
         const detail = (e as CustomEvent).detail;
         if (!detail?.screen) return;
         const lonLat = projection.invert(detail.screen as [number, number]);
@@ -310,6 +342,7 @@ const GlobeComponent = (props: Props = {}) => {
 
     onCleanup(() => {
       stopAutoRotate();
+      if (resumeTimeout) clearTimeout(resumeTimeout);
       ro.disconnect();
       tooltip.remove();
       svg.remove();

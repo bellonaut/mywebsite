@@ -19,12 +19,18 @@ import {
   <div class="tz-wrap flex flex-col gap-2">
     <div class="tz-stack flex flex-col gap-2">
       <!-- Edmonton -->
-      <div class="tz-row rounded-xl px-3 py-3">
-        <div class="flex items-baseline justify-between gap-3">
-          <p class="m-0 text-[11px] tracking-wide uppercase tz-label">Edmonton</p>
+      <div class="tz-row tz-mt rounded-xl px-3 py-3">
+        <div class="tz-row-inner">
+          <div class="tz-left">
+            <span aria-hidden="true" class="tz-dot"></span>
+            <div class="tz-label-stack">
+              <p class="m-0 text-[11px] tracking-[0.18em] uppercase tz-label">Edmonton</p>
+              <span class="tz-chip">MT</span>
+            </div>
+          </div>
           <time
             id="tz-mt"
-            class="m-0 text-base font-serif tabular-nums whitespace-nowrap tz-time"
+            class="m-0 text-[1.05rem] font-serif tabular-nums whitespace-nowrap tz-time"
             datetime=""
           >
             {formatTimeForMountain(getCurrentTimeInMountain())}
@@ -33,12 +39,18 @@ import {
       </div>
 
       <!-- Sokoto -->
-      <div class="tz-row rounded-xl px-3 py-3">
-        <div class="flex items-baseline justify-between gap-3">
-          <p class="m-0 text-[11px] tracking-wide uppercase tz-label">Sokoto</p>
+      <div class="tz-row tz-wat rounded-xl px-3 py-3">
+        <div class="tz-row-inner">
+          <div class="tz-left">
+            <span aria-hidden="true" class="tz-dot"></span>
+            <div class="tz-label-stack">
+              <p class="m-0 text-[11px] tracking-[0.18em] uppercase tz-label">Sokoto</p>
+              <span class="tz-chip">WAT</span>
+            </div>
+          </div>
           <time
             id="tz-wat"
-            class="m-0 text-base font-serif tabular-nums whitespace-nowrap tz-time"
+            class="m-0 text-[1.05rem] font-serif tabular-nums whitespace-nowrap tz-time"
             datetime=""
           >
             {formatTimeForSokoto(getCurrentTimeInSokoto())}
@@ -47,12 +59,18 @@ import {
       </div>
 
       <!-- New York -->
-      <div class="tz-row rounded-xl px-3 py-3">
-        <div class="flex items-baseline justify-between gap-3">
-          <p class="m-0 text-[11px] tracking-wide uppercase tz-label">New York</p>
+      <div class="tz-row tz-et rounded-xl px-3 py-3">
+        <div class="tz-row-inner">
+          <div class="tz-left">
+            <span aria-hidden="true" class="tz-dot"></span>
+            <div class="tz-label-stack">
+              <p class="m-0 text-[11px] tracking-[0.18em] uppercase tz-label">New York</p>
+              <span class="tz-chip">ET</span>
+            </div>
+          </div>
           <time
             id="tz-et"
-            class="m-0 text-base font-serif tabular-nums whitespace-nowrap tz-time"
+            class="m-0 text-[1.05rem] font-serif tabular-nums whitespace-nowrap tz-time"
             datetime=""
           >
             {formatTimeForNewYork(getCurrentTimeInNewYork())}
@@ -64,44 +82,105 @@ import {
 </Card>
 
 <style>
-  /* Blue theme without screaming */
+  /* Glassy blue/purple theme that matches the hero + globe panels */
   .tz-row {
-    border: 1px solid rgba(200, 200, 200, 0.12);
-    background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.04),
-        rgba(255, 255, 255, 0.015)
-      ),
-      rgba(10, 10, 10, 0.12);
-    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
-    transition: transform 0.14s ease, border-color 0.14s ease,
-      background 0.14s ease;
+    --accent: rgba(86, 208, 255, 0.65);
+    --accent-soft: rgba(86, 208, 255, 0.08);
+    border: 1px solid rgba(86, 208, 255, 0.24); /* fallback */
+    border-color: color-mix(in srgb, var(--accent) 55%, rgba(255, 255, 255, 0.08));
+    background:
+      radial-gradient(120% 120% at 12% 16%, rgba(86, 208, 255, 0.12), transparent),
+      radial-gradient(120% 120% at 88% 22%, rgba(86, 208, 255, 0.08), transparent),
+      linear-gradient(145deg, rgba(10, 16, 28, 0.9), rgba(10, 16, 30, 0.7));
+    background:
+      radial-gradient(120% 120% at 12% 16%, color-mix(in srgb, var(--accent) 20%, transparent), transparent),
+      radial-gradient(120% 120% at 88% 22%, color-mix(in srgb, var(--accent) 14%, transparent), transparent),
+      linear-gradient(145deg, rgba(10, 16, 28, 0.9), rgba(10, 16, 30, 0.7));
+    box-shadow:
+      0 14px 28px rgba(0, 0, 0, 0.32),
+      0 0 0 1px rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(10px);
+    transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
   }
 
   .tz-row:hover {
     transform: translateY(-1px);
-    border-color: rgba(240, 240, 240, 0.35);
-    background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.07),
-        rgba(255, 255, 255, 0.03)
-      ),
-      rgba(10, 10, 10, 0.14);
+    border-color: color-mix(in srgb, var(--accent) 75%, rgba(255, 255, 255, 0.35));
+    box-shadow:
+      0 16px 32px rgba(0, 0, 0, 0.35),
+      0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent);
+  }
+
+  .tz-row-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem;
+  }
+
+  .tz-left {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .tz-label-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
   }
 
   .tz-label {
-    color: rgba(210, 215, 220, 0.62);
+    color: rgba(210, 220, 235, 0.76);
+    letter-spacing: 0.06em;
+  }
+
+  .tz-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--accent) 90%, #e6f6ff);
+    background: rgba(255, 255, 255, 0.05); /* fallback */
+    background: color-mix(in srgb, var(--accent) 15%, rgba(255, 255, 255, 0.05));
+    border: 1px solid rgba(86, 208, 255, 0.22); /* fallback */
+    border-color: color-mix(in srgb, var(--accent) 40%, rgba(255, 255, 255, 0.12));
+  }
+
+  .tz-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    background: color-mix(in srgb, var(--accent) 95%, #ffffff);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 80%, transparent);
   }
 
   .tz-time {
-    color: rgba(245, 245, 245, 0.92);
-    text-shadow: 0 0 16px rgba(255, 255, 255, 0.08);
+    color: rgba(245, 247, 255, 0.96);
+    text-shadow: 0 0 18px rgba(255, 255, 255, 0.10);
+    letter-spacing: 0.02em;
   }
 
   @media (prefers-reduced-motion: reduce) {
     .tz-row {
       transition: none;
     }
+  }
+
+  /* Accent per zone */
+  .tz-row.tz-mt {
+    --accent: #6cc7ff;
+  }
+  .tz-row.tz-wat {
+    --accent: #72ffb8;
+  }
+  .tz-row.tz-et {
+    --accent: #c0a2ff;
   }
 </style>
 
