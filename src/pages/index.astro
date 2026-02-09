@@ -114,7 +114,18 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
           aria-label="Open Substack"
           title="Open Substack"
         >
-          ↗
+                    <span class="card-open-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20" role="presentation">
+              <path
+                d="M6 6h8v8M6 14l8-8"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </span>
         </a>
 
         <div class="card-body">
@@ -134,7 +145,18 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
           aria-label="Open projects page"
           title="Open projects page"
         >
-          â†—
+          <span class="card-open-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20" role="presentation">
+              <path
+                d="M6 6h8v8M6 14l8-8"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </span>
         </a>
         <div class="card-body">
           <div class="card-scroll">
@@ -277,12 +299,24 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
       color: rgba(255, 255, 255, 0.9);
       border: 1px solid rgba(175, 225, 255, 0.32);
       background: rgba(255, 255, 255, 0.07);
+      line-height: 1;
     }
 
     .card-open:hover {
       border-color: rgba(86, 208, 255, 0.75);
       box-shadow: 0 0 0 1px rgba(86, 208, 255, 0.45),
         0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-open-icon {
+      display: inline-flex;
+      width: 14px;
+      height: 14px;
+    }
+
+    .card-open-icon svg {
+      width: 100%;
+      height: 100%;
     }
 
     .new-highlight {
@@ -392,3 +426,4 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
     })();
   </script>
 </Layout>
+
