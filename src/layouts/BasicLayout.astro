@@ -273,21 +273,4 @@ const schema =
     box-sizing: border-box;
   }
 
-  @keyframes ambient-drift {
-    0% {
-      transform: translate3d(0, 0, 0);
-    }
-    50% {
-      transform: translate3d(-1.5%, 1%, 0);
-    }
-    100% {
-      transform: translate3d(0, 0, 0);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .site-bg {
-      animation: none !important;
-    }
-  }
 </style>
