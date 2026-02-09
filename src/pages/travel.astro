@@ -5,202 +5,26 @@ import Globe from "../components/Globe";
 
 <Layout title="Travel" description=" ">
   <main class="travel-wrap">
-    <a class="back-link travel-back" id="travelBack" href="/" aria-label="Back home">
+    <a class="back-link travel-back" href="/" aria-label="Back home">
       &larr; Back home
     </a>
 
-    <div class="travel-stage" id="travelStage">
-      <button
-        class="mini-toggle"
-        id="miniToggle"
-        type="button"
-        aria-expanded="false"
-        aria-controls="miniPanel"
-      >
-        <span>Play pin-the-city?</span>
-      </button>
-
-      <div class="mini-panel hidden" id="miniPanel">
-        <header class="mini-head">
-          <div>
-            <p class="mini-eyebrow">Pin the City</p>
-            <p class="mini-title">Drop the marker where the target lives.</p>
-          </div>
-          <button class="mini-close" id="miniClose" type="button" aria-label="Close mini game">&times;</button>
-        </header>
-        <div class="mini-body">
-          <div class="mini-target">
-            <p class="target-label">Target</p>
-            <p class="target-name" id="targetCity">...</p>
-            <button class="mini-btn" id="nextTarget" type="button">New target</button>
-          </div>
-          <div class="mini-drag">
-            <p class="drag-label">Drag this pin onto the globe</p>
-            <div class="drag-pin" id="dragPin" draggable="true" title="Drag to the globe"></div>
-            <p class="mini-hint" id="resultBox">No drop yet.</p>
-          </div>
-        </div>
-        <div class="mini-stats">
-          <span><small>Streak</small><strong id="streakVal">0</strong></span>
-          <span><small>Best</small><strong id="bestVal">0</strong></span>
-          <span><small>Avg km</small><strong id="avgVal">—</strong></span>
-        </div>
-      </div>
-
-      <div class="pin-layer" id="pinLayer"></div>
-
+    <div class="travel-stage">
       <Globe client:load variant="full" />
     </div>
   </main>
 </Layout>
 
-<script is:inline>
-  (() => {
-    const stage = document.getElementById("travelStage");
-    const pinLayer = document.getElementById("pinLayer");
-    const targetEl = document.getElementById("targetCity");
-    const resultEl = document.getElementById("resultBox");
-    const nextBtn = document.getElementById("nextTarget");
-    const streakEl = document.getElementById("streakVal");
-    const bestEl = document.getElementById("bestVal");
-    const avgEl = document.getElementById("avgVal");
-    const dragPin = document.getElementById("dragPin");
-    const toggle = document.getElementById("miniToggle");
-    const panel = document.getElementById("miniPanel");
-    const closeBtn = document.getElementById("miniClose");
-
-    if (!stage || !pinLayer || !targetEl || !resultEl || !nextBtn || !streakEl || !bestEl || !avgEl || !dragPin || !toggle || !panel || !closeBtn) return;
-
-    const targets = [
-      { label: "Sokoto", coords: [5.2431, 13.0667] },
-      { label: "Sheffield", coords: [-1.4701, 53.3811] },
-      { label: "Edmonton", coords: [-113.4909, 53.5461] },
-      { label: "Rochester", coords: [-77.6109, 43.1566] },
-      { label: "Riyadh", coords: [46.6753, 24.7136] },
-      { label: "Doha", coords: [51.531, 25.2854] },
-    ];
-
-    const ringAudio = new Audio("/sonic/theme.mp3");
-    ringAudio.volume = 0.24;
-    ringAudio.preload = "auto";
-
-    let current = targets[0];
-    let streak = 0;
-    let best = 0;
-    let totalKm = 0;
-    let rounds = 0;
-
-    const kmBetween = (a, b) => {
-      const toRad = (d) => (d * Math.PI) / 180;
-      const R = 6371;
-      const dLat = toRad(b[1] - a[1]);
-      const dLon = toRad(b[0] - a[0]);
-      const lat1 = toRad(a[1]);
-      const lat2 = toRad(b[1]);
-      const h =
-        Math.sin(dLat / 2) ** 2 +
-        Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
-      return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
-    };
-
-    const setTarget = () => {
-      current = targets[Math.floor(Math.random() * targets.length)];
-      targetEl.textContent = current.label;
-      resultEl.textContent = "Drag the pin to the globe.";
-      pinLayer.innerHTML = "";
-    };
-
-    const dropPin = (x, y, cls = "") => {
-      const pin = document.createElement("div");
-      pin.className = `pin ${cls}`;
-      pin.style.left = `${x}px`;
-      pin.style.top = `${y}px`;
-      pinLayer.appendChild(pin);
-      requestAnimationFrame(() => pin.classList.add("show"));
-    };
-
-    const handleResult = (detail) => {
-      const { lonLat, screen } = detail || {};
-      if (!lonLat || !screen) return;
-
-      const km = Math.round(kmBetween([lonLat[0], lonLat[1]], current.coords));
-      dropPin(screen[0], screen[1], km <= 250 ? "pin-good" : "pin-bad");
-
-      rounds += 1;
-      totalKm += km;
-      const avg = Math.round(totalKm / rounds);
-      avgEl.textContent = Number.isFinite(avg) ? `${avg}` : "—";
-
-      if (km <= 250) {
-        streak += 1;
-        best = Math.max(best, streak);
-        resultEl.textContent = `Nice! ${km} km away.`;
-        ringAudio.currentTime = 0;
-        ringAudio.play().catch(() => {});
-      } else {
-        streak = 0;
-        resultEl.textContent = `Off by ${km} km. Try another city.`;
-      }
-
-      streakEl.textContent = `${streak}`;
-      bestEl.textContent = `${best}`;
-    };
-
-    const sendExternalDrop = (clientX, clientY) => {
-      const rect = stage.getBoundingClientRect();
-      const x = clientX - rect.left;
-      const y = clientY - rect.top;
-      if (x < 0 || y < 0 || x > rect.width || y > rect.height) return;
-      stage.dispatchEvent(
-        new CustomEvent("globe:external-drop", {
-          detail: { screen: [x, y] },
-          bubbles: true,
-        })
-      );
-    };
-
-    dragPin.addEventListener("dragstart", (e) => {
-      e.dataTransfer?.setData("text/plain", "pin");
-      e.dataTransfer?.setDragImage(dragPin, 8, 8);
-    });
-
-    stage.addEventListener("dragover", (e) => {
-      e.preventDefault();
-    });
-
-    stage.addEventListener("drop", (e) => {
-      e.preventDefault();
-      sendExternalDrop(e.clientX, e.clientY);
-    });
-
-    stage.addEventListener("globe:pick", (e) => handleResult((e as CustomEvent).detail));
-
-    nextBtn.addEventListener("click", setTarget);
-    toggle.addEventListener("click", () => {
-      panel.classList.remove("hidden");
-      toggle.classList.add("hidden");
-      toggle.setAttribute("aria-expanded", "true");
-    });
-    closeBtn.addEventListener("click", () => {
-      panel.classList.add("hidden");
-      toggle.classList.remove("hidden");
-      toggle.setAttribute("aria-expanded", "false");
-    });
-
-    setTarget();
-  })();
-</script>
-
 <style>
   .travel-wrap {
     position: relative;
-    min-height: calc(100dvh - 2.5rem);
+    min-height: 100dvh;
     padding: 1rem;
   }
 
   .travel-stage {
     position: relative;
-    height: calc(100dvh - 2.5rem);
+    height: calc(100dvh - 3rem);
     width: 100%;
     border-radius: 18px;
     overflow: hidden;
@@ -209,227 +33,23 @@ import Globe from "../components/Globe";
   }
 
   .back-link {
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 10;
     color: rgba(160, 210, 255, 0.95);
     text-decoration: none;
     font-size: 0.9rem;
     width: fit-content;
+    padding: 0.45rem 0.7rem;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(175, 200, 214, 0.25);
+    backdrop-filter: blur(10px);
   }
 
   .back-link:hover {
     color: rgba(255, 255, 255, 0.95);
-  }
-
-  .mini-toggle {
-    position: absolute;
-    right: 16px;
-    bottom: 16px;
-    z-index: 60;
-    padding: 10px 12px;
-    border-radius: 12px;
-    background: rgba(10, 20, 36, 0.86);
-    border: 1px solid rgba(120, 200, 255, 0.3);
-    color: rgba(235, 245, 255, 0.9);
-    cursor: pointer;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
-    font-weight: 700;
-    letter-spacing: 0.01em;
-  }
-
-  .mini-toggle.hidden {
-    display: none;
-  }
-
-  .mini-panel {
-    position: absolute;
-    right: 16px;
-    bottom: 16px;
-    width: min(360px, 92vw);
-    z-index: 70;
-    padding: 12px;
-    border-radius: 14px;
-    background: linear-gradient(150deg, rgba(16, 28, 48, 0.92), rgba(10, 22, 40, 0.9));
-    border: 1px solid rgba(120, 200, 255, 0.35);
-    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.4);
-  }
-
-  .mini-panel.hidden {
-    display: none;
-  }
-
-  .mini-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-
-  .mini-eyebrow {
-    margin: 0;
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: rgba(140, 210, 255, 0.9);
-  }
-
-  .mini-title {
-    margin: 2px 0 0;
-    color: rgba(235, 245, 255, 0.9);
-    font-weight: 700;
-    font-size: 0.95rem;
-  }
-
-  .mini-close {
-    border: 1px solid rgba(120, 200, 255, 0.35);
-    background: rgba(255, 255, 255, 0.04);
-    color: rgba(240, 250, 255, 0.9);
-    border-radius: 8px;
-    width: 28px;
-    height: 28px;
-    cursor: pointer;
-  }
-
-  .mini-body {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-
-  .mini-target,
-  .mini-drag {
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid rgba(120, 200, 255, 0.25);
-    background: rgba(255, 255, 255, 0.03);
-  }
-
-  .target-label,
-  .drag-label {
-    margin: 0;
-    font-size: 0.75rem;
-    letter-spacing: 0.05em;
-    color: rgba(180, 210, 235, 0.85);
-  }
-
-  .target-name {
-    margin: 4px 0 8px;
-    font-weight: 800;
-    font-size: 1.1rem;
-  }
-
-  .mini-btn {
-    padding: 6px 10px;
-    border-radius: 8px;
-    border: 1px solid rgba(86, 208, 255, 0.65);
-    background: linear-gradient(120deg, rgba(40, 120, 255, 0.25), rgba(12, 200, 255, 0.2));
-    color: rgba(245, 250, 255, 0.95);
-    font-weight: 700;
-    cursor: pointer;
-  }
-
-  .drag-pin {
-    width: 24px;
-    height: 24px;
-    margin: 8px 0;
-    border-radius: 50%;
-    border: 3px solid rgba(255, 255, 255, 0.95);
-    background: radial-gradient(circle at 30% 30%, #ffde6a, #ff8c3a 60%, #d63a7a);
-    box-shadow: 0 0 14px rgba(255, 180, 120, 0.65);
-    cursor: grab;
-  }
-
-  .drag-pin:active {
-    cursor: grabbing;
-  }
-
-  .mini-hint {
-    margin: 4px 0 0;
-    color: rgba(225, 235, 245, 0.9);
-    font-size: 0.85rem;
-  }
-
-  .mini-stats {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
-    margin-top: 10px;
-    padding-top: 8px;
-    border-top: 1px solid rgba(120, 200, 255, 0.2);
-  }
-
-  .mini-stats span {
-    display: inline-flex;
-    flex-direction: column;
-    gap: 2px;
-    color: rgba(200, 220, 240, 0.9);
-  }
-
-  .mini-stats small {
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    font-size: 0.7rem;
-  }
-
-  .mini-stats strong {
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.95);
-  }
-
-  .pin-layer {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 10;
-  }
-
-  .pin {
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.9);
-    background: rgba(86, 208, 255, 0.9);
-    box-shadow: 0 0 14px rgba(86, 208, 255, 0.6);
-    transform: translate(-50%, -50%) scale(0.4);
-    opacity: 0;
-    transition: transform 140ms ease, opacity 140ms ease;
-  }
-
-  .pin.show {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-
-  .pin.pin-good {
-    background: rgba(50, 240, 170, 0.9);
-    box-shadow: 0 0 18px rgba(50, 240, 170, 0.75);
-  }
-
-  .pin.pin-bad {
-    background: rgba(255, 140, 120, 0.9);
-    box-shadow: 0 0 18px rgba(255, 140, 120, 0.7);
-  }
-
-  .travel-back {
-    position: fixed;
-    top: 14px;
-    left: 14px;
-    z-index: 9999;
-    cursor: pointer;
-  }
-
-  @media (max-width: 900px) {
-    .mini-panel {
-      right: 10px;
-      bottom: 10px;
-      left: 10px;
-    }
-    .mini-body {
-      grid-template-columns: 1fr;
-    }
-    .mini-toggle {
-      right: 10px;
-      bottom: 10px;
-    }
+    border-color: rgba(56, 189, 248, 0.45);
   }
 </style>

@@ -65,12 +65,11 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
   title="Bashir Aminu Bello — Health Data Science & AI"
 >
   <main
-    class="home-grid text-white mx-auto w-full relative grid gap-3 p-3
-      sm:p-5 sm:gap-3
-      md:grid-cols-2 md:gap-4 md:p-6
-      lg:h-[calc(100dvh-2.5rem)] lg:grid-cols-4 lg:grid-rows-8 lg:gap-6
-      max-w-[1500px] 2xl:max-w-[1600px]
-      lg:overflow-auto"
+    class="home-grid text-white mx-auto w-full relative grid gap-2.5 p-3
+      sm:p-4 sm:gap-3
+      md:grid-cols-2 md:gap-4 md:p-5
+      lg:h-[calc(100dvh-1rem)] lg:grid-cols-4 lg:grid-rows-8 lg:gap-5
+      max-w-[1500px] 2xl:max-w-[1600px]"
   >
     <!-- HERO -->
     <div class="g-hero">
@@ -187,8 +186,18 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
   </div>
 
   <style is:global>
+    html,
+    body {
+      overflow: hidden;
+    }
+
+    html,
+    body {
+      overflow: hidden;
+    }
+
     /* =============================
-       GRID: keep symmetry + allow scroll
+       GRID: keep symmetry
        ============================= */
     .home-grid > * {
       min-width: 0;
@@ -246,7 +255,7 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
     .g-travel .card {
       position: relative;
       overflow: hidden;
-      min-height: clamp(360px, 56vh, 640px);
+      min-height: clamp(360px, 54vh, 600px);
     }
 
     .globe-bg {
@@ -265,7 +274,7 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
     }
 
     /* =============================
-       Card inner scroll (works even if Card/Content is opinionated)
+       Card inner scroll
        ============================= */
     .card-body {
       display: flex;
@@ -275,9 +284,8 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
       margin-top: 0.25rem;
     }
 
-
-    .card-scroll::-webkit-scrollbar {
-      width: 10px;
+    :global(.card-content-scroll) {
+      overflow: hidden;
     }
     .card-scroll::-webkit-scrollbar-thumb {
       background: rgba(175, 200, 214, 0.22);
