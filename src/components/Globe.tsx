@@ -277,6 +277,35 @@ const GlobeComponent = (props: Props = {}) => {
         });
 
       svg.call(dragBehavior as any);
+
+      // Click to pick
+      svg.on("click", (event: MouseEvent) => {
+        const pt = d3.pointer(event, svg.node() as any);
+        const lonLat = projection.invert(pt as any);
+        if (!lonLat) return;
+        mapContainer?.dispatchEvent(
+          new CustomEvent("globe:pick", {
+            detail: { lonLat, screen: pt },
+            bubbles: true,
+          })
+        );
+      });
+
+      // External drop handler (e.g., drag pin UI)
+      const handleExternalDrop = (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (!detail?.screen) return;
+        const lonLat = projection.invert(detail.screen as [number, number]);
+        if (!lonLat) return;
+        mapContainer?.dispatchEvent(
+          new CustomEvent("globe:pick", {
+            detail: { lonLat, screen: detail.screen },
+            bubbles: true,
+          })
+        );
+      };
+      mapContainer?.addEventListener("globe:external-drop", handleExternalDrop as any);
+      onCleanup(() => mapContainer?.removeEventListener("globe:external-drop", handleExternalDrop as any));
     }
 
     onCleanup(() => {
