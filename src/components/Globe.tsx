@@ -189,7 +189,8 @@ const GlobeComponent = (props: Props = {}) => {
 
       svg.attr("viewBox", `0 0 ${width} ${height}`);
 
-      const r = Math.min(width, height) * 0.43;
+      const radiusFactor = isFull ? 0.43 : 0.38;
+      const r = Math.min(width, height) * radiusFactor;
       projection.translate([width / 2, height / 2]).scale(r);
 
       ocean
@@ -239,7 +240,7 @@ const GlobeComponent = (props: Props = {}) => {
 
     // Smooth rotation (time-based) — pauses on interaction, resumes after idle
     const degreesPerSecond = isFull ? 3.5 : 6.0;
-    const idleDelayMs = isFull ? 7000 : 5000;
+    const idleDelayMs = isFull ? 2500 : 5000;
     let isDragging = false;
     let isPaused = false;
     let autoTimer: d3.Timer | null = null;
