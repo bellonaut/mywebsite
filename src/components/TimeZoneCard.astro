@@ -14,28 +14,26 @@ import {
 <Card
   colSpan="md:col-span-1"
   rowSpan="md:row-span-2"
-  height="min-h-[170px] sm:min-h-[190px]"
+  height="h-auto"
 >
-  <div class="tz-wrap flex flex-col gap-2">
-    <div class="tz-stack flex flex-col gap-2">
+  <div class="tz-wrap flex flex-col gap-3">
+    <div class="tz-stack flex flex-col gap-2.5">
       <!-- Edmonton -->
       <div class="tz-row tz-mt rounded-xl px-3 py-3">
         <div class="tz-row-inner">
           <div class="tz-left">
             <span aria-hidden="true" class="tz-dot"></span>
-            <div class="tz-label-stack">
-              <p class="m-0 text-[11px] tracking-[0.18em] uppercase tz-label">Edmonton</p>
-              <span class="tz-chip">MT</span>
-            </div>
-          </div>
-          <time
-            id="tz-mt"
-            class="m-0 text-[1.05rem] font-serif tabular-nums whitespace-nowrap tz-time"
-            datetime=""
-          >
-            {formatTimeForMountain(getCurrentTimeInMountain())}
-          </time>
+          <p class="m-0 text-[11px] tracking-[0.14em] uppercase tz-label">Edmonton</p>
+          <span class="tz-chip">MT</span>
         </div>
+        <time
+          id="tz-mt"
+          class="m-0 text-[1.02rem] font-serif tabular-nums whitespace-nowrap tz-time"
+          datetime=""
+        >
+          {formatTimeForMountain(getCurrentTimeInMountain())}
+        </time>
+      </div>
       </div>
 
       <!-- Sokoto -->
@@ -43,19 +41,17 @@ import {
         <div class="tz-row-inner">
           <div class="tz-left">
             <span aria-hidden="true" class="tz-dot"></span>
-            <div class="tz-label-stack">
-              <p class="m-0 text-[11px] tracking-[0.18em] uppercase tz-label">Sokoto</p>
-              <span class="tz-chip">WAT</span>
-            </div>
-          </div>
-          <time
-            id="tz-wat"
-            class="m-0 text-[1.05rem] font-serif tabular-nums whitespace-nowrap tz-time"
-            datetime=""
-          >
-            {formatTimeForSokoto(getCurrentTimeInSokoto())}
-          </time>
+          <p class="m-0 text-[11px] tracking-[0.14em] uppercase tz-label">Sokoto</p>
+          <span class="tz-chip">WAT</span>
         </div>
+        <time
+          id="tz-wat"
+          class="m-0 text-[1.02rem] font-serif tabular-nums whitespace-nowrap tz-time"
+          datetime=""
+        >
+          {formatTimeForSokoto(getCurrentTimeInSokoto())}
+        </time>
+      </div>
       </div>
 
       <!-- New York -->
@@ -63,52 +59,37 @@ import {
         <div class="tz-row-inner">
           <div class="tz-left">
             <span aria-hidden="true" class="tz-dot"></span>
-            <div class="tz-label-stack">
-              <p class="m-0 text-[11px] tracking-[0.18em] uppercase tz-label">New York</p>
-              <span class="tz-chip">ET</span>
-            </div>
-          </div>
-          <time
-            id="tz-et"
-            class="m-0 text-[1.05rem] font-serif tabular-nums whitespace-nowrap tz-time"
-            datetime=""
-          >
-            {formatTimeForNewYork(getCurrentTimeInNewYork())}
-          </time>
+          <p class="m-0 text-[11px] tracking-[0.14em] uppercase tz-label">New York</p>
+          <span class="tz-chip">ET</span>
         </div>
+        <time
+          id="tz-et"
+          class="m-0 text-[1.02rem] font-serif tabular-nums whitespace-nowrap tz-time"
+          datetime=""
+        >
+          {formatTimeForNewYork(getCurrentTimeInNewYork())}
+        </time>
+      </div>
       </div>
     </div>
   </div>
 </Card>
 
 <style>
-  /* Glassy blue/purple theme that matches the hero + globe panels */
+  /* Relaxed glass treatment to keep stack compact */
   .tz-row {
-    --accent: rgba(86, 208, 255, 0.65);
-    --accent-soft: rgba(86, 208, 255, 0.08);
-    border: 1px solid rgba(86, 208, 255, 0.24); /* fallback */
-    border-color: color-mix(in srgb, var(--accent) 55%, rgba(255, 255, 255, 0.08));
-    background:
-      radial-gradient(120% 120% at 12% 16%, rgba(86, 208, 255, 0.12), transparent),
-      radial-gradient(120% 120% at 88% 22%, rgba(86, 208, 255, 0.08), transparent),
-      linear-gradient(145deg, rgba(10, 16, 28, 0.9), rgba(10, 16, 30, 0.7));
-    background:
-      radial-gradient(120% 120% at 12% 16%, color-mix(in srgb, var(--accent) 20%, transparent), transparent),
-      radial-gradient(120% 120% at 88% 22%, color-mix(in srgb, var(--accent) 14%, transparent), transparent),
-      linear-gradient(145deg, rgba(10, 16, 28, 0.9), rgba(10, 16, 30, 0.7));
-    box-shadow:
-      0 14px 28px rgba(0, 0, 0, 0.32),
-      0 0 0 1px rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(10px);
-    transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+    --accent: rgba(86, 208, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(140deg, rgba(14, 26, 44, 0.92), rgba(10, 18, 32, 0.82));
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.24);
+    padding: 12px 14px;
+    transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
   }
 
   .tz-row:hover {
     transform: translateY(-1px);
-    border-color: color-mix(in srgb, var(--accent) 75%, rgba(255, 255, 255, 0.35));
-    box-shadow:
-      0 16px 32px rgba(0, 0, 0, 0.35),
-      0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent);
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 12px 22px rgba(0, 0, 0, 0.3);
   }
 
   .tz-row-inner {
@@ -121,34 +102,26 @@ import {
   .tz-left {
     display: inline-flex;
     align-items: center;
-    gap: 0.55rem;
-  }
-
-  .tz-label-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+    gap: 0.45rem;
   }
 
   .tz-label {
-    color: rgba(210, 220, 235, 0.76);
-    letter-spacing: 0.06em;
+    color: rgba(210, 220, 235, 0.8);
+    letter-spacing: 0.05em;
   }
 
   .tz-chip {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 2px 8px;
+    padding: 1px 7px;
     border-radius: 999px;
     font-size: 0.68rem;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--accent) 90%, #e6f6ff);
-    background: rgba(255, 255, 255, 0.05); /* fallback */
-    background: color-mix(in srgb, var(--accent) 15%, rgba(255, 255, 255, 0.05));
-    border: 1px solid rgba(86, 208, 255, 0.22); /* fallback */
-    border-color: color-mix(in srgb, var(--accent) 40%, rgba(255, 255, 255, 0.12));
+    color: rgba(200, 235, 255, 0.9);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
   }
 
   .tz-dot {
@@ -156,14 +129,12 @@ import {
     height: 10px;
     border-radius: 50%;
     background: var(--accent);
-    background: color-mix(in srgb, var(--accent) 95%, #ffffff);
-    box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 80%, transparent);
+    box-shadow: 0 0 10px rgba(86, 208, 255, 0.5);
   }
 
   .tz-time {
     color: rgba(245, 247, 255, 0.96);
-    text-shadow: 0 0 18px rgba(255, 255, 255, 0.10);
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -181,6 +152,12 @@ import {
   }
   .tz-row.tz-et {
     --accent: #c0a2ff;
+  }
+
+  /* Keep the stack from pushing into the globe card on large screens */
+  :global(.g-time .card) {
+    height: auto;
+    align-self: start;
   }
 </style>
 
