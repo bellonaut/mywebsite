@@ -226,17 +226,31 @@ const GlobeComponent = (props: Props = {}) => {
     const ro = new ResizeObserver(resize);
     ro.observe(mapContainer);
 
-    // Smooth rotation (time-based)
+    // Smooth rotation (time-based) — stops permanently after first user drag
     const degreesPerSecond = isFull ? 3.5 : 6.0;
     let isDragging = false;
-    const timer = d3.timer((elapsed) => {
-      if (isDragging) return;
-      const t = elapsed / 1000;
-      const rot = projection.rotate();
-      projection.rotate([-(t * degreesPerSecond), rot[1], rot[2] || 0]);
+    let hasInteracted = false;
+    let autoTimer: d3.Timer | null = null;
 
-      updateLayers();
-    });
+    const stopAutoRotate = () => {
+      if (autoTimer) {
+        autoTimer.stop();
+        autoTimer = null;
+      }
+    };
+
+    const startAutoRotate = () => {
+      stopAutoRotate();
+      autoTimer = d3.timer((elapsed) => {
+        if (isDragging || hasInteracted) return;
+        const t = elapsed / 1000;
+        const rot = projection.rotate();
+        projection.rotate([-(t * degreesPerSecond), rot[1], rot[2] || 0]);
+        updateLayers();
+      });
+    };
+
+    startAutoRotate();
 
     // Initial draw
     resize();
@@ -248,6 +262,8 @@ const GlobeComponent = (props: Props = {}) => {
         .drag<SVGSVGElement, unknown>()
         .on("start", () => {
           isDragging = true;
+          hasInteracted = true;
+          stopAutoRotate();
           svg.style("cursor", "grabbing");
         })
         .on("drag", (event) => {
@@ -264,7 +280,7 @@ const GlobeComponent = (props: Props = {}) => {
     }
 
     onCleanup(() => {
-      timer.stop();
+      stopAutoRotate();
       ro.disconnect();
       tooltip.remove();
       svg.remove();

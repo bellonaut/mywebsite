@@ -9,7 +9,33 @@ import Globe from "../components/Globe";
       ← Back
     </button>
 
-    <div class="travel-stage">
+    <div class="travel-stage" id="travelStage">
+      <div class="travel-hud sega">
+        <div class="hud-header">
+          <div>
+            <p class="eyebrow">Pin the City</p>
+            <h2 class="hud-title">Sonic Waypoint Run</h2>
+            <p class="hud-sub">Stop the globe and drop a pin where the target city lives.</p>
+          </div>
+          <div class="hud-score">
+            <div><span class="label">Streak</span><span id="streakVal">0</span></div>
+            <div><span class="label">Best</span><span id="bestVal">0</span></div>
+            <div><span class="label">Avg km</span><span id="avgVal">—</span></div>
+          </div>
+        </div>
+
+        <div class="hud-body">
+          <div class="callout">
+            <p class="callout-eyebrow">Target City</p>
+            <p class="callout-title" id="targetCity">...</p>
+            <button class="cta sega" id="nextTarget" type="button">Next city</button>
+          </div>
+          <div class="result" id="resultBox">Click the globe to drop your pin.</div>
+        </div>
+      </div>
+
+      <div class="pin-layer" id="pinLayer"></div>
+
       <Globe client:load variant="full" />
     </div>
   </main>
@@ -29,6 +55,99 @@ import Globe from "../components/Globe";
       }
     });
   }
+
+  // Pin-the-city mini game
+  (() => {
+    const stage = document.getElementById("travelStage");
+    const pinLayer = document.getElementById("pinLayer");
+    const targetEl = document.getElementById("targetCity");
+    const resultEl = document.getElementById("resultBox");
+    const nextBtn = document.getElementById("nextTarget");
+    const streakEl = document.getElementById("streakVal");
+    const bestEl = document.getElementById("bestVal");
+    const avgEl = document.getElementById("avgVal");
+
+    if (!stage || !pinLayer || !targetEl || !resultEl || !nextBtn || !streakEl || !bestEl || !avgEl) return;
+
+    const targets = [
+      { label: "Sokoto", coords: [5.2431, 13.0667] },
+      { label: "Sheffield", coords: [-1.4701, 53.3811] },
+      { label: "Edmonton", coords: [-113.4909, 53.5461] },
+      { label: "Rochester", coords: [-77.6109, 43.1566] },
+      { label: "Riyadh", coords: [46.6753, 24.7136] },
+      { label: "Doha", coords: [51.531, 25.2854] },
+    ];
+
+    const ringAudio = new Audio("/sonic/theme.mp3");
+    ringAudio.volume = 0.28;
+    ringAudio.preload = "auto";
+
+    let current = targets[0];
+    let streak = 0;
+    let best = 0;
+    let totalKm = 0;
+    let rounds = 0;
+
+    const kmBetween = (a, b) => {
+      const toRad = (d) => (d * Math.PI) / 180;
+      const R = 6371;
+      const dLat = toRad(b[1] - a[1]);
+      const dLon = toRad(b[0] - a[0]);
+      const lat1 = toRad(a[1]);
+      const lat2 = toRad(b[1]);
+      const h =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+      return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+    };
+
+    const setTarget = () => {
+      current = targets[Math.floor(Math.random() * targets.length)];
+      targetEl.textContent = current.label;
+      resultEl.textContent = "Click the globe to drop your pin.";
+      pinLayer.innerHTML = "";
+    };
+
+    const dropPin = (x, y, cls = "") => {
+      const pin = document.createElement("div");
+      pin.className = `pin ${cls}`;
+      pin.style.left = `${x}px`;
+      pin.style.top = `${y}px`;
+      pinLayer.appendChild(pin);
+      requestAnimationFrame(() => pin.classList.add("show"));
+    };
+
+    const handlePick = (detail) => {
+      const { lonLat, screen } = detail || {};
+      if (!lonLat || !screen) return;
+
+      const km = Math.round(kmBetween([lonLat[0], lonLat[1]], current.coords));
+      dropPin(screen[0], screen[1], km <= 250 ? "pin-good" : "pin-bad");
+
+      rounds += 1;
+      totalKm += km;
+      const avg = Math.round(totalKm / rounds);
+      avgEl.textContent = Number.isFinite(avg) ? `${avg}` : "—";
+
+      if (km <= 250) {
+        streak += 1;
+        best = Math.max(best, streak);
+        resultEl.textContent = `Bang-on! ${km} km away.`;
+        ringAudio.currentTime = 0;
+        ringAudio.play().catch(() => {});
+      } else {
+        streak = 0;
+        resultEl.textContent = `Close! Off by ${km} km.`;
+      }
+
+      streakEl.textContent = `${streak}`;
+      bestEl.textContent = `${best}`;
+    };
+
+    stage.addEventListener("globe:pick", (e) => handlePick(e.detail));
+    nextBtn.addEventListener("click", setTarget);
+    setTarget();
+  })();
 </script>
 
 <style>
@@ -48,6 +167,174 @@ import Globe from "../components/Globe";
     /* optional: match site card vibe */
     border: 1px solid rgba(175, 200, 214, 0.12);
     background: rgba(255, 255, 255, 0.02);
+  }
+
+  .travel-hud {
+    position: absolute;
+    z-index: 20;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(16, 28, 48, 0.82), rgba(14, 32, 62, 0.72));
+    border: 1px solid rgba(120, 200, 255, 0.28);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(10px);
+  }
+
+  .travel-hud.sega {
+    background-image:
+      linear-gradient(90deg, rgba(70, 120, 255, 0.08) 0, transparent 22px),
+      linear-gradient(0deg, rgba(255, 255, 255, 0.04) 0, transparent 18px),
+      linear-gradient(135deg, rgba(16, 28, 48, 0.88), rgba(18, 38, 68, 0.78));
+  }
+
+  .hud-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .eyebrow {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.7rem;
+    color: rgba(135, 200, 255, 0.9);
+  }
+
+  .hud-title {
+    margin: 2px 0 4px;
+    font-size: 1.2rem;
+    letter-spacing: 0.01em;
+  }
+
+  .hud-sub {
+    margin: 0;
+    color: rgba(230, 240, 255, 0.8);
+    font-size: 0.9rem;
+  }
+
+  .hud-score {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    gap: 8px;
+    min-width: 180px;
+  }
+
+  .hud-score .label {
+    display: block;
+    color: rgba(170, 195, 220, 0.8);
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .hud-score span + span {
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 1rem;
+  }
+
+  .hud-body {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .callout {
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(120, 200, 255, 0.28);
+    background: linear-gradient(180deg, rgba(20, 36, 60, 0.85), rgba(12, 24, 42, 0.85));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .callout-eyebrow {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: rgba(150, 210, 255, 0.9);
+    text-transform: uppercase;
+  }
+
+  .callout-title {
+    margin: 4px 0 10px;
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+  }
+
+  .cta.sega {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(86, 208, 255, 0.6);
+    background: linear-gradient(135deg, rgba(40, 120, 255, 0.28), rgba(12, 200, 255, 0.22));
+    color: rgba(255, 255, 255, 0.96);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  }
+
+  .cta.sega:hover {
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.32);
+    border-color: rgba(120, 230, 255, 0.9);
+  }
+
+  .result {
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px dashed rgba(175, 220, 255, 0.4);
+    background: rgba(10, 20, 36, 0.6);
+    font-weight: 600;
+    color: rgba(235, 245, 255, 0.94);
+  }
+
+  .pin-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .pin {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    background: rgba(86, 208, 255, 0.9);
+    box-shadow: 0 0 14px rgba(86, 208, 255, 0.6);
+    transform: translate(-50%, -50%) scale(0.4);
+    opacity: 0;
+    transition: transform 140ms ease, opacity 140ms ease;
+  }
+
+  .pin.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .pin.pin-good {
+    background: rgba(50, 240, 170, 0.9);
+    box-shadow: 0 0 18px rgba(50, 240, 170, 0.75);
+  }
+
+  .pin.pin-bad {
+    background: rgba(255, 140, 120, 0.9);
+    box-shadow: 0 0 18px rgba(255, 140, 120, 0.7);
   }
 
   .travel-back {
@@ -74,5 +361,17 @@ import Globe from "../components/Globe";
 
   .travel-back:hover {
     border-color: rgba(56, 189, 248, 0.45);
+  }
+
+  @media (max-width: 900px) {
+    .travel-hud {
+      gap: 8px;
+    }
+    .hud-body {
+      grid-template-columns: 1fr;
+    }
+    .hud-score {
+      grid-template-columns: repeat(3, minmax(60px, 1fr));
+    }
   }
 </style>
