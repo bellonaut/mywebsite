@@ -124,70 +124,103 @@ const emailSubject = encodeURIComponent("Hello Bashir");
   }
 
   .btn {
-    height: 36px;
+    height: 40px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.45rem;
 
     width: 100%;
-    padding: 0 0.75rem;
-    border-radius: 999px;
+    padding: 0 1rem;
+    border-radius: 12px;
 
-    border: 1px solid rgba(56, 189, 248, 0.22);
-    background: rgba(56, 189, 248, 0.05);
-    color: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(175, 225, 255, 0.26);
+    background: linear-gradient(
+      120deg,
+      rgba(56, 189, 248, 0.18),
+      rgba(16, 196, 190, 0.12)
+    );
+    box-shadow:
+      0 12px 26px rgba(0, 0, 0, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(6px);
+    color: rgba(238, 247, 255, 0.95);
+    text-shadow: 0 0 12px rgba(56, 189, 248, 0.16);
 
     text-decoration: none;
     cursor: pointer;
 
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-size: 0.9rem;
+    font-weight: 650;
     letter-spacing: 0.01em;
 
-    transition: transform 0.16s ease, border-color 0.16s ease,
-      background 0.16s ease, box-shadow 0.16s ease;
+    transition:
+      transform 0.16s ease,
+      border-color 0.16s ease,
+      background 0.16s ease,
+      box-shadow 0.16s ease,
+      filter 0.16s ease;
     user-select: none;
   }
 
   .btn:hover,
   .btn:focus-visible {
     transform: translateY(-1px);
-    border-color: rgba(56, 189, 248, 0.55);
-    background: rgba(56, 189, 248, 0.12);
-    box-shadow: 0 12px 22px rgba(0, 0, 0, 0.30),
-      0 0 0 1px rgba(56, 189, 248, 0.12);
+    border-color: rgba(120, 230, 255, 0.65);
+    background: linear-gradient(
+      120deg,
+      rgba(86, 208, 255, 0.26),
+      rgba(16, 196, 190, 0.18)
+    );
+    box-shadow:
+      0 16px 30px rgba(0, 0, 0, 0.34),
+      0 0 0 1px rgba(120, 230, 255, 0.28),
+      0 0 24px rgba(120, 230, 255, 0.16);
     outline: none;
   }
 
   .btn.btn-strong {
-    border-color: rgba(56, 189, 248, 0.36);
-    background: rgba(56, 189, 248, 0.09);
+    border-color: rgba(120, 230, 255, 0.6);
+    background: linear-gradient(
+      130deg,
+      rgba(86, 208, 255, 0.32),
+      rgba(86, 208, 255, 0.18)
+    );
+    box-shadow:
+      0 14px 32px rgba(0, 0, 0, 0.34),
+      0 0 0 1px rgba(120, 230, 255, 0.3),
+      0 0 30px rgba(86, 208, 255, 0.18);
   }
 
   .btn.btn-strong:hover,
   .btn.btn-strong:focus-visible {
     border-color: rgba(120, 225, 255, 0.9);
-    background: rgba(56, 189, 248, 0.16);
+    background: linear-gradient(
+      130deg,
+      rgba(120, 225, 255, 0.38),
+      rgba(86, 208, 255, 0.24)
+    );
     box-shadow:
-      0 0 0 1px rgba(120, 225, 255, 0.65),
-      0 10px 26px rgba(0, 0, 0, 0.32);
+      0 18px 36px rgba(0, 0, 0, 0.36),
+      0 0 0 1px rgba(120, 225, 255, 0.55),
+      0 0 36px rgba(120, 225, 255, 0.32);
   }
 
   .btn.btn-substack {
-    border-color: rgba(56, 189, 248, 0.30);
-    background: linear-gradient(
-      90deg,
-      rgba(56, 189, 248, 0.12),
-      rgba(56, 189, 248, 0.06)
-    );
+    border-color: rgba(210, 140, 255, 0.42);
+    background: linear-gradient(125deg, rgba(252, 147, 255, 0.22), rgba(86, 208, 255, 0.16));
+    box-shadow:
+      0 14px 28px rgba(0, 0, 0, 0.32),
+      0 0 0 1px rgba(210, 140, 255, 0.28),
+      0 0 30px rgba(180, 140, 255, 0.18);
   }
 
   .ico {
-    width: 14px;
-    height: 14px;
-    flex: 0 0 14px;
-    color: rgba(56, 189, 248, 0.98);
+    width: 15px;
+    height: 15px;
+    flex: 0 0 15px;
+    color: currentColor;
+    opacity: 0.96;
   }
 
   .btn span {

@@ -352,9 +352,14 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
     }
 
     .footer-pill-wrap {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+      z-index: 30;
       display: flex;
       justify-content: center;
-      padding: 0 1.5rem 1.5rem;
+      padding: 0 1.5rem;
     }
 
     .footer-pill {

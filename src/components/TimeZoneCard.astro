@@ -158,6 +158,13 @@ import {
   :global(.g-time .card) {
     height: auto;
     align-self: start;
+    margin-top: -10px; /* nudge upward so it sits a bit higher in its grid slot */
+  }
+
+  @media (max-width: 767px) {
+    :global(.g-time .card) {
+      margin-top: -6px;
+    }
   }
 </style>
 
