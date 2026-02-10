@@ -66,9 +66,13 @@ try {
           <div class="hero-actions-grid">
             <div class="hero-actions-left">
               <div class="hero-cta-row">
-                <a class="hero-cta ghost" href="/projects">View all projects ↗</a>
+                <a class="hero-cta hero-cta-shimmer" href="/projects">
+                  <span class="hero-cta-label">View all projects</span>
+                  <span class="hero-cta-shine" aria-hidden="true"></span>
+                  <span class="hero-cta-arrow">↗</span>
+                </a>
                 <a class="hero-cta ghost" href={LINKS.substack} target="_blank" rel="noopener noreferrer">
-                  View all articles ↗
+                  Latest articles ↗
                 </a>
               </div>
 
@@ -422,6 +426,38 @@ try {
     transform: translateY(-1px);
   }
 
+  .hero-cta-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-cta-shine {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      120deg,
+      transparent,
+      rgba(200, 240, 255, 0.45),
+      transparent
+    );
+    transform: translateX(-120%);
+    animation: heroCtaShine 3.4s ease-in-out infinite;
+    opacity: 0.8;
+  }
+
+  .hero-cta-label,
+  .hero-cta-arrow {
+    position: relative;
+    z-index: 1;
+  }
+
+  @keyframes heroCtaShine {
+    0% { transform: translateX(-120%); opacity: 0; }
+    12% { opacity: 0.9; }
+    48% { transform: translateX(120%); opacity: 0.9; }
+    100% { transform: translateX(120%); opacity: 0; }
+  }
+
   .hero-cta.ghost {
     border-color: rgba(255, 255, 255, 0.16);
     background: rgba(255, 255, 255, 0.06);
@@ -429,6 +465,14 @@ try {
 
   .hero-cta.ghost:hover {
     border-color: rgba(180, 225, 255, 0.75);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-cta-shine {
+      animation: none;
+      opacity: 0.25;
+      transform: none;
+    }
   }
 
   .hero-logos {

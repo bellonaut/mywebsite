@@ -1,4 +1,4 @@
----
+﻿---
 /**
  * MyStack.astro
  * Cardless accordion that expands into a “blue panel” detail view.
@@ -9,6 +9,7 @@ type Project = {
   title: string;
   year: string;
   tagline: string;
+  isNew?: boolean;
 
   tools?: string[];
   background: string;
@@ -17,6 +18,9 @@ type Project = {
   next: string;
   links?: ProjectLink[];
 };
+
+const pickPrimaryLink = (links?: ProjectLink[]) =>
+  links?.find((l) => /launch|live|demo|preview|app/i.test(l.label)) ?? links?.[0] ?? null;
 
 const projects: Project[] = [
   {
@@ -46,6 +50,7 @@ const projects: Project[] = [
   },
   {
     title: "Nigeria Health Desert Risk Scorer",
+    isNew: true,
     year: "Feb 2026–Present",
     tagline:
       "Policy-ready LGA risk flags built from access, facility, and connectivity indicators.",
@@ -194,11 +199,11 @@ const projects: Project[] = [
 
 <div class="projects" data-accordion>
   {projects.map((p, i) => (
-    <article class="tile" data-tile>
+    <article class={`tile ${p.isNew ? "tile-new" : ""}`} data-tile>
       <button
         type="button"
         class="tile-top"
-        aria-expanded={i === 0 ? "true" : "false"}
+        aria-expanded="false"
       >
         <div class="left">
           <p class="title">{p.title}</p>
@@ -207,11 +212,16 @@ const projects: Project[] = [
             <span class="dot">·</span>
             <span class="tag">{p.tagline}</span>
           </p>
+          {p.isNew ? (
+            <div class="new-flag" aria-hidden="true">
+              <span class="new-pill">NEW</span>
+            </div>
+          ) : null}
         </div>
         <span class="toggle" aria-hidden="true">{i === 0 ? "–" : "+"}</span>
       </button>
 
-      <div class="body" hidden={i !== 0}>
+      <div class="body" hidden={true}>
         <div class="panel">
           {p.tools?.length ? (
             <div class="chips">
@@ -272,10 +282,50 @@ const projects: Project[] = [
   }
 
   .tile {
+    position: relative;
     border-radius: 14px;
     border: 1px solid rgba(255,255,255,0.10);
     background: rgba(255,255,255,0.03);
     overflow: hidden;
+  }
+
+  .tile-new {
+    border-color: rgba(120, 200, 255, 0.35);
+    box-shadow:
+      0 0 0 1px rgba(120, 200, 255, 0.18),
+      0 10px 28px rgba(16, 48, 90, 0.28);
+    background: linear-gradient(180deg, rgba(16, 50, 82, 0.22), rgba(10, 18, 32, 0.22));
+  }
+
+  .tile-new::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-left: 3px solid rgba(120, 200, 255, 0.6);
+    opacity: 0.75;
+    pointer-events: none;
+  }
+
+  .tile-quick {
+    position: relative;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    text-decoration: none;
+    color: rgba(235, 245, 255, 0.92);
+    background: rgba(12, 28, 48, 0.8);
+    border: 1px solid rgba(120, 190, 255, 0.35);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+    transition: transform 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+    z-index: 12;
+  }
+
+  .tile-quick:hover,
+  .tile-quick:focus-visible {
+    transform: translateY(-1px);
+    border-color: rgba(160, 220, 255, 0.7);
+    color: rgba(255, 255, 255, 0.98);
+    outline: none;
   }
 
   .tile-top {
@@ -309,6 +359,25 @@ const projects: Project[] = [
     font-size: 0.80rem;
     line-height: 1.25;
     color: rgba(255,255,255,0.62);
+  }
+
+  .new-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .new-pill {
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: linear-gradient(120deg, rgba(86, 230, 255, 0.32), rgba(120, 190, 255, 0.2));
+    border: 1px solid rgba(120, 200, 255, 0.38);
+    color: rgba(230, 245, 255, 0.95);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    box-shadow: 0 6px 16px rgba(10, 30, 60, 0.28);
   }
 
   .dot { padding: 0 6px; opacity: 0.7; }
@@ -433,7 +502,6 @@ const projects: Project[] = [
   };
 
   closeAll();
-  if (tiles[0]) openTile(tiles[0]);
 
   for (const t of tiles) {
     const btn = t.querySelector(".tile-top");
@@ -449,3 +517,4 @@ const projects: Project[] = [
     if (e.key === "Escape") closeAll();
   });
 </script>
+
