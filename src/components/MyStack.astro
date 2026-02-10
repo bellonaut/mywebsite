@@ -346,7 +346,7 @@ const projects: Project[] = [
     transform: translateY(-1px);
   }
 
-  .left { min-width: 0; }
+  .left { flex: 1; min-width: 0; }
   .title {
     margin: 0;
     font-size: 0.95rem;
@@ -359,6 +359,9 @@ const projects: Project[] = [
     font-size: 0.80rem;
     line-height: 1.25;
     color: rgba(255,255,255,0.62);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
   }
 
   .new-flag {
