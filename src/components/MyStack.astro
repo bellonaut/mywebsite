@@ -24,6 +24,33 @@ const pickPrimaryLink = (links?: ProjectLink[]) =>
 
 const projects: Project[] = [
   {
+    title: "CaRMS Matching Platform Modernization",
+    isNew: true,
+    year: "Feb 2026",
+    tagline: "PostgreSQL/Alembic/Dagster rebuild of the matching data stack.",
+    tools: ["PostgreSQL", "Alembic", "SQLModel", "Dagster", "FastAPI", "MkDocs"],
+    background:
+      "Built for the CaRMS Junior Data Scientist prompt: modernize the matching platform with migration-backed schemas, orchestrated checks, and documented performance patterns.",
+    methods: [
+      "Added alembic.ini and a baseline migration that builds bronze/silver/gold tables plus explicit indexes on gold_program_profile (province, discipline_name, school_name).",
+      "Replaced SQLModel.create_all() startup behavior with init_db() → run_migrations() so runtime bootstraps always apply Alembic upgrades.",
+      "Added Dagster data checks (non-empty tables, province domain guardrail, uniqueness, non-negative counts) and wired them into Definitions for orchestrated validation.",
+      "Documented index rationale and EXPLAIN ANALYZE workflows in MkDocs; updated nav/home links and run/docs flow to include alembic upgrade head.",
+      "Consolidated static GeoJSON under the canonical carms/ tree and removed the legacy duplicate app/ implementation to keep routes aligned.",
+    ],
+    findings: [
+      "Schema lifecycle is now migration-backed, preventing drift across environments.",
+      "Hot gold_program_profile filters are indexed for faster query paths.",
+      "Dagster asset checks enforce data quality before downstream consumption.",
+      "Performance and architecture guidance is discoverable alongside the codebase.",
+    ],
+    next:
+      "Expose match ETL triggers via FastAPI endpoints and add CI smoke tests for alembic upgrade plus Dagster check runs.",
+    links: [
+      { label: "GitHub repo", href: "https://github.com/bellonaut/Junior-Data-Scientist" },
+    ],
+  },
+  {
     title: "The Dangerous Americanization of Alberta Democracy",
     year: "Oct 2024",
     tagline: "Analysis of UCP policy diffusion and democratic risks.",
