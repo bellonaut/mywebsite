@@ -9,17 +9,18 @@ import Globe from "../components/Globe";
 
 import PostRow from "../components/Blog/PostRow.astro";
 import MyStack from "../components/MyStack.astro";
+import RecruiterCTA from "../components/RecruiterCTA.astro";
+import { seo } from "../data/seo";
 
 import { LINKS } from "../lib/constants";
 import { fetchSubstackPosts } from "../lib/substack";
-import CraftedSonic from "../components/CraftedSonic.astro";
 
 const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => []);
+const homeSeo = seo.home;
 ---
 
 <script>
   import type { AnimationSequence } from "motion";
-  import { loaderAnimation } from "../lib/constants";
 
   const runEntrance = async () => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -30,7 +31,11 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
     const { animate, stagger } = await import("motion");
 
     const sequence: AnimationSequence = [
-      loaderAnimation,
+      [
+        ".loader",
+        { opacity: [1, 0], pointerEvents: "none" },
+        { ease: "easeOut" },
+      ],
       [
         cards,
         { y: ["80%", "0%"], opacity: [0, 1] },
@@ -61,8 +66,9 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
 </script>
 
 <Layout
-  description="Bashir Aminu Bello — health data scientist, AI researcher, and policy advocate using data and law to close equity gaps in health and technology."
-  title="Bashir Aminu Bello — Health Data Science & AI"
+  description={homeSeo.description}
+  title={homeSeo.title}
+  keywords={homeSeo.keywords}
 >
   <main
     class="home-grid text-white mx-auto w-full relative grid gap-2.5 p-3
@@ -95,7 +101,7 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
         height="h-full"
       >
         <div class="globe-bg" aria-hidden="true">
-          <Globe client:only="solid-js" variant="widget" />
+          <Globe client:visible={{rootMargin: '200px'}} variant="widget" />
         </div>
         <div class="h-full w-full" />
       </Card>
@@ -172,6 +178,8 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
       </Card>
     </div>
   </main>
+
+  <RecruiterCTA />
 
   <div class="footer-pill-wrap">
     <div class="footer-pill">
@@ -520,4 +528,3 @@ const substackPosts = await fetchSubstackPosts(LINKS.substack, 12).catch(() => [
     })();
   </script>
 </Layout>
-

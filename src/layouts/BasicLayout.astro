@@ -4,12 +4,13 @@ import { LINKS } from "../lib/constants";
 interface Props {
   title: string;
   description: string;
+  keywords?: readonly string[];
   page?: "travel" | "blog";
   slug?: string | undefined;
   pubDate?: string;
 }
 
-const { title, description, page, pubDate } = Astro.props;
+const { title, description, page, pubDate, keywords = [] } = Astro.props;
 const image =
   page === "travel"
     ? `${Astro.url.origin}/globe_preview.webp"`
@@ -77,6 +78,7 @@ const schema =
     <meta content={Astro.generator} name="generator" />
     <title>{title}</title>
     <meta content={description} name="description" />
+    {keywords.length > 0 && <meta content={keywords.join(", ")} name="keywords" />}
     <meta content="index, follow" name="robots" />
 
     <meta content={title} property="og:title" />
@@ -108,6 +110,11 @@ const schema =
       set:html={JSON.stringify(schema)}
       type="application/ld+json"
     />
+    <script
+      defer
+      data-domain="bashir.bio"
+      src="https://plausible.io/js/script.js"
+    ></script>
   </head>
 
   <!-- ✅ Key fixes: remove md:h-screen and justify-center; use min-h and normal flow -->
@@ -200,6 +207,21 @@ const schema =
       };
 
       document.addEventListener("click", recordInteraction, { capture: true });
+      document.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        const link = target.closest("a[data-event]");
+        if (!(link instanceof HTMLAnchorElement)) return;
+        const eventType = link.dataset.event;
+        const eventMap = {
+          "download-resume": "Download Resume",
+          "book-call": "Book Call",
+          "contact-email": "Email Click",
+        };
+        const eventName = eventType ? eventMap[eventType] : undefined;
+        if (!eventName) return;
+        window.plausible?.(eventName);
+      });
       window.addEventListener("pagehide", sendSummary);
       document.addEventListener("visibilitychange", () => {
         if (document.visibilityState === "hidden") {

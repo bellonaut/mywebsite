@@ -27,6 +27,73 @@ type VisitPayload = {
   suppressNotifications?: boolean;
 };
 
+const RATE_LIMIT_POINTS = 10;
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
+const requestLog = new Map<string, number[]>();
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null;
+
+const isStringRecord = (value: unknown): value is Record<string, string> => {
+  if (!isRecord(value)) return false;
+  return Object.values(value).every((entry) => typeof entry === "string");
+};
+
+const validateInteraction = (value: unknown): value is Interaction => {
+  if (!isRecord(value)) return false;
+  return ["type", "label", "href"].every((key) => {
+    const field = value[key];
+    return field === undefined || typeof field === "string";
+  }) && (value.atMs === undefined || typeof value.atMs === "number");
+};
+
+const validatePayload = (value: unknown): VisitPayload | null => {
+  if (!isRecord(value)) return null;
+
+  const interactions = value.interactions;
+  if (
+    interactions !== undefined &&
+    (!Array.isArray(interactions) || !interactions.every(validateInteraction))
+  ) {
+    return null;
+  }
+
+  if (value.utm !== undefined && !isStringRecord(value.utm)) {
+    return null;
+  }
+
+  const candidate = value as VisitPayload;
+  const fieldChecks: Array<[unknown, string]> = [
+    [candidate.sessionId, "string"],
+    [candidate.url, "string"],
+    [candidate.path, "string"],
+    [candidate.timezone, "string"],
+    [candidate.language, "string"],
+    [candidate.suppressNotifications, "boolean"],
+    [candidate.startedAt, "number"],
+    [candidate.durationMs, "number"],
+  ];
+
+  for (const [field, type] of fieldChecks) {
+    if (field !== undefined && typeof field !== type) return null;
+  }
+
+  if (candidate.referrer !== undefined && candidate.referrer !== null && typeof candidate.referrer !== "string") {
+    return null;
+  }
+
+  return candidate;
+};
+
+const isRateLimited = (key: string) => {
+  const now = Date.now();
+  const existing = requestLog.get(key) ?? [];
+  const recent = existing.filter((timestamp) => now - timestamp < RATE_LIMIT_WINDOW_MS);
+  recent.push(now);
+  requestLog.set(key, recent);
+  return recent.length > RATE_LIMIT_POINTS;
+};
+
 const formatDuration = (durationMs?: number) => {
   if (!durationMs || durationMs < 0) return "Unknown";
   const totalSeconds = Math.round(durationMs / 1000);
@@ -56,17 +123,25 @@ export const POST: APIRoute = async ({ request }) => {
 
   let payload: VisitPayload | null = null;
   try {
-    payload = (await request.json()) as VisitPayload;
+    payload = validatePayload(await request.json());
   } catch {
+    return new Response("Invalid payload", { status: 400 });
+  }
+
+  if (!payload) {
     return new Response("Invalid payload", { status: 400 });
   }
 
   const headers = request.headers;
   const ip =
     headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    headers.get("cf-connecting-ip");
+    headers.get("cf-connecting-ip") ??
+    "unknown";
+  if (isRateLimited(ip)) {
+    return new Response("Too many requests", { status: 429 });
+  }
   const excludedIps = NOTIFY_EXCLUDE_IPS.split(",")
-    .map((value) => value.trim())
+    .map((value: string) => value.trim())
     .filter(Boolean);
   const city = headers.get("x-vercel-ip-city");
   const region = headers.get("x-vercel-ip-country-region");
@@ -100,7 +175,7 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response("Notifications suppressed", { status: 204 });
   }
 
-  if (ip && excludedIps.includes(ip)) {
+  if (excludedIps.includes(ip)) {
     return new Response("Excluded IP", { status: 204 });
   }
 
@@ -138,6 +213,10 @@ export const POST: APIRoute = async ({ request }) => {
 
   if (!response.ok) {
     const errorText = await response.text();
+    console.error("Visit API upstream error", {
+      status: response.status,
+      errorText,
+    });
     return new Response(errorText, { status: 500 });
   }
 
