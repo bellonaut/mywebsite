@@ -311,8 +311,10 @@ const GlobeComponent = (props: Props = {}) => {
       // Click to pick
       svg.on("click", (event: MouseEvent) => {
         markInteraction();
-        const pt = d3.pointer(event, svg.node() as any);
-        const lonLat = projection.invert(pt as any);
+        const svgNode = svg.node();
+        if (!svgNode || !projection.invert) return;
+        const pt = d3.pointer(event, svgNode) as [number, number];
+        const lonLat = projection.invert(pt);
         if (!lonLat) return;
         mapContainer?.dispatchEvent(
           new CustomEvent("globe:pick", {
@@ -326,7 +328,7 @@ const GlobeComponent = (props: Props = {}) => {
       const handleExternalDrop = (e: Event) => {
         markInteraction();
         const detail = (e as CustomEvent).detail;
-        if (!detail?.screen) return;
+        if (!detail?.screen || !projection.invert) return;
         const lonLat = projection.invert(detail.screen as [number, number]);
         if (!lonLat) return;
         mapContainer?.dispatchEvent(
