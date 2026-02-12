@@ -1,0 +1,149 @@
+---
+import type { Publication } from "../data/publications";
+
+interface Props {
+  items: readonly Publication[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="pub-list">
+  {items.map((pub) => (
+    <article class="pub">
+      <div class="pub-head">
+        <div class="pub-meta">
+          <span class={`pill pill-${pub.type.toLowerCase()}`}>{pub.type}</span>
+          <span class="year">{pub.year}</span>
+        </div>
+        <h3 class="title">{pub.title}</h3>
+        <p class="authors">{pub.authors}</p>
+        <p class="venue">{pub.venue}</p>
+      </div>
+
+      <p class="takeaway">{pub.takeaway}</p>
+
+      <div class="foot">
+        <span class="status">{pub.status}</span>
+        {pub.link ? (
+          <a class="link" href={pub.link} target="_blank" rel="noreferrer">
+            View
+          </a>
+        ) : null}
+      </div>
+    </article>
+  ))}
+</div>
+
+<style>
+  .pub-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .pub {
+    padding: 14px 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(142, 215, 255, 0.24);
+    background:
+      linear-gradient(140deg, rgba(25, 63, 105, 0.5), rgba(9, 20, 38, 0.8));
+    box-shadow:
+      0 14px 28px rgba(0, 0, 0, 0.32),
+      0 0 0 1px rgba(100, 190, 255, 0.16);
+  }
+
+  .pub-head {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .pub-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: rgba(220, 235, 255, 0.8);
+  }
+
+  .pill {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .pill-journal {
+    border-color: rgba(129, 199, 255, 0.6);
+    background: rgba(56, 189, 248, 0.1);
+  }
+
+  .pill-policy {
+    border-color: rgba(251, 191, 36, 0.6);
+    background: rgba(251, 191, 36, 0.12);
+  }
+
+  .pill-preprint {
+    border-color: rgba(196, 181, 253, 0.6);
+    background: rgba(196, 181, 253, 0.12);
+  }
+
+  .year {
+    opacity: 0.8;
+  }
+
+  .title {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 750;
+    line-height: 1.28;
+  }
+
+  .authors,
+  .venue {
+    margin: 0;
+    color: rgba(220, 235, 255, 0.76);
+    font-size: 0.9rem;
+  }
+
+  .takeaway {
+    margin: 10px 0;
+    color: rgba(240, 248, 255, 0.9);
+    line-height: 1.45;
+  }
+
+  .foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: rgba(215, 232, 255, 0.8);
+    font-size: 0.9rem;
+  }
+
+  .link {
+    color: rgba(184, 223, 255, 0.95);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(184, 223, 255, 0.45);
+    padding-bottom: 2px;
+    font-weight: 650;
+  }
+
+  .link:hover,
+  .link:focus-visible {
+    color: rgba(255, 255, 255, 0.98);
+    border-bottom-color: rgba(255, 255, 255, 0.7);
+    outline: none;
+  }
+
+  @media (max-width: 640px) {
+    .foot {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+  }
+</style>

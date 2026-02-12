@@ -1,22 +1,266 @@
-<div class="recruiter-cta fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg md:hidden">
-  <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
-    <p class="text-sm font-semibold">Open to opportunities</p>
-    <div class="flex gap-2">
+<div class="recruiter-cta fixed left-0 right-0 z-50" aria-live="polite">
+  <!-- Desktop / Tablet pill -->
+  <div class="cta-pill main">
+    <button class="sonic-btn" type="button" data-sonic-trigger aria-label="Play Green Hill theme">
+      <img src="/sonic/shadow.gif" alt="" width="22" height="22" loading="lazy" decoding="async" />
+    </button>
+    <span class="pill-text">Open to opportunities</span>
+    <div class="pill-actions">
       <a
-        href="/resume.pdf"
+        href="/resume/Resume_Bashir_Bello.pdf"
         download
-        class="rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-blue-700"
+        class="pill-btn pill-shimmer"
         data-event="download-resume"
       >
         Resume
       </a>
       <a
         href="mailto:bashiraminubellok@gmail.com?subject=Opportunity%20at%20%5BCompany%5D"
-        class="rounded-md bg-blue-700 px-3 py-1.5 text-sm font-semibold text-white"
+        class="pill-btn ghost pill-shimmer"
         data-event="contact-email"
       >
         Contact
       </a>
     </div>
   </div>
+
+  <!-- Mobile combo: Sonic + CTA in one capsule -->
+  <div class="cta-pill mobile-combo">
+    <button class="sonic-btn" type="button" data-sonic-trigger aria-label="Play Green Hill theme">
+      <img src="/sonic/shadow.gif" alt="" width="22" height="22" loading="lazy" decoding="async" />
+    </button>
+    <div class="mobile-copy">
+      <span class="pill-text">Made by Bashir Aminu Bello · Open to opportunities</span>
+    </div>
+    <div class="pill-actions">
+      <a
+        href="/resume/Resume_Bashir_Bello.pdf"
+        download
+        class="pill-btn pill-shimmer"
+        data-event="download-resume"
+      >
+        Resume
+      </a>
+      <a
+        href="mailto:bashiraminubellok@gmail.com?subject=Opportunity%20at%20%5BCompany%5D"
+        class="pill-btn ghost pill-shimmer"
+        data-event="contact-email"
+      >
+        Contact
+      </a>
+    </div>
+  </div>
+
+  <audio data-sonic-audio preload="none">
+    <source src="/sonic/theme.mp3" type="audio/mpeg" />
+  </audio>
 </div>
+
+<style>
+  .recruiter-cta {
+    pointer-events: none;
+    padding: 0.75rem 1rem 1.1rem;
+    display: flex;
+    justify-content: center;
+    bottom: calc(82px + env(safe-area-inset-bottom, 0px)); /* clears Sonic pill */
+  }
+
+  .cta-pill {
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid rgba(175, 200, 214, 0.18);
+    background: rgba(15, 25, 35, 0.55);
+    color: rgba(235, 245, 255, 0.9);
+    font-size: 0.82rem;
+    letter-spacing: 0.01em;
+    box-shadow:
+      0 10px 22px rgba(0, 0, 0, 0.32),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .pill-text {
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .pill-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .pill-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.24rem 1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(175, 200, 214, 0.35);
+    background: linear-gradient(150deg, rgba(120, 225, 255, 0.38), rgba(64, 120, 240, 0.28));
+    box-shadow:
+      0 10px 22px rgba(10, 24, 38, 0.42),
+      inset 0 1px 0 rgba(255, 255, 255, 0.16),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+    color: rgba(235, 245, 255, 0.95);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.82rem;
+    transition: transform 120ms ease, box-shadow 160ms ease, border-color 160ms ease;
+  }
+
+  .pill-btn.ghost {
+    background: linear-gradient(145deg, rgba(18, 30, 46, 0.9), rgba(10, 20, 30, 0.92));
+    border-color: rgba(120, 225, 255, 0.28);
+  }
+
+  .pill-btn:hover,
+  .pill-btn:focus-visible {
+    transform: translateY(-1px);
+    border-color: rgba(120, 225, 255, 0.7);
+    box-shadow:
+      0 14px 26px rgba(46, 108, 200, 0.32),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    outline: none;
+  }
+
+  .pill-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pill-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      120deg,
+      transparent,
+      rgba(220, 240, 255, 0.6),
+      transparent
+    );
+    transform: translateX(-120%);
+    animation: pillShine 3.1s ease-in-out infinite;
+    opacity: 0.8;
+  }
+
+  .pill-shimmer span,
+  .pill-shimmer strong {
+    position: relative;
+    z-index: 1;
+  }
+
+  @keyframes pillShine {
+    0% { transform: translateX(-120%); opacity: 0; }
+    12% { opacity: 0.9; }
+    48% { transform: translateX(120%); opacity: 0.9; }
+    100% { transform: translateX(120%); opacity: 0; }
+  }
+
+  .mobile-combo {
+    display: none;
+  }
+
+  .sonic-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    border-radius: 999px;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    cursor: pointer;
+    position: relative;
+    overflow: visible;
+  }
+
+  .mobile-copy {
+    flex: 1 1 100%;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  /* Dark-energy ring + orbiting particles */
+  .sonic-btn::before,
+  .sonic-btn::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 999px;
+    pointer-events: none;
+  }
+
+  .sonic-btn::before {
+    border: 1px solid rgba(255, 0, 85, 0.45);
+    box-shadow:
+      0 0 18px rgba(255, 0, 85, 0.45),
+      0 0 28px rgba(120, 0, 255, 0.35);
+    animation: ringPulse 2.6s ease-in-out infinite;
+  }
+
+  .sonic-btn::after {
+    background:
+      radial-gradient(circle at 25% 25%, rgba(255, 0, 85, 0.55), transparent 45%),
+      radial-gradient(circle at 70% 65%, rgba(120, 0, 255, 0.55), transparent 50%),
+      radial-gradient(circle at 55% 40%, rgba(255, 255, 255, 0.18), transparent 40%);
+    mix-blend-mode: screen;
+    opacity: 0.85;
+    animation: orbitTwist 5s linear infinite;
+  }
+
+  .sonic-btn:hover::before,
+  .sonic-btn:focus-visible::before {
+    box-shadow:
+      0 0 24px rgba(255, 0, 85, 0.7),
+      0 0 36px rgba(120, 0, 255, 0.55);
+  }
+
+  @keyframes ringPulse {
+    0% { transform: scale(0.96); opacity: 0.8; }
+    50% { transform: scale(1.06); opacity: 1; }
+    100% { transform: scale(0.96); opacity: 0.8; }
+  }
+
+  @keyframes orbitTwist {
+    0% { transform: rotate(0deg) scale(0.98); }
+    50% { transform: rotate(180deg) scale(1.02); }
+    100% { transform: rotate(360deg) scale(0.98); }
+  }
+
+  @media (max-width: 520px) {
+    .cta-pill {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.55rem;
+      text-align: center;
+    }
+
+    .pill-text {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .recruiter-cta {
+      bottom: 0;
+      padding-bottom: 1.25rem;
+    }
+
+    .cta-pill.main {
+      display: none;
+    }
+
+    .cta-pill.mobile-combo {
+      display: inline-flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.55rem;
+      width: min(640px, calc(100vw - 24px));
+    }
+  }
+</style>

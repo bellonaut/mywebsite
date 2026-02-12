@@ -69,16 +69,25 @@ const GlobeComponent = (props: Props = {}) => {
   onMount(() => {
     if (!mapContainer) return;
 
-    const root = d3.select(mapContainer);
-    root.style("position", "relative").style("width", "100%").style("height", "100%");
+    try {
+      const root = d3.select(mapContainer);
+      root
+        .style("position", "relative")
+        .style("width", "100%")
+        .style("height", "100%")
+        .style(
+          "background",
+          "radial-gradient(circle at 20% 25%, rgba(86, 204, 255, 0.12), transparent 55%), radial-gradient(circle at 80% 75%, rgba(180, 106, 255, 0.12), transparent 60%)"
+        );
 
-    const svg = root
-      .append("svg")
-      .attr("role", "img")
-      .attr("aria-label", "Rotating globe with journey arcs")
-      .style("width", "100%")
-      .style("height", "100%")
-      .style("display", "block");
+      const svg = root
+        .append("svg")
+        .attr("role", "img")
+        .attr("aria-label", "Rotating globe with journey arcs")
+        .style("width", "100%")
+        .style("height", "100%")
+        .style("display", "block")
+        .style("filter", "drop-shadow(0 12px 28px rgba(0,0,0,0.35))");
 
     const tooltip = root
       .append("div")
@@ -97,12 +106,12 @@ const GlobeComponent = (props: Props = {}) => {
       .style("transform", "translate(-50%, -140%)");
 
     // Theme colors (blue panels vibe)
-    const oceanFill = "rgba(10, 36, 54, 0.90)";
-    const oceanStroke = "rgba(175, 200, 214, 0.35)";
-    const landFill = "rgba(245, 240, 229, 0.10)";
-    const landStroke = "rgba(175, 200, 214, 0.25)";
-    const visitedFill = "rgba(56, 189, 248, 0.22)"; // soft cyan tint on visited
-    const visitedStroke = "rgba(56, 189, 248, 0.55)";
+      const oceanFill = "rgba(24, 72, 140, 0.78)";
+      const oceanStroke = "rgba(126, 210, 255, 0.6)";
+      const landFill = "rgba(220, 245, 255, 0.22)";
+      const landStroke = "rgba(150, 220, 255, 0.45)";
+      const visitedFill = "rgba(56, 189, 248, 0.32)"; // stronger cyan tint on visited
+      const visitedStroke = "rgba(56, 189, 248, 0.82)";
     const journeyStroke = "rgba(216, 30, 91, 0.85)"; // accent path
     const journeyGlow = "rgba(216, 30, 91, 0.30)";
     const nodeFill = "rgba(216, 30, 91, 0.95)";
@@ -189,7 +198,7 @@ const GlobeComponent = (props: Props = {}) => {
 
       svg.attr("viewBox", `0 0 ${width} ${height}`);
 
-      const r = Math.min(width, height) * 0.43;
+      const r = Math.min(width, height) * 0.48;
       projection.translate([width / 2, height / 2]).scale(r);
 
       ocean
@@ -239,7 +248,8 @@ const GlobeComponent = (props: Props = {}) => {
 
     // Smooth rotation (time-based) — pauses on interaction, resumes after idle
     const degreesPerSecond = isFull ? 3.5 : 6.0;
-    const idleDelayMs = isFull ? 7000 : 5000;
+    // Resume spin faster after user interaction (50% of previous delay)
+    const idleDelayMs = isFull ? 3500 : 2500;
     let isDragging = false;
     let isPaused = false;
     let autoTimer: d3.Timer | null = null;
@@ -280,10 +290,10 @@ const GlobeComponent = (props: Props = {}) => {
       });
     };
 
-    startAutoRotate();
+      startAutoRotate();
 
-    // Initial draw
-    resize();
+      // Initial draw
+      resize();
 
     if (isFull) {
       svg.style("cursor", "grab");
@@ -342,13 +352,34 @@ const GlobeComponent = (props: Props = {}) => {
       onCleanup(() => mapContainer?.removeEventListener("globe:external-drop", handleExternalDrop as any));
     }
 
-    onCleanup(() => {
-      stopAutoRotate();
-      if (resumeTimeout) clearTimeout(resumeTimeout);
-      ro.disconnect();
-      tooltip.remove();
-      svg.remove();
-    });
+      onCleanup(() => {
+        stopAutoRotate();
+        if (resumeTimeout) clearTimeout(resumeTimeout);
+        ro.disconnect();
+        tooltip.remove();
+        svg.remove();
+      });
+    } catch (err) {
+      console.error("Globe render failed", err);
+      if (mapContainer) {
+        mapContainer.innerHTML = "";
+        const fallback = document.createElement("div");
+        fallback.textContent = "Globe is resting. Reload to try again.";
+        Object.assign(fallback.style, {
+          color: "rgba(220,235,255,0.82)",
+          fontSize: "0.9rem",
+          letterSpacing: "0.06em",
+          textTransform: "uppercase",
+          display: "grid",
+          placeItems: "center",
+          height: "100%",
+          background:
+            "radial-gradient(circle at 50% 45%, rgba(86, 204, 255, 0.08), rgba(12, 24, 40, 0.6))",
+          borderRadius: "12px",
+        });
+        mapContainer.appendChild(fallback);
+      }
+    }
   });
 
   return (
