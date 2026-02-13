@@ -7,12 +7,13 @@ interface Props {
   keywords?: readonly string[];
   page?: "travel" | "blog";
   fullScreen?: string;
+  robots?: string;
 }
 
-const { title, description, keywords } = Astro.props;
+const { title, description, keywords, robots } = Astro.props;
 ---
 
-<BasicLayout description={description} title={title} keywords={keywords}>
+<BasicLayout description={description} title={title} keywords={keywords} robots={robots}>
   <!-- Loader goes in BasicLayout's loader slot -->
   <div
     slot="loader"

@@ -66,10 +66,13 @@ try {
           <div class="hero-actions-grid">
             <div class="hero-actions-left">
               <div class="hero-cta-row">
-                <a class="hero-cta hero-cta-shimmer" href="/projects">
-                  <span class="hero-cta-label">View all projects</span>
+                <a class="hero-cta hero-cta-shimmer" href={LINKS.healthDesertPage} data-event="health-desert-page-open">
+                  <span class="hero-cta-label">Open Health Desert</span>
                   <span class="hero-cta-shine" aria-hidden="true"></span>
                   <span class="hero-cta-arrow">↗</span>
+                </a>
+                <a class="hero-cta ghost" href="/projects">
+                  Projects ↗
                 </a>
                 <a class="hero-cta ghost" href="/publications">
                   Publications ↗
@@ -358,7 +361,7 @@ try {
     const start = () => {
       if (galleryItems.length < 2 || prefersReduce) return;
       stop();
-      timer = setInterval(next, 6800);
+      timer = setInterval(next, 5100);
     };
 
     prevBtn?.addEventListener("click", () => {

@@ -1,0 +1,108 @@
+  }
+
+  .chip-muted {
+    color: rgba(255,255,255,0.72);
+    border-color: rgba(255,255,255,0.12);
+  }
+
+  .links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .link {
+    font-size: 0.82rem;
+    text-decoration: none;
+    color: rgba(175, 200, 214, 0.92);
+    border-bottom: 1px solid rgba(175, 200, 214, 0.28);
+    padding-bottom: 2px;
+  }
+
+  .link:hover {
+    color: rgba(255,255,255,0.92);
+    border-color: rgba(255,255,255,0.55);
+  }
+
+  .bio-grid {
+    display: grid;
+    gap: 10px;
+  }
+
+  .block {
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    padding: 10px 12px;
+  }
+
+  .block h6 {
+    margin: 0 0 6px;
+    font-size: 0.70rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(175, 200, 214, 0.70);
+    font-weight: 700;
+  }
+
+  .block p {
+    margin: 0;
+    font-size: 0.86rem;
+    line-height: 1.45;
+    color: rgba(255,255,255,0.84);
+  }
+
+  .block ul {
+    margin: 0;
+    padding-left: 1.05rem;
+    font-size: 0.86rem;
+    line-height: 1.45;
+    color: rgba(255,255,255,0.84);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-top { transform: none !important; }
+  }
+</style>
+
+<script is:inline>
+  const tiles = Array.from(document.querySelectorAll("[data-project]"));
+
+  const closeAll = () => {
+    for (const t of tiles) {
+      const btn = t.querySelector(".project-top");
+      const body = t.querySelector(".project-body");
+      const tog = t.querySelector(".toggle");
+      if (btn) btn.setAttribute("aria-expanded", "false");
+      if (body) body.hidden = true;
+      if (tog) tog.textContent = "+";
+    }
+  };
+
+  const openTile = (t) => {
+    const btn = t.querySelector(".project-top");
+    const body = t.querySelector(".project-body");
+    const tog = t.querySelector(".toggle");
+    if (btn) btn.setAttribute("aria-expanded", "true");
+    if (body) body.hidden = false;
+    if (tog) tog.textContent = "–";
+  };
+
+  closeAll();
+  if (tiles[0]) openTile(tiles[0]);
+
+  for (const t of tiles) {
+    const btn = t.querySelector(".project-top");
+    if (!btn) continue;
+    btn.addEventListener("click", () => {
+      const isOpen = btn.getAttribute("aria-expanded") === "true";
+      closeAll();
+      if (!isOpen) openTile(t);
+    });
+  }
+
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeAll();
+  });
+</script>

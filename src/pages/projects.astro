@@ -2,18 +2,28 @@
 import Layout from "../layouts/Layout.astro";
 import Card from "../components/Card/index.astro";
 import MyStack from "../components/MyStack.astro";
+import SiteLinkHub from "../components/SiteLinkHub.astro";
+import { LINKS } from "../lib/constants";
+import { seo } from "../data/seo";
+
+const pageSeo = seo.projects;
 ---
 
 <Layout
-  title="Projects - Bashir Aminu Bello"
-  description="Expanded project archive with methods, findings, and next steps."
+  title={pageSeo.title}
+  description={pageSeo.description}
+  keywords={pageSeo.keywords}
 >
   <main class="projects-page">
     <header class="projects-header">
       <a class="back-link" href="/">Back home</a>
+      <SiteLinkHub current="projects" />
       <h1>Projects</h1>
       <p>
-        Full project narratives, methods, and next steps. Tap any entry to expand.
+        Full project narratives, methods, and next steps. For the featured deployment,
+        start on <a href={LINKS.healthDesertPage} data-event="health-desert-page-open">Health Desert</a>.
+        For report outputs, go to <a href="/publications">Publications</a>, or
+        <a href={LINKS.healthDesertDemo} target="_blank" rel="noopener noreferrer" data-event="health-desert-demo-open">watch the live demo</a>.
       </p>
     </header>
 
@@ -53,6 +63,10 @@ import MyStack from "../components/MyStack.astro";
     margin: 0;
     max-width: 700px;
     color: rgba(220, 235, 255, 0.7);
+  }
+
+  .projects-header p a {
+    color: rgba(184, 223, 255, 0.95);
   }
 
   .back-link {

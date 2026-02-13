@@ -1,9 +1,12 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Globe from "../components/Globe";
+import { seo } from "../data/seo";
+
+const pageSeo = seo.travel;
 ---
 
-<Layout title="Travel" description=" ">
+<Layout title={pageSeo.title} description={pageSeo.description} keywords={pageSeo.keywords}>
   <main class="travel-wrap">
     <a class="back-link travel-back" href="/" aria-label="Back home">
       <span class="back-dot" aria-hidden="true"></span>

@@ -17,4 +17,8 @@ export const analytics = {
   githubClick: () => trackEvent("GitHub Click"),
   projectClick: (projectName: string) => trackEvent("Project Click", { project: projectName }),
   articleClick: (articleTitle: string) => trackEvent("Article Click", { article: articleTitle }),
+  healthDesertPageOpen: () => trackEvent("Health Desert Page Open"),
+  healthDesertAppLaunch: () => trackEvent("Health Desert App Launch"),
+  healthDesertWhitepaperOpen: () => trackEvent("Health Desert Whitepaper Open"),
+  healthDesertDemoOpen: () => trackEvent("Health Desert Demo Open"),
 };

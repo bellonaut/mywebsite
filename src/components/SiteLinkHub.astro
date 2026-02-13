@@ -1,0 +1,90 @@
+---
+import { LINKS } from "../lib/constants";
+
+type HubKey = "home" | "health-desert" | "projects" | "publications" | "articles";
+
+interface Props {
+  current?: HubKey;
+}
+
+const { current } = Astro.props as Props;
+
+const items: {
+  key: HubKey;
+  label: string;
+  href: string;
+  external?: boolean;
+  event?: string;
+}[] = [
+  { key: "home", label: "Home", href: "/" },
+  {
+    key: "health-desert",
+    label: "Health Desert",
+    href: LINKS.healthDesertPage,
+    event: "health-desert-page-open",
+  },
+  { key: "projects", label: "Projects", href: "/projects" },
+  { key: "publications", label: "Publications", href: "/publications" },
+  { key: "articles", label: "Articles", href: LINKS.substack, external: true },
+];
+---
+
+<nav class="hub" aria-label="Explore sections">
+  {items.map((item) => (
+    <a
+      class={`hub-link ${current === item.key ? "is-active" : ""}`}
+      href={item.href}
+      target={item.external ? "_blank" : undefined}
+      rel={item.external ? "noopener noreferrer" : undefined}
+      aria-current={current === item.key ? "page" : undefined}
+      data-event={item.event}
+    >
+      {item.label}
+    </a>
+  ))}
+</nav>
+
+<style>
+  .hub {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hub-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(156, 210, 255, 0.28);
+    background: rgba(14, 26, 43, 0.52);
+    color: rgba(232, 244, 255, 0.92);
+    text-decoration: none;
+    font-size: 0.82rem;
+    letter-spacing: 0.01em;
+    transition: border-color 0.16s ease, transform 0.16s ease, color 0.16s ease;
+  }
+
+  .hub-link:hover,
+  .hub-link:focus-visible {
+    border-color: rgba(130, 215, 255, 0.72);
+    color: rgba(255, 255, 255, 0.98);
+    transform: translateY(-1px);
+    outline: none;
+  }
+
+  .hub-link.is-active {
+    border-color: rgba(120, 225, 255, 0.82);
+    background: linear-gradient(
+      120deg,
+      rgba(86, 208, 255, 0.22),
+      rgba(56, 189, 248, 0.2)
+    );
+    box-shadow:
+      0 0 0 1px rgba(120, 225, 255, 0.34),
+      0 8px 20px rgba(10, 28, 46, 0.35);
+  }
+</style>

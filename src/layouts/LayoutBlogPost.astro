@@ -10,9 +10,16 @@ interface Props {
 }
 
 const { title, description, pubDate, minutesRead } = Astro.props;
+const postKeywords = [
+  "public health blog",
+  "healthcare AI insights",
+  "health policy commentary",
+  "digital health analysis",
+  "Bashir Aminu Bello",
+];
 ---
 
-<BasicLayout title={title} description={description} page="blog">
+<BasicLayout title={title} description={description} keywords={postKeywords} page="blog">
   <main class="post-shell">
     <article class="post-card">
       <header class="post-head">

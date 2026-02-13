@@ -8,65 +8,90 @@ interface Props {
   page?: "travel" | "blog";
   slug?: string | undefined;
   pubDate?: string;
+  robots?: string;
 }
 
-const { title, description, page, pubDate, keywords = [] } = Astro.props;
+const { title, description, page, pubDate, keywords = [], robots = "index, follow" } = Astro.props;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.url.origin).toString();
+const ogType = page === "blog" ? "article" : "website";
 const image =
   page === "travel"
     ? `${Astro.url.origin}/globe_preview.webp"`
     : `${Astro.url.origin}/og-image.png`;
 
-const schema =
-  page !== "blog"
-    ? {
-        "@context": "http://schema.org",
-        "@type": "Person",
-        name: "Bashir Aminu Bello",
-        url: Astro.url.origin,
-        sameAs: [LINKS.linkedin, LINKS.github, LINKS.substack],
-        image: `${Astro.url.origin}/og-image.png`,
-        jobTitle: "Health Data Scientist",
-        worksFor: {
-          "@type": "Organization",
-          name: "Independent Researcher",
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: "Sokoto",
-            addressCountry: "NG",
-          },
-        },
-        nationality: {
-          "@type": "Country",
-          name: "Nigeria",
-        },
-      }
-    : {
-        "@context": "http://schema.org",
-        "@type": "BlogPosting",
-        mainEntityOfPage: {
-          "@type": "WebPage",
-          "@id": Astro.url.href,
-        },
-        headline: title || title,
-        description: description || title,
-        image: `${Astro.url.origin}/og-image.png`, //TODO: dynamic
-        author: {
-          "@type": "Person",
-          name: "Bashir Aminu Bello",
-          url: Astro.url.origin,
-          sameAs: [LINKS.linkedin, LINKS.github, LINKS.substack],
-        },
-        publisher: {
-          "@type": "Organization",
-          name: "Bashir Aminu Bello",
-          logo: {
-            "@type": "ImageObject",
-            url: `${Astro.url.origin}/og-image.png`,
-          },
-        },
-        datePublished: pubDate || new Date().toISOString(),
-        dateModified: pubDate || new Date().toISOString(),
-      };
+const personSchema = {
+  "@type": "Person",
+  "@id": `${Astro.url.origin}/#person`,
+  name: "Bashir Aminu Bello",
+  url: Astro.url.origin,
+  image: `${Astro.url.origin}/og-image.png`,
+  sameAs: [LINKS.linkedin, LINKS.github, LINKS.substack],
+  jobTitle: "Healthcare Data Scientist",
+  description:
+    "Healthcare data scientist focused on public health AI, digital health tools, geospatial access modeling, policy analytics, and applied research partnerships.",
+  knowsAbout: [
+    "Public health analytics",
+    "Healthcare AI",
+    "Telehealth systems",
+    "Health policy analysis",
+    "Geospatial health modeling",
+    "Health equity",
+    "Health systems research",
+    "Machine learning",
+    "Data engineering",
+    "Decision-support tools",
+  ],
+  worksFor: {
+    "@type": "Organization",
+    name: "Independent Researcher",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Sokoto",
+      addressCountry: "NG",
+    },
+  },
+  nationality: {
+    "@type": "Country",
+    name: "Nigeria",
+  },
+};
+
+const websiteSchema = {
+  "@type": "WebSite",
+  "@id": `${Astro.url.origin}/#website`,
+  url: Astro.url.origin,
+  name: "Bashir Aminu Bello",
+  description:
+    "Portfolio and research site: healthcare AI projects, policy publications, Health Desert Scorer, and collaboration opportunities.",
+  inLanguage: "en",
+  publisher: { "@id": `${Astro.url.origin}/#person` },
+};
+
+const pageSchema = {
+  "@type": page === "blog" ? "BlogPosting" : "WebPage",
+  "@id": `${canonicalUrl}#page`,
+  url: canonicalUrl,
+  headline: title,
+  name: title,
+  description,
+  image,
+  inLanguage: "en",
+  isPartOf: { "@id": `${Astro.url.origin}/#website` },
+  about: { "@id": `${Astro.url.origin}/#person` },
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": canonicalUrl,
+  },
+  datePublished: pubDate || undefined,
+  dateModified: pubDate || undefined,
+  author: { "@id": `${Astro.url.origin}/#person` },
+  publisher: { "@id": `${Astro.url.origin}/#person` },
+};
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [personSchema, websiteSchema, pageSchema],
+};
 ---
 
 <!doctype html>
@@ -79,15 +104,33 @@ const schema =
     <title>{title}</title>
     <meta content={description} name="description" />
     {keywords.length > 0 && <meta content={keywords.join(", ")} name="keywords" />}
-    <meta content="index, follow" name="robots" />
+    {keywords.length > 0 && <meta content={keywords.join(", ")} name="news_keywords" />}
+    <meta content={robots} name="robots" />
+    <meta content={robots} name="googlebot" />
+    <meta content={robots} name="bingbot" />
+    <meta content="Bashir Aminu Bello" name="author" />
+    <meta content="Bashir Aminu Bello" name="creator" />
+    <meta content="Bashir Aminu Bello" name="publisher" />
+    <meta content="Healthcare Data Science" name="subject" />
+    <meta content="NG" name="geo.region" />
+    <meta content="Nigeria" name="geo.placename" />
+    <meta content="#0a1225" name="theme-color" />
+    <meta content="Bashir Aminu Bello" name="application-name" />
 
     <meta content={title} property="og:title" />
     <meta content={description} property="og:description" />
-    <meta content="website" property="og:type" />
-    <meta content={Astro.url.origin} property="og:url" />
+    <meta content={ogType} property="og:type" />
+    <meta content={canonicalUrl} property="og:url" />
+    <meta content="Bashir Aminu Bello" property="og:site_name" />
+    <meta content="en_NG" property="og:locale" />
+    <meta content="en_US" property="og:locale:alternate" />
     <meta
       content={image || `${Astro.url.origin}/og-image.png`}
       property="og:image"
+    />
+    <meta
+      content="Portfolio of healthcare AI projects, policy publications, and collaboration opportunities."
+      property="og:image:alt"
     />
 
     <meta content="summary_large_image" name="twitter:card" />
@@ -104,17 +147,26 @@ const schema =
     <link rel="manifest" href="/site.webmanifest" />
 
     <link href="https://cdn.fontshare.com" rel="preconnect" />
-    <link href={Astro.url.href} rel="canonical" />
+    <link href={canonicalUrl} rel="canonical" />
+    <link href={canonicalUrl} rel="alternate" hrefLang="en" />
+    <link href={canonicalUrl} rel="alternate" hrefLang="en-NG" />
+    <link href={canonicalUrl} rel="alternate" hrefLang="x-default" />
     <script
       is:inline
       set:html={JSON.stringify(schema)}
       type="application/ld+json"
     />
-    <script
-      defer
-      data-domain="bashir.bio"
-      src="https://plausible.io/js/script.js"
-    ></script>
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.io/js/pa-pC-smWse2lyLTKcn4NHYR.js"></script>
+    <script is:inline>
+      window.plausible = window.plausible || function () {
+        (plausible.q = plausible.q || []).push(arguments);
+      };
+      plausible.init = plausible.init || function (i) {
+        plausible.o = i || {};
+      };
+      plausible.init();
+    </script>
   </head>
 
   <!-- ✅ Key fixes: remove md:h-screen and justify-center; use min-h and normal flow -->
@@ -217,6 +269,10 @@ const schema =
           "download-resume": "Download Resume",
           "book-call": "Book Call",
           "contact-email": "Email Click",
+          "health-desert-page-open": "Health Desert Page Open",
+          "health-desert-app-open": "Health Desert App Launch",
+          "health-desert-whitepaper-open": "Health Desert Whitepaper Open",
+          "health-desert-demo-open": "Health Desert Demo Open",
         };
         const eventName = eventType ? eventMap[eventType] : undefined;
         if (!eventName) return;
@@ -299,3 +355,5 @@ const schema =
   }
 
 </style>
+
+

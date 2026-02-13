@@ -5,6 +5,13 @@
  * (Outer Card is provided by the page/grid controller.)
  */
 type ProjectLink = { label: string; href: string };
+type ProjectSection = {
+  heading: string;
+  text?: string;
+  bullets?: string[];
+  note?: string;
+  code?: string[];
+};
 type Project = {
   title: string;
   year: string;
@@ -16,11 +23,19 @@ type Project = {
   methods: string[];
   findings: string[];
   next: string;
+  sections?: ProjectSection[];
   links?: ProjectLink[];
 };
 
-const pickPrimaryLink = (links?: ProjectLink[]) =>
-  links?.find((l) => /launch|live|demo|preview|app/i.test(l.label)) ?? links?.[0] ?? null;
+const linkEvent = (href: string) => {
+  if (/\/health-desert$/i.test(href)) return "health-desert-page-open";
+  if (/bashir-healthdesert\.streamlit\.app/i.test(href)) return "health-desert-app-open";
+  if (/health-desert-whitepaper\.pdf/i.test(href)) return "health-desert-whitepaper-open";
+  if (/youtu\.be\/_esm4MD74Wg/i.test(href)) return "health-desert-demo-open";
+  return undefined;
+};
+
+const isExternal = (href: string) => /^https?:\/\//i.test(href);
 
 const projects: Project[] = [
   {
@@ -51,34 +66,126 @@ const projects: Project[] = [
     ],
   },
   {
-    title: "Nigeria Health Desert Risk Scorer",
+    title: "Health Desert Scorer (Nigeria)",
     isNew: true,
-    year: "Feb 2026–Present",
-    tagline:
-      "Policy-ready LGA risk flags built from access, facility, and connectivity indicators.",
+    year: "2026–Present",
+    tagline: "Web-based planning tool to identify LGAs with higher barriers to healthcare access.",
     tools: [
       "Python",
-      "geopandas",
-      "shapely",
-      "pyproj",
+      "GeoPandas",
       "scikit-learn",
       "XGBoost",
       "Streamlit",
+      "DHS",
+      "NHFR",
+      "WorldPop",
+      "OpenCellID",
     ],
     background:
-      "Prototype that fuses DHS-derived outcomes with travel-time, facility-density, and mobile-coverage signals to highlight LGAs facing compounded access risk.",
+      "Planning support tool for identifying Nigerian LGAs with stronger practical barriers to healthcare access.",
     methods: [
-      "Merged DHS outcomes with travel-time matrices, facility-density stats, and 3G/4G coverage per LGA.",
-      "Engineered composite risk features and trained scikit-learn/XGBoost models with explainable outputs.",
-      "Built a Streamlit UI for transparent parameter tweaks and export-ready tables for policy teams.",
+      "Integrated travel burden, facility availability, and connectivity constraints into a relative LGA planning score.",
+      "Built a map-first Streamlit interface to support transparent filtering and prioritization.",
     ],
     findings: [
-      "Surfaced LGAs where connectivity and facility proximity deficits compound health-access risk.",
-      "Clarity of tabular outputs improved handoff to policy stakeholders for prioritization.",
+      "Supports evidence-informed prioritization and outreach planning at LGA level.",
+      "Enables fast shortlisting of highest-need LGAs under selected focus filters.",
     ],
-    next: "Add ablation comparisons and publish a brief for state-level partners.",
+    next: "Expand state-level adoption with field validation and implementation support.",
+    sections: [
+      {
+        heading: "Why this tool exists",
+        text:
+          "Healthcare outcomes are strongly influenced by access barriers, including distance to care, facility availability, and connectivity constraints. This tool supports evidence-informed planning at LGA level.",
+      },
+      {
+        heading: "Who can use this",
+        bullets: [
+          "Frontline health teams",
+          "NGO program teams",
+          "Government policy units",
+          "Donors and implementation partners",
+          "Researchers and students",
+        ],
+      },
+      {
+        heading: "Quick start",
+        bullets: [
+          "Open the app: https://bashir-healthdesert.streamlit.app/",
+          "Select a State (or keep All Nigeria).",
+          "Select a Year.",
+          "Use the left panel to search an LGA and set a focus: All risk, Child mortality, Facility access, Connectivity, or 5km coverage.",
+          "Review map layers (Risk score, Facilities, Connectivity) and the highest-need list.",
+        ],
+      },
+      {
+        heading: "Key definitions",
+        bullets: [
+          "Health desert: area where people face stronger practical barriers to care.",
+          "Risk score: relative planning score (0-10), not a diagnosis.",
+          "Highest-need list: ranked LGAs under current filters.",
+          "Connectivity layer: LGA connectivity signal (towers per 10k where available).",
+          "LGA: Local Government Area.",
+        ],
+      },
+      {
+        heading: "How to read the map",
+        bullets: [
+          "Green: relatively lower barriers",
+          "Yellow/Orange: moderate barriers",
+          "Red: relatively higher barriers",
+        ],
+        note:
+          "Important: this is a decision-support tool for planning and prioritization. It should not replace field verification.",
+      },
+      {
+        heading: "Responsible use",
+        bullets: [
+          "Use outputs as a starting point for program design.",
+          "Combine with local context: security, roads, seasonality, staffing, and facility readiness.",
+          "Do not use this tool as the only basis for high-stakes decisions.",
+        ],
+      },
+      {
+        heading: "Data sources",
+        bullets: [
+          "DHS (2013, 2018)",
+          "Nigeria Health Facility Registry (NHFR)",
+          "WorldPop",
+          "OpenCellID (for connectivity features when available)",
+        ],
+      },
+      {
+        heading: "Run locally",
+        code: [
+          "python -m venv .venv",
+          "source .venv/bin/activate  # Windows: .venv\\Scripts\\Activate.ps1",
+          "pip install -r requirements.txt",
+          "python scripts/create_mock_dhs.py",
+          "python scripts/download_open_data.py",
+          "python -m src.data.build_features",
+          "make build-data",
+          "make validate-gold",
+          "streamlit run app/app.py",
+        ],
+      },
+      {
+        heading: "Data protection and limits",
+        bullets: [
+          "Repository artifacts are aggregated outputs.",
+          "Do not commit restricted DHS microdata or sensitive coordinates.",
+          "Results should be validated before policy or funding commitments.",
+        ],
+      },
+      {
+        heading: "Contact",
+        text: "For collaboration or implementation support: https://www.bashir.bio",
+      },
+    ],
     links: [
+      { label: "Overview page", href: "/health-desert" },
       { label: "Launch live app", href: "https://bashir-healthdesert.streamlit.app/" },
+      { label: "Live demo video", href: "https://youtu.be/_esm4MD74Wg" },
       { label: "GitHub", href: "https://github.com/bellonaut/health-desert-scorer" },
     ],
   },
@@ -98,7 +205,10 @@ const projects: Project[] = [
       "Established ethical logging + consent language that survives constrained UX.",
     ],
     next: "Build clinician-facing dashboard + evaluate usability with real clinic partners.",
-    links: [{ label: "GitHub", href: "https://github.com/bellonaut/naijacare_v05" }],
+    links: [
+      { label: "Research plan (PDF)", href: "/documents/naijacare-research-plan.pdf" },
+      { label: "GitHub", href: "https://github.com/bellonaut/naijacare_v05" },
+    ],
   },
   {
     title: "Measurement Invariance of the PedsQL in CAMHS",
@@ -194,7 +304,7 @@ const projects: Project[] = [
       "Created artifacts that support delivery consistency across cohorts.",
     ],
     next: "Iterate via participant feedback + add portfolio-based assessment components.",
-    links: [],
+    links: [{ label: "Cohort report (PDF)", href: "/documents/eye-report-draft-v3.pdf" }],
   },
 ];
 ---
@@ -233,36 +343,62 @@ const projects: Project[] = [
             </div>
           ) : null}
 
-          <div class="grid">
-            <section class="block">
-              <h6>Background</h6>
-              <p>{p.background}</p>
-            </section>
+          {p.sections?.length ? (
+            <div class="grid grid-rich">
+              {p.sections.map((s) => (
+                <section class="block">
+                  <h6>{s.heading}</h6>
+                  {s.text ? <p>{s.text}</p> : null}
+                  {s.bullets?.length ? (
+                    <ul>
+                      {s.bullets.map((item) => <li>{item}</li>)}
+                    </ul>
+                  ) : null}
+                  {s.note ? <p class="note">{s.note}</p> : null}
+                  {s.code?.length ? (
+                    <pre class="code"><code>{s.code.join("\n")}</code></pre>
+                  ) : null}
+                </section>
+              ))}
+            </div>
+          ) : (
+            <div class="grid">
+              <section class="block">
+                <h6>Background</h6>
+                <p>{p.background}</p>
+              </section>
 
-            <section class="block">
-              <h6>Methods</h6>
-              <ul>
-                {p.methods.map((m) => <li>{m}</li>)}
-              </ul>
-            </section>
+              <section class="block">
+                <h6>Methods</h6>
+                <ul>
+                  {p.methods.map((m) => <li>{m}</li>)}
+                </ul>
+              </section>
 
-            <section class="block">
-              <h6>Findings</h6>
-              <ul>
-                {p.findings.map((f) => <li>{f}</li>)}
-              </ul>
-            </section>
+              <section class="block">
+                <h6>Findings</h6>
+                <ul>
+                  {p.findings.map((f) => <li>{f}</li>)}
+                </ul>
+              </section>
 
-            <section class="block">
-              <h6>Next</h6>
-              <p>{p.next}</p>
-            </section>
-          </div>
+              <section class="block">
+                <h6>Next</h6>
+                <p>{p.next}</p>
+              </section>
+            </div>
+          )}
 
           {p.links?.length ? (
             <div class="links">
               {p.links.map((l) => (
-                <a class="link" href={l.href} target="_blank" rel="noreferrer">
+                <a
+                  class="link"
+                  href={l.href}
+                  target={isExternal(l.href) ? "_blank" : undefined}
+                  rel={isExternal(l.href) ? "noreferrer" : undefined}
+                  data-event={linkEvent(l.href)}
+                >
                   {l.label} →
                 </a>
               ))}
@@ -457,6 +593,26 @@ const projects: Project[] = [
   }
 
   .block ul { padding-left: 1.05rem; }
+  .block .note {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(160, 210, 255, 0.2);
+    color: rgba(220, 235, 255, 0.82);
+    font-size: 0.82rem;
+  }
+
+  .code {
+    margin: 8px 0 0;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(120, 190, 255, 0.2);
+    background: rgba(6, 12, 22, 0.65);
+    overflow-x: auto;
+    white-space: pre;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: rgba(232, 246, 255, 0.9);
+  }
 
   .links {
     margin-top: 10px;

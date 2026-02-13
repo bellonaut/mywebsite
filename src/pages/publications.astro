@@ -1,23 +1,32 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import PublicationsList from "../components/PublicationsList.astro";
+import SiteLinkHub from "../components/SiteLinkHub.astro";
+import { seo } from "../data/seo";
 import { publications } from "../data/publications";
 import { LINKS } from "../lib/constants";
+
+const pageSeo = seo.publications;
 ---
 
 <Layout
-  title="Publications - Bashir Aminu Bello"
-  description="Peer-reviewed and policy publications by Bashir Aminu Bello."
+  title={pageSeo.title}
+  description={pageSeo.description}
+  keywords={pageSeo.keywords}
 >
   <main class="page">
     <header class="hero">
       <a class="back" href="/">Back home</a>
+      <SiteLinkHub current="publications" />
       <div>
         <p class="eyebrow">Research & policy</p>
         <h1>Publications</h1>
         <p class="lead">
-          Formal manuscripts and policy pieces. Technical builds stay in
-          <a href="/projects">Projects</a>; Substack essays stay in
+          Formal manuscripts, policy briefs, white papers, and reports. Start the live product at
+          <a href={LINKS.healthDesertPage} data-event="health-desert-page-open">Health Desert</a>.
+          You can also
+          <a href={LINKS.healthDesertDemo} target="_blank" rel="noopener noreferrer" data-event="health-desert-demo-open">watch the demo</a>.
+          Technical builds stay in <a href="/projects">Projects</a>; Substack essays stay in
           <a href={LINKS.substack} target="_blank" rel="noopener noreferrer">Articles</a>.
         </p>
       </div>
